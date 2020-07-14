@@ -1,0 +1,95 @@
+@import '../styles/variables';
+
+:host {
+    display: flex;
+    flex-flow: row;
+    align-items: stretch;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    background: var(--base-bg);
+    color: var(--base-color);
+}
+.main {
+    display: flex;
+    flex-flow: column;
+    flex-grow: 1;
+}
+.top-bar {
+    display: flex;
+    flex-flow: row;
+    justify-content: flex-end;
+    height: 4rem;
+    background: var(--accent-color);
+    color: black;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+}
+
+.content {
+    display: flex;
+    flex-flow: column;
+    flex-grow: 1;
+    router-outlet {
+        height: 0;
+        flex-grow: 0;
+    }
+}
+
+.hamburger {
+    position: absolute;
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
+    right: 0;
+    bottom: 0;
+    z-index: 10;
+    transition: transform ease 0.7s;
+
+    .bar {
+        width: 1.7rem;
+        margin: 0.2rem 0;
+        height: 3px;
+        border-radius: 3px;
+        background: var(--base-color);
+    }
+}
+
+.user {
+    display: flex;
+    flex-flow: row;
+    align-items: stretch;
+    cursor: pointer;
+
+    img {
+        padding: 0.5rem;
+        width: 4rem;
+        height: 4rem;
+    }
+    .user-mail {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: black;
+        text-align: center;
+        font-size: 1.2rem;
+        padding: 0 2rem 0 1.5rem;
+    }
+    .logout {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: var(--accent-color);
+        text-align: center;
+        font-size: 1rem;
+        cursor: pointer;
+        padding: 0 2rem;
+        background: var(--sidebar-bg);
+    }
+}
+
+:host.s-desktop {
+    .hamburger {
+        display: none;
+    }
+}

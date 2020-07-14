@@ -1,0 +1,213 @@
+:host {
+    display: flex;
+    flex-flow: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    height: 100%;
+    width: 100%;
+    animation: slideIn ease 0.7s 1 normal forwards;
+    transform: translateX(-100%);
+    position: absolute;
+    background: var(--sidebar-bg);
+
+    font-size: 1.6rem;
+    z-index: 5;
+
+    &.hide {
+        animation: slideOut ease 0.7s 1 normal forwards;
+    }
+    font-family: Open Sans, sans-serif;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(-100%);
+    }
+
+    to {
+        transform: translateX(0%);
+    }
+}
+
+@keyframes slideOut {
+    from {
+        transform: translateX(0);
+    }
+
+    to {
+        transform: translateX(-100%);
+    }
+}
+
+a.nav {
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+    position: relative;
+    text-decoration: none;
+    color: var(--sidebar-link);
+    padding: 1.5rem 2rem;
+    overflow: hidden;
+    z-index: 2;
+    flex-grow: 1;
+    border-bottom: 1px solid var(--sidebar-border);
+    font-size: 1.2rem;
+    font-weight: 400;
+    &:hover {
+        &:after {
+            opacity: 1;
+        }
+
+        color: var(--sidebar-link-hover);
+    }
+
+    &.active {
+        background: var(--sidebar-link-selected-bg);
+        color: var(--sidebar-link-selected);
+    }
+    i {
+        color: var(--accent-color);
+        --ggs: 0.8;
+    }
+    .nav-icon {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-right: 1rem;
+        width: 2rem;
+    }
+    &:first-of-type {
+        border-top: 1px solid var(--sidebar-border);
+    }
+}
+
+koudou-logo {
+    font-size: 2rem;
+    margin: 2rem;
+    align-self: stretch;
+}
+
+.dark-mode {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    color: var(--sidebar-border);
+
+    &.dark-mode-on {
+        color: var(--sidebar-border);
+    }
+}
+
+:host-context(.s-desktop) {
+    position: inherit;
+    width: auto;
+    min-width: 20rem;
+
+    &.hide {
+        animation: none;
+        transform: translateX(0);
+    }
+
+    .icon {
+        background: transparent;
+    }
+}
+
+.gg-shape-hexagon,
+.gg-shape-hexagon::after,
+.gg-shape-hexagon::before {
+    display: block;
+    box-sizing: border-box;
+    width: 18px;
+    height: 10px;
+    border-left: 3px solid currentColor;
+    border-right: 3px solid currentColor;
+}
+.gg-shape-hexagon {
+    position: relative;
+    transform: scale(var(--ggs, 1));
+}
+.gg-shape-hexagon::after,
+.gg-shape-hexagon::before {
+    content: '';
+    position: absolute;
+    left: -3px;
+}
+.gg-shape-hexagon::before {
+    transform: rotate(60deg);
+}
+.gg-shape-hexagon::after {
+    transform: rotate(-60deg);
+}
+
+.gg-user-list {
+    display: block;
+    transform: scale(var(--ggs, 1));
+    box-sizing: border-box;
+    width: 20px;
+    height: 18px;
+    background: linear-gradient(to left, currentColor 8px, transparent 0)
+            no-repeat 14px 4px/6px 2px,
+        linear-gradient(to left, currentColor 8px, transparent 0) no-repeat 14px
+            8px/6px 2px,
+        linear-gradient(to left, currentColor 8px, transparent 0) no-repeat 14px
+            12px/6px 2px;
+}
+.gg-user-list::after,
+.gg-user-list::before {
+    content: '';
+    display: block;
+    box-sizing: border-box;
+    position: absolute;
+    border: 2px solid;
+}
+.gg-user-list::before {
+    width: 8px;
+    height: 8px;
+    border-radius: 30px;
+    top: 0;
+    left: 2px;
+}
+.gg-user-list::after {
+    width: 12px;
+    height: 9px;
+    border-bottom: 0;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    top: 9px;
+}
+
+.gg-pentagon-down {
+    box-sizing: border-box;
+    position: relative;
+    display: block;
+    transform: scale(var(--ggs, 1));
+    width: 10px;
+    height: 10px;
+}
+.gg-pentagon-down:before {
+    width: 51%;
+}
+.gg-pentagon-down:after,
+.gg-pentagon-down:before {
+    content: ' ';
+    position: absolute;
+    top: 0;
+    height: 100%;
+}
+.gg-pentagon-down:before {
+    left: -2px;
+    border-top: 2px solid;
+    border-left: 2px solid;
+    border-bottom: 2px solid;
+    transform: skew(0deg, 30deg);
+}
+.gg-pentagon-down:after {
+    right: -2px;
+    width: 50%;
+    border-right: 2px solid;
+    border-bottom: 2px solid;
+    border-top: 2px solid;
+    transform: skew(0deg, -30deg);
+}

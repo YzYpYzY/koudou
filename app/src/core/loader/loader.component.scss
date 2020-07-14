@@ -1,0 +1,47 @@
+:host {}
+
+.loader-small,
+.loader-big {
+    position: absolute;
+    height: 5rem;
+    width: 5rem;
+    border: 5px solid transparent;
+    border-radius: 50%;
+}
+
+.loader-small {
+    border-right-color: var(--loader-color);
+    border-left-color: var(--loader-color);
+    animation: rotation 3s linear 0s infinite normal;
+}
+
+.loader-big {
+    border-top-color: var(--loader-color);
+    border-bottom-color: var(--loader-color);
+    animation: rotationBig 4s linear 0s infinite normal;
+
+}
+
+@keyframes rotation {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes rotationBig {
+    0% {
+        transform: rotate(0deg) scale(1.3);
+    }
+
+    50% {
+        transform: rotate(360deg) scale(1.7);
+    }
+
+    100% {
+        transform: rotate(0deg) scale(1.3);
+    }
+}

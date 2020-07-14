@@ -1,0 +1,31 @@
+<ng-container *ngIf="isLogged$ | async">
+    <div
+        class="hamburger icon"
+        (click)="toggleNavDisplay()"
+        [ngClass]="{ slided: isNavDisplayed }"
+    >
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+    </div>
+    <koudou-sidebar
+        (hide)="hideNav()"
+        [ngClass]="{ hide: !isNavDisplayed }"
+    ></koudou-sidebar>
+</ng-container>
+<div class="main">
+    <div class="top-bar" *ngIf="isLogged$ | async">
+        <div class="user" (click)="navigateToProfil()">
+            <img src="{{ user.img }}" alt="user" />
+            <div class="user-mail">
+                {{ user.mail }}
+            </div>
+            <div class="logout" (click)="logout()">
+                <i class="gg-log-out"></i>
+            </div>
+        </div>
+    </div>
+    <div class="content">
+        <router-outlet></router-outlet>
+    </div>
+</div>

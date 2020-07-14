@@ -1,0 +1,46 @@
+<ng-container [ngSwitch]="state" *ngIf="activityIdForDelete == null">
+    <ng-container *ngSwitchCase="CrudStates.List">
+        <div class="table-container">
+            <yzy-bar
+                [title]="'Activités'"
+                [formModel]="filtersModel"
+                [actions]="headerActions"
+                (action)="handleHeaderAction($event)"
+                (formReady)="filterFormReady($event)"
+            ></yzy-bar>
+            <yzy-table
+                [columns]="columns"
+                [items]="activitys"
+                [itemsCount]="activitysCount"
+                [itemByPage]="itemByPage"
+                [lineActions]="lineActions"
+                [pageLinkNumber]="5"
+                [isPaginator]="true"
+                [isFrontDataTreatment]="false"
+                (onSort)="sort($event)"
+                (onPageChange)="pageChange($event)"
+                (onAction)="handleLineActions($event)"
+            >
+            </yzy-table>
+        </div>
+    </ng-container>
+    <ng-container *ngSwitchDefault>
+        <koudou-activity-form
+            [activity]="selectedActivity"
+            [sectionOptions]="sectionOptions"
+            [error$]="activityError$"
+            [state]="viewState"
+            (delete)="showDelete($event)"
+            (update)="setViewState(CrudStates.Update)"
+            (save)="save($event)"
+            (cancel)="setViewState(CrudStates.List)"
+        >
+        </koudou-activity-form>
+    </ng-container>
+</ng-container>
+<yzy-question
+    [question]="question"
+    [answers]="answer"
+    *ngIf="activityIdForDelete != null"
+    (select)="confirmDelete($event)"
+></yzy-question>

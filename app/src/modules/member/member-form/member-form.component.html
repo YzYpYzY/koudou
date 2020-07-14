@@ -1,0 +1,21 @@
+<ng-container *ngIf="!isConfirmDisplayed; else confirm">
+    <yzy-bar
+        [title]="'Détails membre'"
+        [actions]="headerActions"
+        (action)="handleAction($event)"
+    ></yzy-bar>
+    <div class="form-container" *ngIf="memberFormModel">
+        <yzy-form
+            [formModel]="memberFormModel"
+            (formReady)="setForm($event)"
+        ></yzy-form>
+    </div>
+</ng-container>
+<ng-template #confirm>
+    <yzy-question
+        [question]="'Ètes-vous certains de vouloir supprimer ce membre ?'"
+        [answers]="confirmAnswers"
+        (select)="selectAnswer($event)"
+    >
+    </yzy-question>
+</ng-template>

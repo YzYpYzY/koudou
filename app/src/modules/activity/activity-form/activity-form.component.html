@@ -1,0 +1,11 @@
+<yzy-bar
+    [title]="title"
+    [actions]="headerActions"
+    (action)="handleAction($event)"
+></yzy-bar>
+<div class="form-container" *ngIf="activityFormModel">
+    <yzy-form
+        [formModel]="activityFormModel"
+        (formReady)="setForm($event)"
+    ></yzy-form>
+</div>

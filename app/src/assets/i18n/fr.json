@@ -1,0 +1,4 @@
+{ 
+    "field.error.required": "Ce champs est requis.",
+    "field.error.email": "Cette adresse email n'est pas valide."
+}

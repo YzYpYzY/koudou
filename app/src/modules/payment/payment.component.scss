@@ -1,0 +1,17 @@
+:host {
+    align-items: stretch;
+    align-self: stretch;
+}
+yzy-table {
+    flex-grow: 1;
+}
+.table-container {
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+}
+koudou-payment-form {
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+}
+yzy-question {
+    --border-color: transparent;
+    max-width: 30rem;
+}

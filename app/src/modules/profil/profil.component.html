@@ -1,0 +1,17 @@
+<ng-container *ngIf="false; else content">
+    <koudou-loader></koudou-loader>
+</ng-container>
+<ng-template #content>
+    <yzy-bar
+        [title]="'Profil'"
+        [actions]="headerActions"
+        (action)="handleHeaderActions($event)"
+    ></yzy-bar>
+    <div class="form-container">
+        <yzy-form
+            [formModel]="profilFormDescriptor"
+            (formReady)="setProfilForm($event)"
+        ></yzy-form>
+        <div class="error">{{ error$ | async }}</div>
+    </div>
+</ng-template>

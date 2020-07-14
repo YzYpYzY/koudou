@@ -1,0 +1,50 @@
+:host {
+    display: flex;
+    flex-flow: column;
+}
+
+.news {
+    display: flex;
+    flex-flow: column;
+    position: relative;
+    padding: 0 0 4rem 0;
+    margin: 1rem 0;
+    background: var(--news-bg);
+    color: var(--form-color);
+    max-width: 60rem;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+
+    .title {
+        padding: 1rem;
+        background: var(--news-title-bg);
+        color: var(--news-title-color);
+        font-size: 1.2rem;
+    }
+    .content {
+        padding: 1rem;
+        font-size: 1.1rem;
+    }
+    .date {
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        padding: 0.5rem 1rem;
+        background: var(--field-border);
+        color: var(--bar-color);
+    }
+    .creator {
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        padding: 0.5rem 1rem;
+        background: var(--field-border);
+        color: var(--bar-color);
+    }
+}
+yzy-paginator {
+    max-width: 60rem;
+    margin: 0.75rem 0;
+    height: 3rem;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+    --paginator-bg: #a3a9b0;
+}

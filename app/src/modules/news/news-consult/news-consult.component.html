@@ -1,0 +1,12 @@
+<article class="news" *ngFor="let news of newsList">
+    <div class="title">{{ news.title }}</div>
+    <div class="content">{{ news.content }}</div>
+    <div class="date">{{ news.date }}</div>
+    <div class="creator">{{ news.creator }}</div>
+</article>
+<yzy-paginator
+    [count]="newsCount"
+    [itemByPage]="itemByPage"
+    [selectedPage]="selectedPage"
+    (changePage)="pageChange($event)"
+></yzy-paginator>

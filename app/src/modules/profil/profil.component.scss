@@ -1,0 +1,27 @@
+:host {
+    display: flex;
+    flex-flow: column;
+    justify-content: flex-start;
+    //width: 100%;
+    align-self: center;
+    max-width: 50rem;
+    --border-color: transparent;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+}
+
+.form-container {
+    display: flex;
+    align-items: center;
+    scrollbar-width: thin;
+    flex-flow: column;
+    overflow: auto;
+    scrollbar-width: thin;
+    flex-grow: 1;
+    padding: 2rem 3rem;
+}
+
+.actions {
+    display: flex;
+    flex-flow: row;
+    align-self: flex-start;
+}

@@ -1,0 +1,112 @@
+$pal1: #faaf4d;
+$pal2: rgb(72, 83, 97);
+$pal3: #edf1f7;
+$pal4: #ffffff;
+
+$border-r: 1rem;
+
+$accent: rgb(174, 212, 112);
+$dominant: $pal3;
+$contrast: rgb(27, 27, 27);
+
+$dominant-transparent: transparentize($dominant, 0.3);
+$light-grey: rgb(160, 156, 156);
+$bar-bg: rgb(209, 226, 238);
+
+:host {
+    --accent-color: #{$accent};
+    --base-bg: #{$dominant};
+    --base-color: #{$contrast};
+    --base-grey: #{$light-grey};
+    --sidebar-bg: #{$pal2};
+    --sidebar-link: #{white};
+    --sidebar-link-hover: #{$accent};
+    --sidebar-link-selected-bg: #{transparentize($accent, 0.9)};
+    --sidebar-link-selected: #{$accent};
+    --sidebar-border: rgb(187, 186, 186);
+
+    --loader-color: #{$accent};
+
+    --valid-color: rgb(233, 255, 110);
+    --invalid-color: rgb(255, 144, 110);
+
+    --logo-color: #{white};
+    --logo-subTitle: rgb(194, 194, 194);
+    --logo-bubble: #{$accent};
+
+    --form-link: grey;
+    --field-border: #{transparentize($pal2, 0.5)};
+    --field-color: black;
+    --field-readonly-color: black;
+    --field-bg: rgb(247, 247, 247);
+    --field-readonly-bg: rgb(235, 235, 235);
+    --field-label: rgb(121, 120, 120);
+
+    --btn-color: black;
+    --btn-bg: rgb(236, 236, 236);
+    --btn-bg-hover: #{$accent};
+    --btn-color-hover: white;
+    --btn-color-disable: black;
+    --btn-bg-disable: rgb(235, 233, 233);
+
+    --table-odd-row: #{rgba(245, 245, 247, 0.555)};
+    --table-header-row: #{white};
+
+    --bar-bg: #{$pal2};
+    --bar-color: #{rgb(247, 247, 247)};
+
+    --paginator-color: rgb(226, 226, 226);
+    --paginator-bg: #{$pal2};
+    --paginator-selected-color: rgb(240, 240, 240);
+    --paginator-selected-bg: #{transparentize($accent, 0.5)};
+    --news-title-bg: #{$pal2};
+    --news-title-color: #{white};
+    --news-bg: white;
+}
+
+$contrast: rgb(26, 27, 31);
+$dominant-lighter: rgb(238, 238, 238);
+
+:host.dark {
+    --base-bg: #{$contrast};
+    --base-color: #{$dominant};
+
+    --sidebar-bg: #{$pal2};
+    --sidebar-link: #{$dominant};
+    --sidebar-link-hover: #{$accent};
+    --sidebar-link-selected-bg: #{transparentize($accent, 0.9)};
+    --sidebar-link-selected: #{$accent};
+    --sidebar-border: rgb(146, 143, 134);
+
+    --logo-color: #{$dominant};
+
+    --form-link: #{$light-grey};
+    --field-border: rgb(29, 29, 29);
+    --field-readonly-color: #{$dominant};
+    --field-readonly-bg: #{$contrast};
+    --field-label: #{$light-grey};
+
+    --btn-color: #{black};
+    --btn-hover-color: #{white};
+    --btn-bg: #{$accent};
+    --btn-bg-hover: #{$accent};
+    --btn-color-hover: #{$dominant};
+    --btn-color-disable: #{white};
+    --btn-bg-disable: #{rgb(34, 39, 46)};
+
+    --table-odd-row: #{rgba(0, 0, 0, 0.185)};
+    --table-header-row: #{rgb(26, 27, 31)};
+    --bar-bg: #{$pal2};
+    --bar-color: white;
+    --table-border-color: transparent;
+    --paginator-bg: #{rgb(26, 27, 31)};
+    --action-color: black;
+    --field-bg: #{rgb(34, 39, 46)};
+    --field-color: #{$dominant};
+    --table-bg: rgb(73, 80, 92);
+    --form-bg: #{$pal2};
+    --question-bg: #{rgb(26, 27, 31)};
+    --paginator-selected-color: #{$accent};
+    --paginator-selected-bg: transparent;
+    --news-bg: #676f7b;
+}

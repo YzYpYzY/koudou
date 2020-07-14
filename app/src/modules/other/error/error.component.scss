@@ -1,0 +1,15 @@
+:host {
+    display: flex;
+    flex-flow: column;
+    align-items: flex-start;
+    justify-content: center;
+    align-self: flex-start;
+    margin: auto;
+
+}
+
+.message {
+    padding: 2rem 1rem;
+    font-size: 2rem;
+    color: var(--base-color);
+}

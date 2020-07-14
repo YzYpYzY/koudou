@@ -1,0 +1,19 @@
+<koudou-logo></koudou-logo>
+<nav>
+    <a
+        *ngFor="let nav of navigations"
+        (click)="navigate(nav)"
+        class="nav"
+        [ngClass]="{ active: nav.isActive }"
+    >
+        <div class="nav-icon"><i class="{{ nav.icon }}"></i></div>
+        <div class="nav-text">{{ nav.label }}</div>
+    </a>
+</nav>
+<div
+    class="dark-mode icon"
+    (click)="toggleDarkMode()"
+    [ngClass]="{ 'dark-mode-on': isDarkMode }"
+>
+    <i [ngClass]="{ 'gg-sun': isDarkMode, 'gg-moon': !isDarkMode }"></i>
+</div>

@@ -1,0 +1,46 @@
+:host {
+    display: flex;
+    flex-flow: row;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 0;
+    align-self: center;
+    margin: auto;
+    background: var(--form-bg);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+    border-radius: 2px;
+}
+
+.error {
+    align-self: flex-start;
+    color: var(--invalid-color);
+    padding: 0.25rem;
+}
+
+koudou-logo {
+    margin-top: 3rem;
+    margin-left: 3rem;
+    font-size: 2.6rem;
+}
+
+.description {
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    max-width: 40rem;
+    font-size: 1rem;
+    height: 100%;
+    border-right: 1px solid var(--accent-color);
+    position: relative;
+    background: var(--sidebar-bg);
+}
+.description-text {
+    padding: 1rem 3rem 4rem 3rem;
+    color: rgb(236, 236, 236);
+}
+.dark-mode {
+    position: absolute;
+    right: 2rem;
+    bottom: 2rem;
+    cursor: pointer;
+}

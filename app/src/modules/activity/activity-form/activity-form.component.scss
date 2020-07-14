@@ -1,0 +1,25 @@
+:host {
+    display: flex;
+    flex-flow: column;
+    justify-content: flex-start;
+    align-self: center;
+    max-width: 50rem;
+    --border-color: transparent;
+}
+
+.form-container {
+    display: flex;
+    align-items: center;
+    scrollbar-width: thin;
+    flex-flow: column;
+    overflow: auto;
+    scrollbar-width: thin;
+    flex-grow: 1;
+    padding: 2rem 3rem;
+}
+
+.actions {
+    display: flex;
+    flex-flow: row;
+    align-self: flex-start;
+}

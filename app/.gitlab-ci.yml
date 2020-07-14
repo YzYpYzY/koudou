@@ -1,0 +1,29 @@
+cache:
+  paths:
+  - node_modules/
+
+stages:
+  - build
+  - publish
+
+before_script:
+  - npm install
+
+job_build:
+  stage: build
+  only:
+    - pre-prod
+    - prod
+  artifacts:
+    paths:
+      - Package/*.deb
+  script:
+    - ng build --prod
+    - sh ./Package.sh
+
+job_publish:
+  stage: publish
+  only:
+    - pre-prod
+  script:
+    - sh ./Publish.sh
