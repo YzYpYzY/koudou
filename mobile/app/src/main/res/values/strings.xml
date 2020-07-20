@@ -1,0 +1,38 @@
+<resources>
+    <string name="app_name">Koudou</string>
+    <string name="login_title">Connexion</string>
+    <string name="login_pseudo">Pseudo</string>
+    <string name="login_password">Mot de passe</string>
+    <string name="login_connection_btn">Se connecter</string>
+    <string name="login_register_btn">S\'inscrire</string>
+    <string name="login_register">S\'inscrire</string>
+    <string name="login_connect">Se connecter</string>
+    <string name="title_activity_register">Register</string>
+    <string name="login_confirm_password">Confirmation du mot de passe</string>
+    <string name="login_email">Email</string>
+    <string name="login_register_title">Inscription</string>
+    <string name="confirm_title">Confirmation</string>
+    <string name="confirm_option_true">Oui</string>
+    <string name="confirm_option_false">Non</string>
+    <string name="confirm_message_handler">Message de confirmation</string>
+    <string name="member_menu">Membres</string>
+    <string name="member_menu_description">Accéder à la gestion des membres</string>
+    <string name="section_menu">Sections</string>
+    <string name="section_menu_description">Accéder à la gestion des sections</string>
+    <string name="profil_menu">Profil</string>
+    <string name="profil_menu_description">Accéder à la gestion de son profil</string>
+    <string name="login_profil_title">Mon profil</string>
+    <string name="profil_change_password_btn">Modifier son mot de passe</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="validate">Valider</string>
+    <string name="cancel">Annuler</string>
+    <string name="password_change_new_password">Nouveau mot de passe</string>
+    <string name="news_menu">Actualité</string>
+    <string name="news_menu_description">Accéder à la gestion des actualités</string>
+    <string name="news_title">Actualité</string>
+    <string name="news_title_placeholder">Titre</string>
+    <string name="news_content_placeholder">Contenu</string>
+    <string name="news_author_placeholder">Auteur</string>
+    <string name="news_date_placeholder">Date</string>
+</resources>

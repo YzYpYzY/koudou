@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/profil_menu"
+        android:icon="@drawable/ic_baseline_perm_identity_24"
+        android:title="@string/profil_menu"
+        android:contentDescription="@string/profil_menu_description"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/news_menu"
+        android:icon="@drawable/ic_baseline_textsms_24"
+        android:title="@string/news_menu"
+        android:contentDescription="@string/news_menu_description"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/member_menu"
+        android:icon="@drawable/ic_baseline_supervised_user_circle_24"
+        android:title="@string/member_menu"
+        android:contentDescription="@string/member_menu_description"
+        app:showAsAction="ifRoom" />
+</menu>

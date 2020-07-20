@@ -1,8 +1,7 @@
-import { KoudouService } from './koudou.service';
 import { Injectable } from '@angular/core';
 import { KoudouState, KoudouStateDefault } from './koudou.state';
 import { State, Selector, Action, StateContext } from '@ngxs/store';
-import { KoudouActions, Register } from './koudou.actions';
+import { KoudouActions } from './koudou.actions';
 import { AuthService } from '@core/services/auth.service';
 import { catchError, map } from 'rxjs/operators';
 import { ILoginResponse } from '@core/services/responses/ILoginResponse';
@@ -97,6 +96,7 @@ export class KoudouStore {
             }),
         );
     }
+
     @Action(KoudouActions.Logout)
     logout({ patchState, dispatch }: StateContext<KoudouState>) {
         return this.authService.logout().pipe(
