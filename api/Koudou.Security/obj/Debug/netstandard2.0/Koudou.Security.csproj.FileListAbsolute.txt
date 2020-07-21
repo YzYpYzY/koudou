@@ -1,0 +1,9 @@
+C:\proj\koudou\api\Koudou.Security\bin\Debug\netstandard2.0\Koudou.Security.deps.json
+C:\proj\koudou\api\Koudou.Security\bin\Debug\netstandard2.0\Koudou.Security.dll
+C:\proj\koudou\api\Koudou.Security\bin\Debug\netstandard2.0\Koudou.Security.pdb
+C:\proj\koudou\api\Koudou.Security\obj\Debug\netstandard2.0\Koudou.Security.csprojAssemblyReference.cache
+C:\proj\koudou\api\Koudou.Security\obj\Debug\netstandard2.0\Koudou.Security.AssemblyInfoInputs.cache
+C:\proj\koudou\api\Koudou.Security\obj\Debug\netstandard2.0\Koudou.Security.AssemblyInfo.cs
+C:\proj\koudou\api\Koudou.Security\obj\Debug\netstandard2.0\Koudou.Security.csproj.CoreCompileInputs.cache
+C:\proj\koudou\api\Koudou.Security\obj\Debug\netstandard2.0\Koudou.Security.dll
+C:\proj\koudou\api\Koudou.Security\obj\Debug\netstandard2.0\Koudou.Security.pdb
