@@ -24,7 +24,7 @@ namespace Koudou.Api
                 try
                 {
                     var context = services.GetRequiredService<KoudouContext>();
-                    var isDbEmpty = context.Sections.FirstOrDefault() == null;
+                    var isDbEmpty = true; //context.Sections.FirstOrDefault() == null;
                     if (isDbEmpty)
                     {
                         var importHelper = new ImportHelper(context);

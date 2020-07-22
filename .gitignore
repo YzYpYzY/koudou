@@ -44,5 +44,5 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
-api/bin
-api/obj
+bin/
+obj/

@@ -10,7 +10,7 @@ namespace Koudou.Data {
     public class KoudouContext : DbContext {
 
         public const string IsSoftDeletedPropertyName = "IsSoftDeleted";
-        
+
         public KoudouContext (DbContextOptions<KoudouContext> options) : base (options) { 
         }
         public DbSet<Activity> Activitys { get; set; }
@@ -38,9 +38,9 @@ namespace Koudou.Data {
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Person>()
-                .Property(p => p.Sex)
-                .HasDefaultValue('U');
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.ApplyConfigurationsFromAssembly(GetType().Assembly);
+            
         }
         public int SaveChangesWithoutAudits(){
             return base.SaveChanges();

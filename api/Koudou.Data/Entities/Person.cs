@@ -11,9 +11,8 @@ namespace Koudou.Data.Entities
         public string LastName { get; set; }
         public string FirstName { get; set; }
         public string Email { get; set; }
-        public string Birthdate { get; set; }
+        public DateTime? Birthdate { get; set; }
         public char Sex { get; set; }
-        public string Phone { get; set; }
         public string Comment { get; set; }
 
         public int PhotoId { get; set; }
@@ -31,14 +30,13 @@ namespace Koudou.Data.Entities
 
 
         public Person() : base() {}
-        public Person(string lastName, string firstName, string email, string birthdate, char sex, string phone, string comment) : base()
+        public Person(string lastName, string firstName, string email, DateTime? birthdate, char sex, string comment) : base()
         {
             this.LastName = lastName;
             this.FirstName = firstName;
             this.Email = email;
             this.Birthdate = birthdate;
             this.Sex = sex;
-            this.Phone = phone;
             this.Comment = comment;
         }
     }
