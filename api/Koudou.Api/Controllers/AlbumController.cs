@@ -18,7 +18,8 @@ using Microsoft.Extensions.Logging;
 
 namespace Koudou.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [ApiVersion("1.0")] 
+    [Route("api/{v:apiVersion}/[controller]")]
     [ApiController]
     public class AlbumController : ControllerBase<Album, AlbumController>
     {

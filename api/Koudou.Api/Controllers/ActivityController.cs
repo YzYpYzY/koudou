@@ -14,12 +14,13 @@ using LinqKit;
 using Koudou.Models.Sections;
 using Koudou.Api.Business;
 using Koudou.Models.Albums;
-using Koudou.Models.Activitys;
+using Koudou.Models.Activities;
 using Microsoft.Extensions.Logging;
 
 namespace Koudou.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [ApiVersion("1.0")] 
+    [Route("api/{v:apiVersion}/[controller]")]
     [ApiController]
     public class ActivityController : ControllerBase<Activity,ActivityController>
     {
@@ -50,6 +51,33 @@ namespace Koudou.Api.Controllers
             var result = _activitysLogic.GetAllPaged(options, predicate);
 
             return result;
+        }
+
+        [HttpGet("{id:int}")]
+        public ActivityFullDTO GetOne(int id)
+        {
+            return _activitysLogic.GetOne(id);
+        }
+
+        [HttpPost]
+        public ActivityFullDTO Create(ActivityFullDTO dto)
+        {
+            ValidateDTO(dto);
+            return _activitysLogic.Create(dto);
+        }
+
+        [HttpPut("{id:int}")]
+        public ActivityFullDTO Update(int id, ActivityFullDTO dto)
+        {
+            ValidateDTO(dto);
+            return _activitysLogic.Update(id, dto);
+        }
+
+        [HttpDelete("{id:int}")]
+        public IActionResult Delete(int id)
+        {
+            _activitysLogic.Delete(id);
+            return Ok();
         }
     }
 }

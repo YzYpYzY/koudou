@@ -20,6 +20,10 @@ using Microsoft.Extensions.Logging;
 using NSwag;
 using NSwag.Generation.AspNetCore;
 using NSwag.Generation.Processors.Security;
+using Koudou.Api.Models.Auth;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.Text;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Koudou.Api
 {
@@ -39,10 +43,17 @@ namespace Koudou.Api
                 Configuration.GetConnectionString("DefaultConnection"),
                 x => x.MigrationsAssembly("Koudou.Data")
             ));
+            services.AddApiVersioning(x =>  
+            {  
+                x.DefaultApiVersion = new ApiVersion(1, 0);  
+                x.AssumeDefaultVersionWhenUnspecified = true;  
+                x.ReportApiVersions = true;  
+            });  
             services.AddControllers().AddJsonOptions(options => {
                 options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
                 options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
             });
+            ConfigureAuthentication(services);
             services.AddOpenApiDocument(config =>
             {
                 ConfigureSwagger(config);
@@ -97,19 +108,19 @@ namespace Koudou.Api
                 Type = OpenApiSecuritySchemeType.OAuth2,
                 Description = "Koudou Authentication",
                 Flow = OpenApiOAuth2Flow.Password,
-                // Flows = new OpenApiOAuthFlows()
-                // {
+                Flows = new OpenApiOAuthFlows()
+                {
 
-                //     Password = new OpenApiOAuthFlow()
-                //     {
-                //         Scopes = new Dictionary<string, string>
-                //                    {
-                //                         {Security.Scope, "Koudou WebAPI"}
-                //                    },
-                //         TokenUrl = "/api/authentication/Token",
-                //         AuthorizationUrl = "/authentication/Token",
-                //     }
-                // }
+                    Password = new OpenApiOAuthFlow()
+                    {
+                        Scopes = new Dictionary<string, string>
+                                   {
+                                        {"koudou-api", "Koudou WebAPI"}
+                                   },
+                        TokenUrl = "/api/v1/auth/Token",
+                        AuthorizationUrl = "/api/v1/auth/Token",
+                    }
+                }
             });
             config.OperationProcessors.Add(new AspNetCoreOperationSecurityScopeProcessor("bearer"));
 
@@ -121,6 +132,36 @@ namespace Koudou.Api
             };
 
             config.GenerateEnumMappingDescription = true;
+        }
+
+        private void ConfigureAuthentication(IServiceCollection services)
+        {
+            var tokensConfiguration = Configuration.GetSection("Tokens");
+            var tokenSettings = tokensConfiguration.Get<TokensSettings>();
+
+            services.Configure<TokensSettings>(tokensConfiguration);
+
+            services
+                .AddAuthentication(x =>
+                {
+                    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
+                .AddJwtBearer(x =>
+                {
+                    x.RequireHttpsMetadata = false;
+                    x.SaveToken = true;
+                    x.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenSettings.Secret)),
+                        ValidateIssuer = false,
+                        ValidateAudience = false,
+                        RequireExpirationTime = false,
+                        ValidateLifetime = true
+                    };
+                });
         }
 
         private void HandleError(IApplicationBuilder error)

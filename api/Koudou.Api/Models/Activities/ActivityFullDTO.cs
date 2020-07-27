@@ -3,21 +3,23 @@ using Koudou.Data.Entities;
 using Koudou.Helpers;
 using Koudou.Models.Base;
 
-namespace Koudou.Models.Activitys
+namespace Koudou.Models.Activities
 {
-    public class ActivityDTO : BaseDTO<Activity, ActivityDTO>
+    public class ActivityFullDTO : BaseDTO<Activity, ActivityFullDTO>
     {
         public int Id { get; set; }
         public string Name { get; set; }
         public string Date { get; set; }
-        public string Section { get; set; }
+        public string Description { get; set; }
+        public int? SectionId { get; set; }
 
-        public override ActivityDTO FromEntity(Activity entity)
+        public override ActivityFullDTO FromEntity(Activity entity)
         {
             Id = entity.Id;
             Name = entity.Name;
             Date = DateHelper.DateTimeToString(entity.Date);
-            Section = entity.Section?.Name;
+            Description = entity.Description;
+            SectionId = entity.SectionId;
             return this;
         }
     }

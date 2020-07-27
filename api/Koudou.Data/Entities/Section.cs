@@ -13,7 +13,6 @@ namespace Koudou.Data.Entities
         public string Ages { get; set; }
         public int? Ordre { get; set; }
 
-        public int SectionId { get; set; }
         public int? ParentSectionId { get; set; }
         public Section ParentSection { get; set; }
 

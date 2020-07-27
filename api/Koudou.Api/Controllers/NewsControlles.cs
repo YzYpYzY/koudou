@@ -13,12 +13,13 @@ using Koudou.Models.Base;
 using LinqKit;
 using Koudou.Models.Sections;
 using Koudou.Api.Business;
-using Koudou.Models.Albums;
 using Microsoft.Extensions.Logging;
+using Koudou.Models.Newss;
 
 namespace Koudou.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [ApiVersion("1.0")] 
+    [Route("api/{v:apiVersion}/[controller]")]
     [ApiController]
     public class NewsController : ControllerBase<News, NewsController>
     {
@@ -50,6 +51,33 @@ namespace Koudou.Api.Controllers
             var result = _newsLogic.GetAllPaged(options, predicate);
 
             return result;
+        }
+
+        [HttpGet("{id:int}")]
+        public NewsFullDTO GetOne(int id)
+        {
+            return _newsLogic.GetOne(id);
+        }
+
+        [HttpPost]
+        public NewsFullDTO Create(NewsFullDTO dto)
+        {
+            ValidateDTO(dto);
+            return _newsLogic.Create(dto);
+        }
+
+        [HttpPut("{id:int}")]
+        public NewsFullDTO Update(int id, NewsFullDTO dto)
+        {
+            ValidateDTO(dto);
+            return _newsLogic.Update(id, dto);
+        }
+
+        [HttpDelete("{id:int}")]
+        public IActionResult Delete(int id)
+        {
+            _newsLogic.Delete(id);
+            return Ok();
         }
     }
 }

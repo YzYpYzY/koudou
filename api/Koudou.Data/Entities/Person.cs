@@ -27,7 +27,7 @@ namespace Koudou.Data.Entities
 
         public ICollection<PersonRole> PersonRoles { get; set; }
         public ICollection<PaymentMember> PaymentMembers { get; set; }
-
+        public ICollection<Phone> Phones { get; set; }
 
         public Person() : base() {}
         public Person(string lastName, string firstName, string email, DateTime? birthdate, char sex, string comment) : base()

@@ -13,7 +13,7 @@ namespace Koudou.Data {
 
         public KoudouContext (DbContextOptions<KoudouContext> options) : base (options) { 
         }
-        public DbSet<Activity> Activitys { get; set; }
+        public DbSet<Activity> Activities { get; set; }
 
         public DbSet<Adress> Adresses { get; set; }
         public DbSet<Album> Albums { get; set; }

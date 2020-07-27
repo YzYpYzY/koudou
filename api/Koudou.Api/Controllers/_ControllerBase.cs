@@ -32,7 +32,7 @@ namespace api.Controllers
         }
     }
 
-    [ApiController, Route("api/[controller]")]
+    [ApiController, Route("api/{v:apiVersion}/[controller]")]
     public abstract class ControllerBase<TController> : ControllerBase
     {
         protected readonly ILogger<TController> _logger;

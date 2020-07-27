@@ -8,6 +8,8 @@ using Koudou.Models.Base;
 using Koudou.Models.Payments;
 using Koudou.Api.Business;
 using Microsoft.EntityFrameworkCore;
+using Koudou.Api.Business.Exceptions;
+using Koudou.Helpers;
 
 namespace Koudou.Api.Business
 {
@@ -31,6 +33,63 @@ namespace Koudou.Api.Business
                                      .ToList();
 
             return response;
+        }
+
+        public PaymentDTO GetOne(int id)
+        {
+            var payment = Context.Payments
+                                .Include(p => p.PaymentMembers)
+                                .SingleOrDefault(p => p.Id == id);
+
+            if (payment == null)
+            {
+                throw new IdNotFoundRequestException(nameof(Payment), id);
+            }
+
+            return new PaymentDTO().FromEntity(payment);
+        }
+
+        public PaymentDTO Create(PaymentDTO dto)
+        {
+            var newPayment = new Payment(dto.Name, dto.Type, dto.Amount, DateHelper.StringToDateTime(dto.Deadline));
+            Context.Add(newPayment);
+            Context.SaveChanges();
+
+            return new PaymentDTO().FromEntity(newPayment);
+        }
+
+        public PaymentDTO Update(int id, PaymentDTO dto)
+        {
+            var payment = Context.Payments
+                                .Include(p => p.PaymentMembers)
+                                .SingleOrDefault(p => p.Id == id);
+            if (payment == null)
+            {
+                throw new IdNotFoundRequestException(nameof(Payment), id);
+            }
+
+            payment.Name = dto.Name;
+            payment.Type = dto.Type;
+            payment.Amount = dto.Amount;
+            payment.Deadline = DateHelper.StringToDateTime(dto.Deadline);
+
+            Context.SaveChanges();
+
+            var updatedDTO = new PaymentDTO().FromEntity(payment);
+
+            return updatedDTO;
+        }
+
+        public void Delete(int id)
+        {
+            var payment = Context.Payments.SingleOrDefault(p => p.Id == id);
+            if (payment == null)
+            {
+                throw new IdNotFoundRequestException(nameof(Payment), id);
+            }
+
+            Context.SoftDeleteEntity(payment);
+            Context.SaveChanges();
         }
  
     }

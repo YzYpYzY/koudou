@@ -75,7 +75,7 @@ namespace Koudou.Data.Imports
                 newAlbum.CreationDate = dateParsed != null ? dateParsed : DateTime.Now;
                 newAlbum.ModificationDate = newAlbum.CreationDate;
                 Context.Albums.Add(newAlbum);
-                Context.Entry(newAlbum).Property(KoudouContext.IsSoftDeletedPropertyName).CurrentValue = (string)galerie["statutgalerie"] == "1";
+                Context.Entry(newAlbum).Property(KoudouContext.IsSoftDeletedPropertyName).CurrentValue = (string)galerie["statutgalerie"] != "1";
             }
             Context.SaveChanges();
         }

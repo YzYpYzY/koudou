@@ -1,10 +1,11 @@
+using System.Linq;
+using Koudou.Data.Entities;
 using Koudou.Helpers;
 using Koudou.Models.Base;
-using Koudou.Data.Entities;
 
 namespace Koudou.Models.Newss
 {
-    public class NewsDTO : BaseDTO<News, NewsDTO>
+    public class NewsFullDTO : BaseDTO<News, NewsFullDTO>
     {
         public int Id { get; set; }
         public string Title { get; set; }
@@ -12,7 +13,7 @@ namespace Koudou.Models.Newss
         public string Creator { get; set; }
         public string Content { get; set; }
 
-        public override NewsDTO FromEntity(News entity)
+        public override NewsFullDTO FromEntity(News entity)
         {
             Id = entity.Id;
             Title = entity.Title;

@@ -17,7 +17,8 @@ using Microsoft.Extensions.Logging;
 
 namespace Koudou.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [ApiVersion("1.0")] 
+    [Route("api/{v:apiVersion}/[controller]")]
     [ApiController]
     public class MemberController : ControllerBase<Member, ControllerBase>
     {
@@ -49,6 +50,33 @@ namespace Koudou.Api.Controllers
             var result = _membersLogic.GetAllPaged(options, predicate);
 
             return result;
+        }
+
+        [HttpGet("{id:int}")]
+        public MemberFullDTO GetOne(int id)
+        {
+            return _membersLogic.GetOne(id);
+        }
+
+        [HttpPost]
+        public MemberFullDTO Create(MemberFullDTO dto)
+        {
+            ValidateDTO(dto);
+            return _membersLogic.Create(dto);
+        }
+
+        [HttpPut("{id:int}")]
+        public MemberFullDTO Update(int id, MemberFullDTO dto)
+        {
+            ValidateDTO(dto);
+            return _membersLogic.Update(id, dto);
+        }
+
+        [HttpDelete("{id:int}")]
+        public IActionResult Delete(int id)
+        {
+            _membersLogic.Delete(id);
+            return Ok();
         }
     }
 }

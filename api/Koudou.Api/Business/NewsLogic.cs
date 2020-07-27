@@ -4,10 +4,10 @@ using System.Linq.Expressions;
 using Koudou.Api.Business.Exceptions;
 using Koudou.Data;
 using Koudou.Data.Entities;
-using Koudou.Models.Albums;
 using Koudou.Models.Base;
 using Koudou.Api.Business;
 using Microsoft.EntityFrameworkCore;
+using Koudou.Models.Newss;
 
 namespace Koudou.Api.Business
 {
@@ -33,5 +33,57 @@ namespace Koudou.Api.Business
             return response;
         }
  
+        public NewsFullDTO GetOne(int id)
+        {
+            var news = Context.News
+                                .SingleOrDefault(n => n.Id == id);
+
+            if (news == null)
+            {
+                throw new IdNotFoundRequestException(nameof(News), id);
+            }
+
+            return new NewsFullDTO().FromEntity(news);
+        }
+
+        public NewsFullDTO Create(NewsFullDTO dto)
+        {
+            var newNews = new News(dto.Title, dto.Content, User);
+            Context.Add(newNews);
+            Context.SaveChanges();
+
+            return new NewsFullDTO().FromEntity(newNews);
+        }
+
+        public NewsFullDTO Update(int id, NewsFullDTO dto)
+        {
+            var news = Context.News
+                                .SingleOrDefault(s => s.Id == id);
+            if (news == null)
+            {
+                throw new IdNotFoundRequestException(nameof(News), id);
+            }
+
+            news.Title = dto.Title;
+            news.Content = dto.Content;
+
+            Context.SaveChanges();
+
+            var updatedDTO = new NewsFullDTO().FromEntity(news);
+
+            return updatedDTO;
+        }
+
+        public void Delete(int id)
+        {
+            var news = Context.News.SingleOrDefault(s => s.Id == id);
+            if (news == null)
+            {
+                throw new IdNotFoundRequestException(nameof(News), id);
+            }
+
+            Context.SoftDeleteEntity(news);
+            Context.SaveChanges();
+        }
     }
 }
