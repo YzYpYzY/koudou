@@ -4,6 +4,11 @@
         <name>Koudou.Api</name>
     </assembly>
     <members>
+        <member name="T:Koudou.Api.Models.Auth.SwaggerTokenRequest">
+            <summary>
+            Swagger test client authentication data
+            </summary>
+        </member>
         <member name="P:Koudou.Models.Base.BaseDTO`2.ValidationErrors">
             <summary>
             Contains the list of validation errors when the DTO is invalid.

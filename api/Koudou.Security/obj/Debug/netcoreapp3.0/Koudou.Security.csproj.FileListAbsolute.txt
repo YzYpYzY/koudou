@@ -1,5 +1,0 @@
-C:\proj\koudou\api\Koudou.Security\obj\Debug\netcoreapp3.0\Koudou.Security.csprojAssemblyReference.cache
-C:\proj\koudou\api\Koudou.Security\obj\Debug\netcoreapp3.0\Koudou.Security.AssemblyInfoInputs.cache
-C:\proj\koudou\api\Koudou.Security\obj\Debug\netcoreapp3.0\Koudou.Security.AssemblyInfo.cs
-C:\proj\koudou\api\Koudou.Security\obj\Debug\netcoreapp3.0\Koudou.Security.csproj.CoreCompileInputs.cache
-C:\proj\koudou\api\Koudou.Security\obj\Debug\netcoreapp3.0\Koudou.Security.MvcApplicationPartsAssemblyInfo.cache

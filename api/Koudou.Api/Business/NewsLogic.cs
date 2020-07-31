@@ -48,7 +48,7 @@ namespace Koudou.Api.Business
 
         public NewsFullDTO Create(NewsFullDTO dto)
         {
-            var newNews = new News(dto.Title, dto.Content, User);
+            var newNews = new News(dto.Title, dto.Content, null);
             Context.Add(newNews);
             Context.SaveChanges();
 

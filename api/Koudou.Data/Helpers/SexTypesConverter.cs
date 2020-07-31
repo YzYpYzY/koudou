@@ -4,7 +4,7 @@ namespace Koudou.Data.Helpers
 {
     public static class SexTypesConverter
     {
-        public static SexTypes FromData(char sex)
+        public static SexTypes FromData(char? sex)
         {
             switch(sex){
                 case 'M': return SexTypes.Male;

@@ -37,18 +37,18 @@ namespace Koudou.Api.Business
             return response;
         }
 
-        // public FullMemberDTO GetOne(int id)
-        // {
-        //     var member = Context.Members
-        //                         .SingleOrDefault(m => m.Id == id);
+        public MemberFullDTO GetOne(int id)
+        {
+            var member = Context.Members
+                                .SingleOrDefault(m => m.Id == id);
 
-        //     if (member == null)
-        //     {
-        //         throw new IdNotFoundRequestException(nameof(Member), id);
-        //     }
+            if (member == null)
+            {
+                throw new IdNotFoundRequestException(nameof(Member), id);
+            }
 
-        //     return new FullMemberDTO().FromEntity(member);
-        // }
+            return new MemberFullDTO().FromEntity(member);
+        }
 
         // public MemberDTO CreateMember(CreateMemberDTO dto, int groupId)
         // {
@@ -105,19 +105,27 @@ namespace Koudou.Api.Business
         //     return newDTO;
         // }
 
-        // public void DeleteMember(int id)
-        // {
-        //     var member = Context.Members
-        //                         .Include(m => m.Group)
-        //                         .SingleOrDefault(m => m.Id == id);
+        public void DeleteMember(int id)
+        {
+            var member = Context.Members
+                                .SingleOrDefault(m => m.Id == id);
 
-        //     if (member == null)
-        //     {
-        //         throw new IdNotFoundRequestException(nameof(Member), id);
-        //     }
+            if (member == null)
+            {
+                throw new IdNotFoundRequestException(nameof(Member), id);
+            }
 
-        //     Context.SoftDeleteEntity(member);
-        //     Context.SaveChanges();
-        // }
+            Context.SoftDeleteEntity(member);
+            // if(member.Person != null){
+            //     if(member.Person.Address != null){
+            //         Context.SoftDeleteEntity(member.Person.Address);
+            //     }
+            //     if(member.Person.Phones.Count != 0){
+            //         Context.SoftDeleteEntity(member.Person.Address);
+            //     }
+            //     Context.SoftDeleteEntity(member.Person);
+            // }
+            Context.SaveChanges();
+        }
     }
 }
