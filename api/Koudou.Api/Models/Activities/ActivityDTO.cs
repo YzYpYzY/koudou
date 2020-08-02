@@ -15,6 +15,8 @@ namespace Koudou.Models.Activities
         public override ActivityDTO FromEntity(Activity entity)
         {
             Id = entity.Id;
+            RowVersion = entity.xmin;
+
             Name = entity.Name;
             Date = DateHelper.DateTimeToString(entity.Date);
             Section = entity.Section?.Name;

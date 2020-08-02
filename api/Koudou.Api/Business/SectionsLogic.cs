@@ -97,6 +97,7 @@ namespace Koudou.Api.Business
                 }
             }
 
+            Context.Entry(section).OriginalValues["xmin"] = dto.RowVersion;
             section.Name = dto.Name;
             section.ParentSectionId = dto.ParentSectionId;
             section.Cry = dto.Cry;

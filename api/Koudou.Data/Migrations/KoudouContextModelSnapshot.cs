@@ -52,6 +52,11 @@ namespace Koudou.Data.Migrations
                     b.Property<int?>("SectionId")
                         .HasColumnType("integer");
 
+                    b.Property<uint>("xmin")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid");
+
                     b.HasKey("Id");
 
                     b.HasIndex("SectionId");
@@ -98,6 +103,11 @@ namespace Koudou.Data.Migrations
                         .IsRequired()
                         .HasColumnType("character varying(50)")
                         .HasMaxLength(50);
+
+                    b.Property<uint>("xmin")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid");
 
                     b.HasKey("Id");
 
@@ -149,6 +159,11 @@ namespace Koudou.Data.Migrations
                     b.Property<int?>("UserId")
                         .HasColumnType("integer");
 
+                    b.Property<uint>("xmin")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid");
+
                     b.HasKey("Id");
 
                     b.HasIndex("SectionId");
@@ -185,6 +200,11 @@ namespace Koudou.Data.Migrations
                     b.Property<int>("PhotoId")
                         .HasColumnType("integer");
 
+                    b.Property<uint>("xmin")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AlbumId");
@@ -217,6 +237,11 @@ namespace Koudou.Data.Migrations
                         .HasColumnType("character varying(50)")
                         .HasMaxLength(50);
 
+                    b.Property<uint>("xmin")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid");
+
                     b.HasKey("Id");
 
                     b.ToTable("Claims");
@@ -243,6 +268,11 @@ namespace Koudou.Data.Migrations
 
                     b.Property<int>("RoleId")
                         .HasColumnType("integer");
+
+                    b.Property<uint>("xmin")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid");
 
                     b.HasKey("Id");
 
@@ -280,6 +310,11 @@ namespace Koudou.Data.Migrations
                     b.Property<int?>("UserId")
                         .HasColumnType("integer");
 
+                    b.Property<uint>("xmin")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid");
+
                     b.HasKey("Id");
 
                     b.HasIndex("PhotoId");
@@ -312,6 +347,11 @@ namespace Koudou.Data.Migrations
 
                     b.Property<int>("OldId")
                         .HasColumnType("integer");
+
+                    b.Property<uint>("xmin")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid");
 
                     b.HasKey("Id");
 
@@ -356,6 +396,11 @@ namespace Koudou.Data.Migrations
                         .HasColumnType("character varying(100)")
                         .HasMaxLength(100);
 
+                    b.Property<uint>("xmin")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid");
+
                     b.HasKey("Id");
 
                     b.HasIndex("PersonId");
@@ -394,6 +439,11 @@ namespace Koudou.Data.Migrations
                     b.Property<int?>("UserId")
                         .HasColumnType("integer");
 
+                    b.Property<uint>("xmin")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid");
+
                     b.HasKey("Id");
 
                     b.HasIndex("UserId");
@@ -427,6 +477,11 @@ namespace Koudou.Data.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("character varying(50)")
                         .HasMaxLength(50);
+
+                    b.Property<uint>("xmin")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid");
 
                     b.HasKey("Id");
 
@@ -465,6 +520,11 @@ namespace Koudou.Data.Migrations
                     b.Property<int>("Type")
                         .HasColumnType("integer");
 
+                    b.Property<uint>("xmin")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid");
+
                     b.HasKey("Id");
 
                     b.ToTable("Payments");
@@ -499,6 +559,11 @@ namespace Koudou.Data.Migrations
 
                     b.Property<int?>("PersonId")
                         .HasColumnType("integer");
+
+                    b.Property<uint>("xmin")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid");
 
                     b.HasKey("Id");
 
@@ -570,6 +635,11 @@ namespace Koudou.Data.Migrations
                         .HasColumnType("character(1)")
                         .HasDefaultValue('U');
 
+                    b.Property<uint>("xmin")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AddressId");
@@ -607,6 +677,11 @@ namespace Koudou.Data.Migrations
                     b.Property<int>("RoleId")
                         .HasColumnType("integer");
 
+                    b.Property<uint>("xmin")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid");
+
                     b.HasKey("Id");
 
                     b.HasIndex("PersonId");
@@ -640,6 +715,9 @@ namespace Koudou.Data.Migrations
 
                     b.Property<int>("Type")
                         .HasColumnType("integer");
+
+                    b.Property<long>("xmin")
+                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
@@ -679,6 +757,11 @@ namespace Koudou.Data.Migrations
                     b.Property<int?>("UserId")
                         .HasColumnType("integer");
 
+                    b.Property<uint>("xmin")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid");
+
                     b.HasKey("Id");
 
                     b.HasIndex("UserId");
@@ -706,6 +789,11 @@ namespace Koudou.Data.Migrations
 
                     b.Property<int>("OldId")
                         .HasColumnType("integer");
+
+                    b.Property<uint>("xmin")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid");
 
                     b.HasKey("Id");
 
@@ -757,6 +845,11 @@ namespace Koudou.Data.Migrations
                         .HasColumnType("character(1)")
                         .HasDefaultValue('U');
 
+                    b.Property<uint>("xmin")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ParentSectionId");
@@ -790,6 +883,11 @@ namespace Koudou.Data.Migrations
 
                     b.Property<int>("SectionId")
                         .HasColumnType("integer");
+
+                    b.Property<uint>("xmin")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid");
 
                     b.HasKey("Id");
 
@@ -833,6 +931,9 @@ namespace Koudou.Data.Migrations
                         .HasColumnType("character varying(100)")
                         .HasMaxLength(100);
 
+                    b.Property<int?>("PersonId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Pseudo")
                         .IsRequired()
                         .HasColumnType("character varying(50)")
@@ -842,12 +943,14 @@ namespace Koudou.Data.Migrations
                         .HasColumnType("character varying(100)")
                         .HasMaxLength(100);
 
-                    b.Property<int?>("personId")
-                        .HasColumnType("integer");
+                    b.Property<uint>("xmin")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("personId");
+                    b.HasIndex("PersonId");
 
                     b.ToTable("Users");
                 });
@@ -1025,9 +1128,9 @@ namespace Koudou.Data.Migrations
 
             modelBuilder.Entity("Koudou.Data.Entities.User", b =>
                 {
-                    b.HasOne("Koudou.Data.Entities.Person", "person")
+                    b.HasOne("Koudou.Data.Entities.Person", "Person")
                         .WithMany()
-                        .HasForeignKey("personId");
+                        .HasForeignKey("PersonId");
                 });
 #pragma warning restore 612, 618
         }

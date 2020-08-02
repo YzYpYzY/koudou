@@ -68,6 +68,7 @@ namespace Koudou.Api.Business
                 throw new IdNotFoundRequestException(nameof(Payment), id);
             }
 
+            Context.Entry(payment).OriginalValues["xmin"] = dto.RowVersion;
             payment.Name = dto.Name;
             payment.Type = dto.Type;
             payment.Amount = dto.Amount;

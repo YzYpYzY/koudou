@@ -16,6 +16,8 @@ namespace Koudou.Models.Albums
         public override AlbumDTO FromEntity(Album entity)
         {
             Id = entity.Id;
+            RowVersion = entity.xmin;
+
             Title = entity.Title;
             Date = DateHelper.DateTimeToString(entity.ActivityDate);
             PhotoCount = entity.AlbumPhotos.Count();

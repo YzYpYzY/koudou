@@ -5,11 +5,13 @@ using System.Linq.Expressions;
 using System.Net.Mail;
 using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
+using Koudou.Helpers;
 
 namespace Koudou.Models.Base
 {
     public abstract class BaseDTO<TEntity, TDTO> where TDTO : class
     {
+        public uint RowVersion { get; set; }
         /// <summary>
         /// Contains the list of validation errors when the DTO is invalid.
         /// </summary>
@@ -74,6 +76,22 @@ namespace Koudou.Models.Base
             if(string.IsNullOrWhiteSpace(value) || value.Any(char.IsWhiteSpace))
             {
                 ValidationErrors.Add($"Property [{propertyName}] must not contain white spaces");
+            }
+        }
+
+        protected void ValidateNotNull(string propertyName, object value)
+        {
+            if(value == null)
+            {
+                ValidationErrors.Add($"Property [{propertyName}] must not be null");
+            }
+        }
+
+        protected void ValidateDateBefore(string propertyName, string value, DateTime upperBound)
+        {
+            if(DateHelper.StringToDateTime(value) < upperBound)
+            {
+                ValidationErrors.Add($"Date [{propertyName}] must not be earlier than {upperBound.ToShortDateString()}");
             }
         }
     }

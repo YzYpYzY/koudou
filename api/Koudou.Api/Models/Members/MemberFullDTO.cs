@@ -1,11 +1,13 @@
+using System;
 using System.Linq;
 using Koudou.Data.Entities;
 using Koudou.Data.Helpers;
 using Koudou.Helpers;
+using Koudou.Models.Base;
 
 namespace Koudou.Models.Members
 {
-    public class MemberFullDTO
+    public class MemberFullDTO : BaseDTO<Member, MemberFullDTO>
     {
         public int Id { get; set; }
 
@@ -29,9 +31,11 @@ namespace Koudou.Models.Members
         public string PostalCode { get; set; }  
         public string City { get; set; }
 
-        public MemberFullDTO FromEntity(Member entity)
+        public override MemberFullDTO FromEntity(Member entity)
         {
             Id = entity.Id;
+            RowVersion = entity.xmin;
+
             Totem = entity.Totem;
             TotemJungle = entity.TotemJungle;
             Quali = entity.Quali;
@@ -59,6 +63,15 @@ namespace Koudou.Models.Members
             City = entity.Person?.Address?.City;
 
             return this;
+        }
+
+        public override void Validate(){
+            ValidateStringNotEmpty(nameof(LastName), this.LastName);
+            ValidateStringNotEmpty(nameof(FirstName), this.FirstName);
+            ValidateStringIsEmail(nameof(Email), this.Email);
+            if(Birthdate != null){
+                ValidateDateBefore(nameof(Birthdate), this.Birthdate, DateTime.Now);
+            }
         }
     }
 }

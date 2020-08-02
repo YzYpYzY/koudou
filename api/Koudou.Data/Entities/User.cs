@@ -11,8 +11,8 @@ namespace Koudou.Data.Entities
         public string UtilityToken { get; set; }
         public bool IsAcceptedCondition { get; set; }
 
-        public int? personId { get; set; }
-        public Person person { get; set; }
+        public int? PersonId { get; set; }
+        public Person Person { get; set; }
 
         public ICollection<Album> Albums { get; set; }
 

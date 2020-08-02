@@ -18,6 +18,8 @@ namespace Koudou.Models.Sections
         public override SectionFullDTO FromEntity(Section entity)
         {
             Id = entity.Id;
+            RowVersion = entity.xmin;
+
             Name = entity.Name;
             ParentSectionId = entity.ParentSectionId;
             Cry = entity.Cry;
@@ -26,6 +28,9 @@ namespace Koudou.Models.Sections
             return this;
         }
 
+        public override void Validate(){
+            ValidateStringNotEmpty(nameof(Name), this.Name);
+        }
     }
 
 }

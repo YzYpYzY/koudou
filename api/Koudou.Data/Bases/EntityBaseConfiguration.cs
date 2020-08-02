@@ -7,6 +7,7 @@ namespace Koudou.Data.Entities.Bases
     {
         public virtual void Configure(EntityTypeBuilder<TEntity> builder)
         {
+            builder.UseXminAsConcurrencyToken();
             if (typeof(ISoftDeletableEntity).IsAssignableFrom(typeof(TEntity)))
             {
                 builder.Property<bool>(KoudouContext.IsSoftDeletedPropertyName)

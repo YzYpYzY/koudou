@@ -14,6 +14,8 @@ namespace Koudou.Models.Sections
         public override SectionDTO FromEntity(Section entity)
         {
             Id = entity.Id;
+            RowVersion = entity.xmin;
+
             Name = entity.Name;
             MemberCount = entity.SectionMembers.Count();
             ParentSection = entity.ParentSection?.Name;

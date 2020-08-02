@@ -15,6 +15,8 @@ namespace Koudou.Models.Newss
         public override NewsDTO FromEntity(News entity)
         {
             Id = entity.Id;
+            RowVersion = entity.xmin;
+
             Title = entity.Title;
             Date = DateHelper.DateTimeToString(entity.ModificationDate);
             Creator = entity.User.Pseudo;

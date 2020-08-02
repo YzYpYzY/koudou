@@ -169,12 +169,14 @@ namespace Koudou.Api
             error.Run(async context =>
                     {
                         var exceptionHandlerPathFeature = context.Features.Get<IExceptionHandlerPathFeature>();
-                        var exception = exceptionHandlerPathFeature?.Error as RequestException;
-
-                        if (exception != null)
+                        if (exceptionHandlerPathFeature?.Error is DbUpdateConcurrencyException)
                         {
+                            context.Response.ContentType = "application/json";
+                            context.Response.StatusCode = 412;
+                            await context.Response.WriteAsync("Update failed because incorrect row version.");
+                        } else if(exceptionHandlerPathFeature?.Error is RequestException){
                             // TODO: Log RequestException
-
+                            var exception = exceptionHandlerPathFeature?.Error as RequestException;
                             var json = exception.GetJson();
                             context.Response.ContentType = "application/json";
                             context.Response.StatusCode = exception.StatusCode;

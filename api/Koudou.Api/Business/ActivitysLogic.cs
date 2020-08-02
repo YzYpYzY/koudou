@@ -76,6 +76,7 @@ namespace Koudou.Api.Business
                 throw new IdNotFoundRequestException(nameof(Section), id);
             }
 
+            Context.Entry(activity).OriginalValues["xmin"] = dto.RowVersion;
             activity.Name = dto.Name;
             activity.Date = DateHelper.StringToDateTime(dto.Date);
             activity.Description = dto.Description;

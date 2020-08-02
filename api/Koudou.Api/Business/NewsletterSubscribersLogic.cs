@@ -63,6 +63,7 @@ namespace Koudou.Api.Business
                 throw new IdNotFoundRequestException(nameof(NewsletterSubscriber), id);
             }
 
+            Context.Entry(newsletterSubscriber).OriginalValues["xmin"] = dto.RowVersion;
             newsletterSubscriber.Name = dto.Name;
             newsletterSubscriber.Email = dto.Email;
 

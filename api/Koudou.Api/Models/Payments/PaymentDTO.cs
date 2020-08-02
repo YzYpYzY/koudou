@@ -18,6 +18,8 @@ namespace Koudou.Models.Payments
         public override PaymentDTO FromEntity(Payment entity)
         {
             Id = entity.Id;
+            RowVersion = entity.xmin;
+
             Name = entity.Name;
             Type = entity.Type;
             Amount = entity.Amount;

@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Koudou.Data.Entities.Bases
 {
@@ -8,6 +9,8 @@ namespace Koudou.Data.Entities.Bases
         public DateTime CreationDate { get; set; }
         public DateTime ModificationDate { get; set; }
 
+        // Row version postgresql
+        public uint xmin { get; set; }
         public EntityBase() {
         }
 

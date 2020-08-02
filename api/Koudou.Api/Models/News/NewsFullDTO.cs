@@ -16,11 +16,18 @@ namespace Koudou.Models.Newss
         public override NewsFullDTO FromEntity(News entity)
         {
             Id = entity.Id;
+            RowVersion = entity.xmin;
+
             Title = entity.Title;
             Date = DateHelper.DateTimeToString(entity.ModificationDate);
             Creator = entity.User.Pseudo;
             Content = entity.Content;
             return this;
+        }
+
+        public override void Validate(){
+            ValidateStringNotEmpty(nameof(Title), this.Title);
+            ValidateStringNotEmpty(nameof(Content), this.Content);
         }
     }
 

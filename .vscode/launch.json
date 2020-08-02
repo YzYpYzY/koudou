@@ -10,7 +10,7 @@
       "request": "launch",
       "preLaunchTask": "build",
       // If you have changed target frameworks, make sure to update the program path.
-      "program": "${workspaceFolder}/api/Koudou.Api/bin/Debug/netcoreapp3.0/Koudou.Api.dll",
+      "program": "${workspaceFolder}/api/Koudou.Api/bin/Debug/netcoreapp3.1/Koudou.Api.dll",
       "args": [],
       "cwd": "${workspaceFolder}/api/Koudou.Api",
       "stopAtEntry": false,
@@ -23,8 +23,7 @@
       "env": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "sourceFileMap": {
-      }
+      "sourceFileMap": {}
     },
     {
       "name": "App",

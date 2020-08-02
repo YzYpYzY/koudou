@@ -16,6 +16,7 @@ namespace Koudou.Data.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     CreationDate = table.Column<DateTime>(nullable: false),
                     ModificationDate = table.Column<DateTime>(nullable: false),
+                    xmin = table.Column<uint>(type: "xid", nullable: false),
                     Street = table.Column<string>(maxLength: 50, nullable: false),
                     Number = table.Column<string>(maxLength: 20, nullable: false),
                     Box = table.Column<string>(maxLength: 20, nullable: true),
@@ -36,6 +37,7 @@ namespace Koudou.Data.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     CreationDate = table.Column<DateTime>(nullable: false),
                     ModificationDate = table.Column<DateTime>(nullable: false),
+                    xmin = table.Column<uint>(type: "xid", nullable: false),
                     Name = table.Column<string>(maxLength: 50, nullable: false),
                     Key = table.Column<string>(maxLength: 50, nullable: false)
                 },
@@ -52,6 +54,7 @@ namespace Koudou.Data.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     CreationDate = table.Column<DateTime>(nullable: false),
                     ModificationDate = table.Column<DateTime>(nullable: false),
+                    xmin = table.Column<uint>(type: "xid", nullable: false),
                     Email = table.Column<string>(maxLength: 50, nullable: false),
                     Name = table.Column<string>(maxLength: 50, nullable: true),
                     IsSoftDeleted = table.Column<bool>(nullable: false, defaultValue: false)
@@ -69,6 +72,7 @@ namespace Koudou.Data.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     CreationDate = table.Column<DateTime>(nullable: false),
                     ModificationDate = table.Column<DateTime>(nullable: false),
+                    xmin = table.Column<uint>(type: "xid", nullable: false),
                     Name = table.Column<string>(maxLength: 50, nullable: false),
                     Type = table.Column<int>(nullable: false),
                     Amount = table.Column<double>(nullable: false),
@@ -88,6 +92,7 @@ namespace Koudou.Data.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     CreationDate = table.Column<DateTime>(nullable: false),
                     ModificationDate = table.Column<DateTime>(nullable: false),
+                    xmin = table.Column<uint>(type: "xid", nullable: false),
                     OldId = table.Column<int>(nullable: false),
                     Name = table.Column<string>(maxLength: 50, nullable: false)
                 },
@@ -104,6 +109,7 @@ namespace Koudou.Data.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     CreationDate = table.Column<DateTime>(nullable: false),
                     ModificationDate = table.Column<DateTime>(nullable: false),
+                    xmin = table.Column<uint>(type: "xid", nullable: false),
                     OldId = table.Column<int>(nullable: false),
                     Name = table.Column<string>(maxLength: 50, nullable: false),
                     Cry = table.Column<string>(maxLength: 100, nullable: true),
@@ -132,6 +138,7 @@ namespace Koudou.Data.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     CreationDate = table.Column<DateTime>(nullable: false),
                     ModificationDate = table.Column<DateTime>(nullable: false),
+                    xmin = table.Column<uint>(type: "xid", nullable: false),
                     OldId = table.Column<int>(nullable: false),
                     Name = table.Column<string>(maxLength: 50, nullable: false),
                     AdressId = table.Column<int>(nullable: true)
@@ -155,6 +162,7 @@ namespace Koudou.Data.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     CreationDate = table.Column<DateTime>(nullable: false),
                     ModificationDate = table.Column<DateTime>(nullable: false),
+                    xmin = table.Column<uint>(type: "xid", nullable: false),
                     ClaimId = table.Column<int>(nullable: false),
                     RoleId = table.Column<int>(nullable: false),
                     Role = table.Column<int>(nullable: false)
@@ -178,6 +186,7 @@ namespace Koudou.Data.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     CreationDate = table.Column<DateTime>(nullable: false),
                     ModificationDate = table.Column<DateTime>(nullable: false),
+                    xmin = table.Column<uint>(type: "xid", nullable: false),
                     Name = table.Column<string>(maxLength: 50, nullable: false),
                     Date = table.Column<DateTime>(nullable: false),
                     Description = table.Column<string>(maxLength: 255, nullable: true),
@@ -203,6 +212,7 @@ namespace Koudou.Data.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     CreationDate = table.Column<DateTime>(nullable: false),
                     ModificationDate = table.Column<DateTime>(nullable: false),
+                    xmin = table.Column<uint>(type: "xid", nullable: false),
                     OldId = table.Column<int>(nullable: false),
                     LastName = table.Column<string>(maxLength: 50, nullable: false),
                     FirstName = table.Column<string>(maxLength: 50, nullable: false),
@@ -247,6 +257,7 @@ namespace Koudou.Data.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     CreationDate = table.Column<DateTime>(nullable: false),
                     ModificationDate = table.Column<DateTime>(nullable: false),
+                    xmin = table.Column<uint>(type: "xid", nullable: false),
                     OldId = table.Column<int>(nullable: false),
                     Totem = table.Column<string>(maxLength: 100, nullable: true),
                     TotemJungle = table.Column<string>(maxLength: 100, nullable: true),
@@ -273,6 +284,7 @@ namespace Koudou.Data.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     CreationDate = table.Column<DateTime>(nullable: false),
                     ModificationDate = table.Column<DateTime>(nullable: false),
+                    xmin = table.Column<uint>(type: "xid", nullable: false),
                     PersonId = table.Column<int>(nullable: false),
                     RoleId = table.Column<int>(nullable: false),
                     IsSoftDeleted = table.Column<bool>(nullable: false, defaultValue: false)
@@ -302,6 +314,7 @@ namespace Koudou.Data.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     CreationDate = table.Column<DateTime>(nullable: false),
                     ModificationDate = table.Column<DateTime>(nullable: false),
+                    xmin = table.Column<long>(nullable: false),
                     Numer = table.Column<string>(nullable: true),
                     Type = table.Column<int>(nullable: false),
                     PersonId = table.Column<int>(nullable: true),
@@ -332,20 +345,21 @@ namespace Koudou.Data.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     CreationDate = table.Column<DateTime>(nullable: false),
                     ModificationDate = table.Column<DateTime>(nullable: false),
+                    xmin = table.Column<uint>(type: "xid", nullable: false),
                     OldId = table.Column<int>(nullable: false),
                     Pseudo = table.Column<string>(maxLength: 50, nullable: false),
                     Password = table.Column<string>(maxLength: 100, nullable: false),
                     UtilityToken = table.Column<string>(maxLength: 100, nullable: true),
                     IsAcceptedCondition = table.Column<bool>(nullable: false, defaultValue: false),
-                    personId = table.Column<int>(nullable: true),
+                    PersonId = table.Column<int>(nullable: true),
                     IsSoftDeleted = table.Column<bool>(nullable: false, defaultValue: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Users_Persons_personId",
-                        column: x => x.personId,
+                        name: "FK_Users_Persons_PersonId",
+                        column: x => x.PersonId,
                         principalTable: "Persons",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -359,6 +373,7 @@ namespace Koudou.Data.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     CreationDate = table.Column<DateTime>(nullable: false),
                     ModificationDate = table.Column<DateTime>(nullable: false),
+                    xmin = table.Column<uint>(type: "xid", nullable: false),
                     Done = table.Column<bool>(nullable: false),
                     MemberId = table.Column<int>(nullable: true),
                     PaymentId = table.Column<int>(nullable: true),
@@ -396,6 +411,7 @@ namespace Koudou.Data.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     CreationDate = table.Column<DateTime>(nullable: false),
                     ModificationDate = table.Column<DateTime>(nullable: false),
+                    xmin = table.Column<uint>(type: "xid", nullable: false),
                     RoleId = table.Column<int>(nullable: true),
                     SectionId = table.Column<int>(nullable: false),
                     MemberId = table.Column<int>(nullable: false),
@@ -432,6 +448,7 @@ namespace Koudou.Data.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     CreationDate = table.Column<DateTime>(nullable: false),
                     ModificationDate = table.Column<DateTime>(nullable: false),
+                    xmin = table.Column<uint>(type: "xid", nullable: false),
                     OldId = table.Column<int>(nullable: false),
                     Title = table.Column<string>(maxLength: 100, nullable: false),
                     Description = table.Column<string>(maxLength: 250, nullable: false),
@@ -466,6 +483,7 @@ namespace Koudou.Data.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     CreationDate = table.Column<DateTime>(nullable: false),
                     ModificationDate = table.Column<DateTime>(nullable: false),
+                    xmin = table.Column<uint>(type: "xid", nullable: false),
                     Title = table.Column<string>(maxLength: 50, nullable: false),
                     Content = table.Column<string>(maxLength: 500, nullable: false),
                     UserId = table.Column<int>(nullable: true),
@@ -490,6 +508,7 @@ namespace Koudou.Data.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     CreationDate = table.Column<DateTime>(nullable: false),
                     ModificationDate = table.Column<DateTime>(nullable: false),
+                    xmin = table.Column<uint>(type: "xid", nullable: false),
                     OldId = table.Column<int>(nullable: false),
                     FileName = table.Column<string>(maxLength: 100, nullable: false),
                     UserId = table.Column<int>(nullable: true),
@@ -514,6 +533,7 @@ namespace Koudou.Data.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     CreationDate = table.Column<DateTime>(nullable: false),
                     ModificationDate = table.Column<DateTime>(nullable: false),
+                    xmin = table.Column<uint>(type: "xid", nullable: false),
                     Order = table.Column<int>(nullable: false),
                     AlbumId = table.Column<int>(nullable: false),
                     PhotoId = table.Column<int>(nullable: false),
@@ -544,6 +564,7 @@ namespace Koudou.Data.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     CreationDate = table.Column<DateTime>(nullable: false),
                     ModificationDate = table.Column<DateTime>(nullable: false),
+                    xmin = table.Column<uint>(type: "xid", nullable: false),
                     Content = table.Column<string>(maxLength: 500, nullable: false),
                     PhotoId = table.Column<int>(nullable: true),
                     UserId = table.Column<int>(nullable: true),
@@ -702,9 +723,9 @@ namespace Koudou.Data.Migrations
                 column: "ParentSectionId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Users_personId",
+                name: "IX_Users_PersonId",
                 table: "Users",
-                column: "personId");
+                column: "PersonId");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Persons_Photos_PhotoId",

@@ -15,6 +15,8 @@ namespace Koudou.Models.Members
         public override MemberDTO FromEntity(Member entity)
         {
             Id = entity.Id;
+            RowVersion = entity.xmin;
+
             LastName = entity.Person.LastName;
             FirstName = entity.Person.FirstName;
             Section = entity.SectionMembers.FirstOrDefault()?.Section.Name;

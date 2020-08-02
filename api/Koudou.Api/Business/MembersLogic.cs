@@ -87,7 +87,8 @@ namespace Koudou.Api.Business
         //     {
         //         throw new IdNotFoundRequestException(nameof(Member), id);
         //     }
-
+        // 
+        //     Context.Entry(member).OriginalValues["xmin"] = dto.RowVersion;
         //     member.CompanyName = dto.CompanyName;
         //     member.Prefix = dto.Prefix;
         //     member.Suffix = dto.Suffix;

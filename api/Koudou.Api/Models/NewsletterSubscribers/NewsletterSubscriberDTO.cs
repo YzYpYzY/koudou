@@ -13,9 +13,16 @@ namespace Koudou.Models.NewsletterSubscribers
         public override NewsletterSubscriberDTO FromEntity(NewsletterSubscriber entity)
         {
             Id = entity.Id;
+            RowVersion = entity.xmin;
+
             Email = entity.Email;
             Name = entity.Name;
             return this;
+        }
+
+        public override void Validate(){
+            ValidateStringIsEmail(nameof(Email), this.Email);
+            ValidateStringNotEmpty(nameof(Name), this.Name);
         }
     }
 

@@ -4,21 +4,23 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Web;
+using Koudou.Data;
 using Koudou.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using NLog;
 
-namespace Koudou.Data.Imports
+namespace Koudou.Seed
 {
     public class ImportHelper {
 
         private KoudouContext Context { get; set; }
 
-        private ILogger<ImportHelper> logger;
+        private Serilog.ILogger logger;
 
-        public ImportHelper(KoudouContext context, ILogger<ImportHelper> logger){
+        public ImportHelper(KoudouContext context, Serilog.ILogger logger){
             this.Context = context;
             this.logger = logger;
         }
@@ -26,42 +28,42 @@ namespace Koudou.Data.Imports
         public void Seed(){
             try{
                 this.ClearDB();
-                logger.LogInformation("Db cleared.");
+                logger.Information("Db cleared.");
                 this.ImportAddresses();
-                logger.LogInformation("Addresses inported.");
+                logger.Information("Addresses imported.");
                 this.ImportUsers();
-                logger.LogInformation("Users inported.");
+                logger.Information("Users imported.");
                 this.ImportNews();
-                logger.LogInformation("News inported.");
+                logger.Information("News imported.");
                 this.ImportNewsletterSubscribers();
-                logger.LogInformation("NewsletterSubscribers inported.");
+                logger.Information("NewsletterSubscribers imported.");
                 this.ImportFamilies();
-                logger.LogInformation("Families inported.");
+                logger.Information("Families imported.");
                 this.ImportRoles();
-                logger.LogInformation("Roles inported.");
+                logger.Information("Roles imported.");
                 this.ImportMembers();
-                logger.LogInformation("Members inported.");
+                logger.Information("Members imported.");
                 this.ImportPayments();
-                logger.LogInformation("Payments inported.");
+                logger.Information("Payments imported.");
                 this.ImportAlbums();
-                logger.LogInformation("Albums inported.");
+                logger.Information("Albums imported.");
                 this.ImportPhotos();
-                logger.LogInformation("Photos inported.");
+                logger.Information("Photos imported.");
                 this.ImportComments();
-                logger.LogInformation("Comments inported.");
+                logger.Information("Comments imported.");
                 this.ImportSections();
-                logger.LogInformation("Sections inported.");
+                logger.Information("Sections imported.");
                 this.ImportSectionsMembers();
-                logger.LogInformation("SectionsMembers inported.");
+                logger.Information("SectionsMembers imported.");
             }
             catch (Exception e){
-                logger.LogError(e,"An error throw during seeding.");
+                logger.Error(e,"An error throw during seeding.");
             }
 
         }
 
         public int ImportAddresses(){
-            JObject [] adresses = JsonConvert.DeserializeObject<JObject[]>(File.ReadAllText(@"../Koudou.Data/Imports/swp_mb_adresses.json"));
+            JObject [] adresses = JsonConvert.DeserializeObject<JObject[]>(File.ReadAllText(@"api/Koudou.Seed/Data/swp_mb_adresses.json"));
             foreach(var adress in adresses){
                 var newAdress = new Adress(
                     HttpUtility.HtmlDecode((string)adress["rue"]), 
@@ -76,7 +78,7 @@ namespace Koudou.Data.Imports
             return Context.SaveChanges();
         }
         public void ImportAlbums(){
-            JObject [] galeries = JsonConvert.DeserializeObject<JObject[]>(File.ReadAllText(@"../Koudou.Data/Imports/swp_galerie.json"));
+            JObject [] galeries = JsonConvert.DeserializeObject<JObject[]>(File.ReadAllText(@"api/Koudou.Seed/Data/swp_galerie.json"));
 
             foreach(var galerie in galeries){
                 DateTime dateParsed;
@@ -98,7 +100,7 @@ namespace Koudou.Data.Imports
             Context.SaveChanges();
         }
         public int ImportNews(){
-            JObject [] news = JsonConvert.DeserializeObject<JObject[]>(File.ReadAllText(@"../Koudou.Data/Imports/swp_news.json"));
+            JObject [] news = JsonConvert.DeserializeObject<JObject[]>(File.ReadAllText(@"api/Koudou.Seed/Data/swp_news.json"));
             foreach(var newsItem in news){
                 var user = Context.Users.FirstOrDefault(u => u.OldId == (int)newsItem["auteur_news"]);
                 var newNews = new News(
@@ -118,7 +120,7 @@ namespace Koudou.Data.Imports
             return Context.SaveChanges(true);
         }
         public int ImportNewsletterSubscribers(){
-            JObject [] subscribers = JsonConvert.DeserializeObject<JObject[]>(File.ReadAllText(@"../Koudou.Data/Imports/swp_site_mailing_liste.json"));
+            JObject [] subscribers = JsonConvert.DeserializeObject<JObject[]>(File.ReadAllText(@"api/Koudou.Seed/Data/swp_site_mailing_liste.json"));
             foreach(var subscriber in subscribers){
                 var newSubscriber = new NewsletterSubscriber(
                     HttpUtility.HtmlDecode((string)subscriber["nom"]),
@@ -135,7 +137,7 @@ namespace Koudou.Data.Imports
             return Context.SaveChanges(true);
         }
         public int ImportPhotos(){
-            JObject [] photos = JsonConvert.DeserializeObject<JObject[]>(File.ReadAllText(@"../Koudou.Data/Imports/swp_albums.json"));
+            JObject [] photos = JsonConvert.DeserializeObject<JObject[]>(File.ReadAllText(@"api/Koudou.Seed/Data/swp_albums.json"));
             foreach(var photo in photos){
                 var newPhoto = new Photo(
                     HttpUtility.HtmlDecode((string)photo["nomfichier"]), 
@@ -159,7 +161,7 @@ namespace Koudou.Data.Imports
             return Context.SaveChanges();
         }
         public int ImportComments(){
-            JObject [] comments = JsonConvert.DeserializeObject<JObject[]>(File.ReadAllText(@"../Koudou.Data/Imports/swp_commentaires.json"));
+            JObject [] comments = JsonConvert.DeserializeObject<JObject[]>(File.ReadAllText(@"api/Koudou.Seed/Data/swp_commentaires.json"));
             foreach(var comment in comments){
                 var user = Context.Users.FirstOrDefault(u => u.OldId == (int)comment["auteur"]);
                 var albumPhoto = Context.AlbumPhotos.FirstOrDefault(a => a.Album.OldId == (int)comment["album"] && a.Order == (int)comment["photo"]);
@@ -181,7 +183,7 @@ namespace Koudou.Data.Imports
             return Context.SaveChanges(true);
         }
         public int ImportFamilies(){
-            JObject [] addresses = JsonConvert.DeserializeObject<JObject[]>(File.ReadAllText(@"../Koudou.Data/Imports/swp_mb_adresses.json"));
+            JObject [] addresses = JsonConvert.DeserializeObject<JObject[]>(File.ReadAllText(@"api/Koudou.Seed/Data/swp_mb_adresses.json"));
             foreach(var adress in addresses){
                 var adressEntity = Context.Adresses.FirstOrDefault(a => a.OldId == (int)adress["numfamille"]);
                 var newFamily = new Family(
@@ -211,7 +213,7 @@ namespace Koudou.Data.Imports
             return Context.SaveChanges(true);
         }
         public int ImportPayments(){
-            JObject [] members = JsonConvert.DeserializeObject<JObject[]>(File.ReadAllText(@"../Koudou.Data/Imports/swp_mb_membres.json"));
+            JObject [] members = JsonConvert.DeserializeObject<JObject[]>(File.ReadAllText(@"api/Koudou.Seed/Data/swp_mb_membres.json"));
 
             var newPayment = new Payment(
                         "Cotisation 2020",
@@ -235,7 +237,7 @@ namespace Koudou.Data.Imports
             return Context.SaveChanges();
         }
         public int ImportMembers(){
-            JObject [] members = JsonConvert.DeserializeObject<JObject[]>(File.ReadAllText(@"../Koudou.Data/Imports/swp_mb_membres.json"));
+            JObject [] members = JsonConvert.DeserializeObject<JObject[]>(File.ReadAllText(@"api/Koudou.Seed/Data/swp_mb_membres.json"));
             foreach(var member in members){
                 var newPhoto = new Photo(
                     HttpUtility.HtmlDecode((string)member["photo"]), 
@@ -292,7 +294,7 @@ namespace Koudou.Data.Imports
             return Context.SaveChanges();
         }
         public int ImportUsers(){
-            JObject [] authors = JsonConvert.DeserializeObject<JObject[]>(File.ReadAllText(@"../Koudou.Data/Imports/swp_auteurs.json"));
+            JObject [] authors = JsonConvert.DeserializeObject<JObject[]>(File.ReadAllText(@"api/Koudou.Seed/Data/swp_auteurs.json"));
             foreach(var author in authors){
                 var pseudo = HttpUtility.HtmlDecode((string)author["pseudo"]);
                 if(!String.IsNullOrEmpty(pseudo)){
@@ -313,7 +315,7 @@ namespace Koudou.Data.Imports
             return Context.SaveChangesWithoutAudits();
         }
         public int ImportRoles(){
-            JObject [] roles = JsonConvert.DeserializeObject<JObject[]>(File.ReadAllText(@"../Koudou.Data/Imports/swp_unite_fonctions.json"));
+            JObject [] roles = JsonConvert.DeserializeObject<JObject[]>(File.ReadAllText(@"api/Koudou.Seed/Data/swp_unite_fonctions.json"));
             foreach(var role in roles){
                 var newRole = new Role(
                     HttpUtility.HtmlDecode((string)role["nomfonction"])
@@ -326,7 +328,7 @@ namespace Koudou.Data.Imports
             return Context.SaveChanges();
         }
         public int ImportSectionsMembers(){
-            JObject [] members = JsonConvert.DeserializeObject<JObject[]>(File.ReadAllText(@"../Koudou.Data/Imports/swp_mb_membres.json"));
+            JObject [] members = JsonConvert.DeserializeObject<JObject[]>(File.ReadAllText(@"api/Koudou.Seed/Data/swp_mb_membres.json"));
             foreach(var member in members){
                 var section = Context.Sections.FirstOrDefault(s => s.OldId == (int)member["section"]);
                 var memberEntity = Context.Members.FirstOrDefault(m => m.OldId == (int)member["nummb"]);
@@ -350,7 +352,7 @@ namespace Koudou.Data.Imports
             return Context.SaveChanges();
         }
         public int ImportSections(){
-            JObject [] sections = JsonConvert.DeserializeObject<JObject[]>(File.ReadAllText(@"../Koudou.Data/Imports/swp_unite_sections.json"));
+            JObject [] sections = JsonConvert.DeserializeObject<JObject[]>(File.ReadAllText(@"api/Koudou.Seed/Data/swp_unite_sections.json"));
             foreach(var section in sections){
                 var sex = (string)section["sexe"];
                 var newSection = new Section(
@@ -366,7 +368,7 @@ namespace Koudou.Data.Imports
 
             Context.SaveChanges();
 
-            JObject [] sizaines = JsonConvert.DeserializeObject<JObject[]>(File.ReadAllText(@"../Koudou.Data/Imports/swp_unite_sizaines.json"));
+            JObject [] sizaines = JsonConvert.DeserializeObject<JObject[]>(File.ReadAllText(@"api/Koudou.Seed/Data/swp_unite_sizaines.json"));
             foreach(var section in sizaines){
                 var newSection = new Section(
                     HttpUtility.HtmlDecode((string)section["nomsizaine"]),

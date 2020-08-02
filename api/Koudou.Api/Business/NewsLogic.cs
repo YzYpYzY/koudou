@@ -58,12 +58,15 @@ namespace Koudou.Api.Business
         public NewsFullDTO Update(int id, NewsFullDTO dto)
         {
             var news = Context.News
+                                .Include(n => n.User)
+                                .ThenInclude(u => u.Person)
                                 .SingleOrDefault(s => s.Id == id);
             if (news == null)
             {
                 throw new IdNotFoundRequestException(nameof(News), id);
             }
 
+            Context.Entry(news).OriginalValues["xmin"] = dto.RowVersion;
             news.Title = dto.Title;
             news.Content = dto.Content;
 

@@ -16,11 +16,19 @@ namespace Koudou.Models.Activities
         public override ActivityFullDTO FromEntity(Activity entity)
         {
             Id = entity.Id;
+            RowVersion = entity.xmin;
+            
             Name = entity.Name;
             Date = DateHelper.DateTimeToString(entity.Date);
             Description = entity.Description;
             SectionId = entity.SectionId;
             return this;
+        }
+
+        public override void Validate(){
+            ValidateStringNotEmpty(nameof(Name), this.Name);
+            ValidateNotNull(nameof(Date), this.Date);
+            ValidateStringNotEmpty(nameof(Description), this.Description);
         }
     }
 
