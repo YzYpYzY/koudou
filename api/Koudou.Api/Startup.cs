@@ -39,8 +39,8 @@ namespace Koudou.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<KoudouContext>(options =>options.UseNpgsql(
-                Configuration.GetConnectionString("DefaultConnection"),
+            services.AddDbContext<KoudouContext>(options => options.UseNpgsql(
+                Configuration.GetConnectionString("KoudouConnection"),
                 x => x.MigrationsAssembly("Koudou.Data")
             ));
             services.AddApiVersioning(x =>  
@@ -114,9 +114,9 @@ namespace Koudou.Api
                     Password = new OpenApiOAuthFlow()
                     {
                         Scopes = new Dictionary<string, string>
-                                   {
-                                        {"koudou-api", "Koudou WebAPI"}
-                                   },
+                        {
+                            {"koudou-api", "Koudou WebAPI"}
+                        },
                         TokenUrl = "/api/v1/auth/Token",
                         AuthorizationUrl = "/api/v1/auth/Token",
                     }

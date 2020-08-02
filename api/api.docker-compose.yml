@@ -2,7 +2,12 @@ version: "3.8"
 
 services:
   koudou-api:
+    container_name: koudou-api
     image: koudou-api
+    env_file:
+      - .env
+    volumes:
+      - koudou-api-logs:/app/logs
     build:
       context: .
       dockerfile: api.Dockerfile
@@ -10,7 +15,8 @@ services:
       - "${KOUDOU_API_PORT}:80"
     networks:
       - web
-
+volumes:
+  koudou-api-logs:
 networks:
   web:
     external: true

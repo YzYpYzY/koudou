@@ -1,6 +1,6 @@
 version: "3.7"
 services:
-  db:
+  koudou-db:
     container_name: koudou-db
     labels:
       - "traefik.enable=false"

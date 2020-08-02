@@ -1,6 +1,12 @@
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1 as build
 WORKDIR /app
 ENV ASPNETCORE_ENVIRONMENT Development
+
+COPY ./Koudou.Api/Koudou.Api.csproj ./Koudou.Api/
+COPY ./Koudou.Data/Koudou.Data.csproj ./Koudou.Data/
+COPY ./Koudou.Security/Koudou.Security.csproj ./Koudou.Security/
+RUN dotnet restore ./Koudou.Api/Koudou.Api.csproj
+
 COPY . ./
 RUN dotnet publish Koudou.Api -c Debug -o out
 

@@ -1,16 +1,17 @@
 using System;
+using System.Configuration;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Koudou.Data.Entities;
 using Koudou.Data.Entities.Bases;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
 
 namespace Koudou.Data {
     public class KoudouContext : DbContext {
 
         public const string IsSoftDeletedPropertyName = "IsSoftDeleted";
-
         public KoudouContext (DbContextOptions<KoudouContext> options) : base (options) { 
         }
         public DbSet<Activity> Activities { get; set; }

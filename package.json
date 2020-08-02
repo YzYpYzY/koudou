@@ -1,0 +1,20 @@
+{
+    "name": "commands",
+    "description": "Command list",
+    "authors": "yzypyzy",
+    "version": "1.0.0",
+    "main": "",
+    "scripts": {
+        "docker:create-network": "docker network create web",
+        "db:init": "docker-compose -f api/db.docker-compose.yml --env-file api/.env up -d",
+        "db:add-migration": "dotnet ef migrations add --project api/Koudou.Data --startup-project api/Koudou.Api -v",
+        "db:update": "dotnet ef --project api/Koudou.Data --startup-project api/Koudou.Api database update -v",
+        "db:stop": "docker-compose -f api/db.docker-compose.yml --env-file api/.env down",
+        "db:clean": "docker-compose -f api/db.docker-compose.yml --env-file api/.env down && docker volume prune",
+        "api:start": "docker-compose -f api/api.docker-compose.yml --env-file api/.env up",
+        "api:rebuild": "docker-compose -f api/api.docker-compose.yml --env-file api/.env build",
+        "api:stop": "docker-compose -f api/api.docker-compose.yml --env-file api/.env down",
+        "app:start": "ng serve"
+    },
+    "dependencies": {}
+}

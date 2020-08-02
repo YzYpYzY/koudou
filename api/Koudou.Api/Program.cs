@@ -21,19 +21,22 @@ namespace Koudou.Api
             using (var scope = host.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
+                var logger = services.GetRequiredService<ILogger<Program>>();
+                var loggerForImport = services.GetRequiredService<ILogger<ImportHelper>>();
                 try
                 {
                     var context = services.GetRequiredService<KoudouContext>();
                     var isDbEmpty = true; //context.Sections.FirstOrDefault() == null;
                     if (isDbEmpty)
                     {
-                        var importHelper = new ImportHelper(context);
+                        logger.LogInformation("Seeding database.");
+
+                        var importHelper = new ImportHelper(context,loggerForImport);
                         importHelper.Seed();
                     }
                 }
                 catch (Exception ex)
                 {
-                    var logger = services.GetRequiredService<ILogger<Program>>();
                     logger.LogError(ex, "An error occurred while seeding the database.");
                 }
             }
@@ -43,6 +46,11 @@ namespace Koudou.Api
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
+                .ConfigureLogging(logging =>
+                {
+                    logging.ClearProviders();
+                    logging.AddFile("logs/koudou-api-{Date}.txt");
+                })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();

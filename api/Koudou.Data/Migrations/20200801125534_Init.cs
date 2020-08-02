@@ -110,17 +110,15 @@ namespace Koudou.Data.Migrations
                     Sex = table.Column<char>(nullable: false, defaultValue: 'U'),
                     Ages = table.Column<string>(maxLength: 50, nullable: true),
                     Ordre = table.Column<int>(nullable: true),
-                    SectionId = table.Column<int>(nullable: false),
                     ParentSectionId = table.Column<int>(nullable: true),
-                    ParentSectionId1 = table.Column<int>(nullable: true),
                     IsSoftDeleted = table.Column<bool>(nullable: false, defaultValue: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Sections", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Sections_Sections_ParentSectionId1",
-                        column: x => x.ParentSectionId1,
+                        name: "FK_Sections_Sections_ParentSectionId",
+                        column: x => x.ParentSectionId,
                         principalTable: "Sections",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -173,7 +171,7 @@ namespace Koudou.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Activitys",
+                name: "Activities",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -188,9 +186,9 @@ namespace Koudou.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Activitys", x => x.Id);
+                    table.PrimaryKey("PK_Activities", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Activitys_Sections_SectionId",
+                        name: "FK_Activities_Sections_SectionId",
                         column: x => x.SectionId,
                         principalTable: "Sections",
                         principalColumn: "Id",
@@ -569,8 +567,8 @@ namespace Koudou.Data.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Activitys_SectionId",
-                table: "Activitys",
+                name: "IX_Activities_SectionId",
+                table: "Activities",
                 column: "SectionId");
 
             migrationBuilder.CreateIndex(
@@ -699,9 +697,9 @@ namespace Koudou.Data.Migrations
                 column: "SectionId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Sections_ParentSectionId1",
+                name: "IX_Sections_ParentSectionId",
                 table: "Sections",
-                column: "ParentSectionId1");
+                column: "ParentSectionId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_personId",
@@ -724,7 +722,7 @@ namespace Koudou.Data.Migrations
                 table: "Persons");
 
             migrationBuilder.DropTable(
-                name: "Activitys");
+                name: "Activities");
 
             migrationBuilder.DropTable(
                 name: "AlbumPhotos");

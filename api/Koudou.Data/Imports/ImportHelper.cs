@@ -6,6 +6,7 @@ using System.Linq;
 using System.Web;
 using Koudou.Data.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -15,29 +16,46 @@ namespace Koudou.Data.Imports
 
         private KoudouContext Context { get; set; }
 
-        public ImportHelper(KoudouContext context){
+        private ILogger<ImportHelper> logger;
+
+        public ImportHelper(KoudouContext context, ILogger<ImportHelper> logger){
             this.Context = context;
+            this.logger = logger;
         }
 
         public void Seed(){
             try{
                 this.ClearDB();
+                logger.LogInformation("Db cleared.");
                 this.ImportAddresses();
+                logger.LogInformation("Addresses inported.");
                 this.ImportUsers();
+                logger.LogInformation("Users inported.");
                 this.ImportNews();
+                logger.LogInformation("News inported.");
                 this.ImportNewsletterSubscribers();
+                logger.LogInformation("NewsletterSubscribers inported.");
                 this.ImportFamilies();
+                logger.LogInformation("Families inported.");
                 this.ImportRoles();
+                logger.LogInformation("Roles inported.");
                 this.ImportMembers();
+                logger.LogInformation("Members inported.");
                 this.ImportPayments();
+                logger.LogInformation("Payments inported.");
                 this.ImportAlbums();
+                logger.LogInformation("Albums inported.");
                 this.ImportPhotos();
+                logger.LogInformation("Photos inported.");
                 this.ImportComments();
+                logger.LogInformation("Comments inported.");
                 this.ImportSections();
+                logger.LogInformation("Sections inported.");
                 this.ImportSectionsMembers();
+                logger.LogInformation("SectionsMembers inported.");
             }
             catch (Exception e){
-                var test = e;
+                logger.LogError(e,"An error throw during seeding.");
             }
 
         }
@@ -370,7 +388,7 @@ namespace Koudou.Data.Imports
             Context.Database.ExecuteSqlRaw(
             @"
                 TRUNCATE TABLE 
-                    public.""Activitys"",
+                    public.""Activities"",
                     public.""Adresses"",
                     public.""Albums"",
                     public.""AlbumPhotos"",

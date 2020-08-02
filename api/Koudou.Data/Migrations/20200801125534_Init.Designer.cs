@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Koudou.Data.Migrations
 {
     [DbContext(typeof(KoudouContext))]
-    [Migration("20200722142102_Init")]
+    [Migration("20200801125534_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -18,7 +18,7 @@ namespace Koudou.Data.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
-                .HasAnnotation("ProductVersion", "3.0.0")
+                .HasAnnotation("ProductVersion", "3.1.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             modelBuilder.Entity("Koudou.Data.Entities.Activity", b =>
@@ -58,7 +58,7 @@ namespace Koudou.Data.Migrations
 
                     b.HasIndex("SectionId");
 
-                    b.ToTable("Activitys");
+                    b.ToTable("Activities");
                 });
 
             modelBuilder.Entity("Koudou.Data.Entities.Adress", b =>
@@ -754,12 +754,6 @@ namespace Koudou.Data.Migrations
                     b.Property<int?>("ParentSectionId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("ParentSectionId1")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("SectionId")
-                        .HasColumnType("integer");
-
                     b.Property<char>("Sex")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("character(1)")
@@ -767,7 +761,7 @@ namespace Koudou.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ParentSectionId1");
+                    b.HasIndex("ParentSectionId");
 
                     b.ToTable("Sections");
                 });
@@ -994,7 +988,7 @@ namespace Koudou.Data.Migrations
                         .HasForeignKey("FamilyId");
 
                     b.HasOne("Koudou.Data.Entities.Person", "Person")
-                        .WithMany()
+                        .WithMany("Phones")
                         .HasForeignKey("PersonId");
                 });
 
@@ -1009,7 +1003,7 @@ namespace Koudou.Data.Migrations
                 {
                     b.HasOne("Koudou.Data.Entities.Section", "ParentSection")
                         .WithMany()
-                        .HasForeignKey("ParentSectionId1");
+                        .HasForeignKey("ParentSectionId");
                 });
 
             modelBuilder.Entity("Koudou.Data.Entities.SectionMember", b =>
