@@ -94,5 +94,33 @@ namespace Koudou.Models.Base
                 ValidationErrors.Add($"Date [{propertyName}] must not be earlier than {upperBound.ToShortDateString()}");
             }
         }
+
+        protected void ValidatePasswordComplexity(string propertyName, string value)
+        {
+            if (!value.Any(c => char.IsLower(c)))
+            {
+                ValidationErrors.Add($"Property [{propertyName}] must contain a lower case letter");
+            }
+            if (!value.Any(c => char.IsUpper(c)))
+            {
+                ValidationErrors.Add($"Property [{propertyName}] must contain a upper case letter");
+            }
+            if (!value.Any(c => char.IsNumber(c)))
+            {
+                ValidationErrors.Add($"Property [{propertyName}] must contain a number");
+            }
+            if (value.Length <= 8)
+            {
+                ValidationErrors.Add($"Property [{propertyName}] must be longer than 7 characters");
+            }
+        }
+
+        protected void ValidateSame(string propertyName, string value, string propertyName2, string value2)
+        {
+            if(value != value2)
+            {
+                ValidationErrors.Add($"Properties [{propertyName}] and [{propertyName2}] must be equal");
+            }
+        }
     }
 }

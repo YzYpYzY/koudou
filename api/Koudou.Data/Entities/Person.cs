@@ -15,7 +15,7 @@ namespace Koudou.Data.Entities
         public char Sex { get; set; }
         public string Comment { get; set; }
 
-        public int PhotoId { get; set; }
+        public int? PhotoId { get; set; }
         public Photo Photo { get; set; }
         public int? AddressId { get; set; }
         public Adress Address { get; set; }

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Web;
 using Koudou.Data;
 using Koudou.Data.Entities;
+using Koudou.Security;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -55,6 +56,11 @@ namespace Koudou.Seed
                 logger.Information("Sections imported.");
                 this.ImportSectionsMembers();
                 logger.Information("SectionsMembers imported.");
+
+                this.SeedClaims();
+                logger.Information("Claims seeded.");
+                this.SeedRoleClaims();
+                logger.Information("RoleClaims seeded.");
             }
             catch (Exception e){
                 logger.Error(e,"An error throw during seeding.");
@@ -414,6 +420,35 @@ namespace Koudou.Seed
                     RESTART IDENTITY;"
                 );
             return Context.SaveChanges(true);
+        }
+
+        private void SeedClaims(){
+            foreach(var claim in Enum.GetValues(typeof(ClaimTypes))){
+                var newClaim = new Claim(claim.ToString(), claim.ToString());
+                newClaim.Id = (int) claim;
+                Context.Add(newClaim);
+            }
+            Context.SaveChanges();
+        }
+
+        private void SeedRoleClaims(){
+            var anime = Context.Roles.FirstOrDefault(r => r.Name == "Animé");
+            foreach(var claim in ClaimsByRole.MemberClaims){
+                var claimEntity = Context.Claims.FirstOrDefault(c => c.Key == claim.ToString());
+                var claimRole = new ClaimRole();
+                claimRole.Role = anime;
+                claimRole.Claim = claimEntity;
+                Context.ClaimRoles.Add(claimRole);
+            }
+            var animateur = Context.Roles.FirstOrDefault(r => r.Name == "Animateur");
+            foreach(var claim in ClaimsByRole.AdminClaims){
+                var claimEntity = Context.Claims.FirstOrDefault(c => c.Key == claim.ToString());
+                var claimRole = new ClaimRole();
+                claimRole.Role = animateur;
+                claimRole.Claim = claimEntity;
+                Context.ClaimRoles.Add(claimRole);
+            }
+            Context.SaveChanges();
         }
     }
 }

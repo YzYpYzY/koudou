@@ -1,6 +1,7 @@
 using System;
 using api.Controllers;
 using Koudou.Api.Business;
+using Koudou.Api.Models;
 using Koudou.Api.Models.Auth;
 using Koudou.Data.Entities;
 using Microsoft.AspNetCore.Authorization;
@@ -36,23 +37,32 @@ namespace Koudou.Api.Controllers
             return Authenticate(login.Pseudo, login.Password);
         }
 
-        private ActionResult<TokenDTO> Authenticate(string email, string password)
+        [AllowAnonymous]
+        [HttpPost("Register")]
+        public ActionResult<TokenDTO> Register([FromBody]RegisterDTO register)
+        {
+            ValidateDTO(register);
+            _authLogic.Register(register);
+            return Authenticate(register.Pseudo, register.Password);
+        }
+
+        private ActionResult<TokenDTO> Authenticate(string pseudo, string password)
         {
             try
             {
-                var token = _authLogic.Authenticate(email, password);
+                var token = _authLogic.Authenticate(pseudo, password);
 
                 return Ok(token);
             }
             catch (UnauthorizedAccessException ex)
             {
-                _logger?.LogError(ex, $"Authentication error for user '{email}': unauthorized access");
+                _logger?.LogError(ex, $"Authentication error for user '{pseudo}': unauthorized access");
                 return Unauthorized(ex);
             }
             catch (Exception ex)
             {
-                _logger?.LogError(ex, $"Authenticate error for user '{email}'");
-                return Problem($"Authenticate error for user '{email}': {ex.Message}");
+                _logger?.LogError(ex, $"Authenticate error for user '{pseudo}'");
+                return Problem($"Authenticate error for user '{pseudo}': {ex.Message}");
             }
         }
     }

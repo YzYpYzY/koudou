@@ -12,11 +12,9 @@ namespace Koudou.Data.Configurations
             base.Configure(builder);
 
             builder.Property(e => e.LastName)
-                   .IsRequired()
                    .HasMaxLength(50);           
 
             builder.Property(e => e.FirstName)
-                   .IsRequired()
                    .HasMaxLength(50);
 
             builder.Property(e => e.Email)

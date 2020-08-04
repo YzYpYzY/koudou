@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Koudou.Data.Migrations
 {
     [DbContext(typeof(KoudouContext))]
-    [Migration("20200802151423_Init")]
+    [Migration("20200803191924_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -265,9 +265,6 @@ namespace Koudou.Data.Migrations
                     b.Property<DateTime>("ModificationDate")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<int>("Role")
-                        .HasColumnType("integer");
-
                     b.Property<int>("RoleId")
                         .HasColumnType("integer");
 
@@ -279,6 +276,8 @@ namespace Koudou.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ClaimId");
+
+                    b.HasIndex("RoleId");
 
                     b.ToTable("ClaimRoles");
                 });
@@ -609,7 +608,6 @@ namespace Koudou.Data.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("FirstName")
-                        .IsRequired()
                         .HasColumnType("character varying(50)")
                         .HasMaxLength(50);
 
@@ -619,7 +617,6 @@ namespace Koudou.Data.Migrations
                         .HasDefaultValue(false);
 
                     b.Property<string>("LastName")
-                        .IsRequired()
                         .HasColumnType("character varying(50)")
                         .HasMaxLength(50);
 
@@ -629,7 +626,7 @@ namespace Koudou.Data.Migrations
                     b.Property<int>("OldId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("PhotoId")
+                    b.Property<int?>("PhotoId")
                         .HasColumnType("integer");
 
                     b.Property<char>("Sex")
@@ -710,7 +707,9 @@ namespace Koudou.Data.Migrations
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Numer")
-                        .HasColumnType("text");
+                        .IsRequired()
+                        .HasColumnType("character varying(30)")
+                        .HasMaxLength(30);
 
                     b.Property<int?>("PersonId")
                         .HasColumnType("integer");
@@ -718,8 +717,10 @@ namespace Koudou.Data.Migrations
                     b.Property<int>("Type")
                         .HasColumnType("integer");
 
-                    b.Property<long>("xmin")
-                        .HasColumnType("bigint");
+                    b.Property<uint>("xmin")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("xid");
 
                     b.HasKey("Id");
 
@@ -930,8 +931,8 @@ namespace Koudou.Data.Migrations
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasColumnType("character varying(100)")
-                        .HasMaxLength(100);
+                        .HasColumnType("character varying(250)")
+                        .HasMaxLength(250);
 
                     b.Property<int?>("PersonId")
                         .HasColumnType("integer");
@@ -993,8 +994,14 @@ namespace Koudou.Data.Migrations
             modelBuilder.Entity("Koudou.Data.Entities.ClaimRole", b =>
                 {
                     b.HasOne("Koudou.Data.Entities.Claim", "Claim")
-                        .WithMany()
+                        .WithMany("ClaimRoles")
                         .HasForeignKey("ClaimId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Koudou.Data.Entities.Role", "Role")
+                        .WithMany("ClaimRoles")
+                        .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -1064,9 +1071,7 @@ namespace Koudou.Data.Migrations
 
                     b.HasOne("Koudou.Data.Entities.Photo", "Photo")
                         .WithMany()
-                        .HasForeignKey("PhotoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("PhotoId");
                 });
 
             modelBuilder.Entity("Koudou.Data.Entities.PersonRole", b =>

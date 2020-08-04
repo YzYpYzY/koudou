@@ -7,8 +7,9 @@ namespace Koudou.Data.Entities
         public int ClaimId { get; set; }
         public Claim Claim { get; set; }
         public int RoleId { get; set; }
-        public int Role { get; set; }
+        public Role Role { get; set; }
 
-        public ClaimRole() : base(){}
+        public ClaimRole() : base(){
+        }
     }
 }

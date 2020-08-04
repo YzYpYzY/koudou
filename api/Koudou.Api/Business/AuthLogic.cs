@@ -17,6 +17,7 @@ using System.IdentityModel.Tokens.Jwt;
 using Koudou.Api.Business.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Koudou.Security;
+using Microsoft.Extensions.Options;
 
 namespace Koudou.Api.Business
 {
@@ -26,7 +27,8 @@ namespace Koudou.Api.Business
         private readonly SigningCredentials _signingCredentials;
         private readonly TokensSettings _tokenSettings;
         
-        public AuthLogic(KoudouContext context) : base(context){ 
+        public AuthLogic(KoudouContext context, IOptions<TokensSettings> tokenSettings) : base(context){ 
+            this._tokenSettings = tokenSettings.Value;
             var key = Encoding.UTF8.GetBytes(_tokenSettings.Secret);
             _signingCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature);
         }
@@ -36,12 +38,28 @@ namespace Koudou.Api.Business
             var claims = new List<System.Security.Claims.Claim>();
             var expiration = DateTimeOffset.UtcNow.AddMinutes(_tokenSettings.AccessTokenExpiration);
 
-            var user = Context.Users.FirstOrDefault(u => u.Pseudo == pseudo);
+            var user = Context.Users
+            .Include(u => u.Person.PersonRoles)
+            .ThenInclude(pr => pr.Role)
+            .ThenInclude(r => r.ClaimRoles)
+            .ThenInclude(c => c.Claim)
+            .FirstOrDefault(u => u.Pseudo == pseudo);
+
             if(user == null){
                 throw new RequestException(StatusCodes.Status401Unauthorized, "Authentication error");
             }
             if(!Password.Compare(user.Password, password, PasswordsPepper)){
                 throw new RequestException(StatusCodes.Status401Unauthorized, "Authentication error");
+            }
+            claims.Add(new System.Security.Claims.Claim("Identity", user.Id.ToString()));
+            claims.Add(new System.Security.Claims.Claim("Email", user.Person.Email));
+            //Limited to one role
+            var personRole = user.Person.PersonRoles.FirstOrDefault();
+            if(personRole != null){
+                var claimEntities = personRole.Role.ClaimRoles.ToList();
+                foreach(var entity in claimEntities){
+                    claims.Add(new System.Security.Claims.Claim("RessourceAccess", entity.Claim.Key));
+                }
             }
             // TODO: add refresh token support
 
@@ -62,6 +80,23 @@ namespace Koudou.Api.Business
                 token_type = "Bearer",
                 scope = "koudou-api"
             };
+        }
+
+        public int Register(RegisterDTO register)
+        {
+            var newUser = new User(register.Pseudo, Password.Encode(register.Password,PasswordsPepper),false);
+            var newPerson = new Person();
+            newPerson.Email = register.Email;
+            Context.Persons.Add(newPerson);
+            var personRole = new PersonRole();
+            personRole.Person = newPerson;
+            newUser.Person = newPerson;
+            var role = Context.Roles.FirstOrDefault(r => r.Name == "Animé");
+            personRole.Role = role;
+            Context.Users.Add(newUser);
+            Context.SaveChanges();
+            Context.PersonRoles.Add(personRole);
+            return Context.SaveChanges();
         }
     }
 }

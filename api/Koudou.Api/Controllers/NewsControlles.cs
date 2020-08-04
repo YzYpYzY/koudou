@@ -15,6 +15,9 @@ using Koudou.Models.Sections;
 using Koudou.Api.Business;
 using Microsoft.Extensions.Logging;
 using Koudou.Models.Newss;
+using Microsoft.AspNetCore.Authorization;
+using Koudou.Api.Helpers;
+using Koudou.Security;
 
 namespace Koudou.Api.Controllers
 {
@@ -30,8 +33,10 @@ namespace Koudou.Api.Controllers
         }
 
         [HttpGet]
+        //[HasAccess(ClaimTypes.ReadNews)]
         public PagedResponse<NewsDTO> Get([FromQuery] PagedRequestOptions options, [FromQuery] string filter)
         {
+            var test = User;
             Expression<Func<News, bool>> predicate = null;
 
             if (!string.IsNullOrWhiteSpace(filter))

@@ -17,7 +17,7 @@ namespace Koudou.Data.Configurations
                    
             builder.Property(e => e.Password)
                    .IsRequired()
-                   .HasMaxLength(100);
+                   .HasMaxLength(250);
 
             builder.Property(e => e.UtilityToken)
                    .HasMaxLength(100);

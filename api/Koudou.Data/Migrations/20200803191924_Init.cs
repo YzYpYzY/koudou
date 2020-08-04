@@ -164,8 +164,7 @@ namespace Koudou.Data.Migrations
                     ModificationDate = table.Column<DateTime>(nullable: false),
                     xmin = table.Column<uint>(type: "xid", nullable: false),
                     ClaimId = table.Column<int>(nullable: false),
-                    RoleId = table.Column<int>(nullable: false),
-                    Role = table.Column<int>(nullable: false)
+                    RoleId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -174,6 +173,12 @@ namespace Koudou.Data.Migrations
                         name: "FK_ClaimRoles_Claims_ClaimId",
                         column: x => x.ClaimId,
                         principalTable: "Claims",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ClaimRoles_Roles_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "Roles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -214,13 +219,13 @@ namespace Koudou.Data.Migrations
                     ModificationDate = table.Column<DateTime>(nullable: false),
                     xmin = table.Column<uint>(type: "xid", nullable: false),
                     OldId = table.Column<int>(nullable: false),
-                    LastName = table.Column<string>(maxLength: 50, nullable: false),
-                    FirstName = table.Column<string>(maxLength: 50, nullable: false),
+                    LastName = table.Column<string>(maxLength: 50, nullable: true),
+                    FirstName = table.Column<string>(maxLength: 50, nullable: true),
                     Email = table.Column<string>(maxLength: 50, nullable: true),
                     Birthdate = table.Column<DateTime>(nullable: true),
                     Sex = table.Column<char>(nullable: false, defaultValue: 'U'),
                     Comment = table.Column<string>(maxLength: 250, nullable: true),
-                    PhotoId = table.Column<int>(nullable: false),
+                    PhotoId = table.Column<int>(nullable: true),
                     AddressId = table.Column<int>(nullable: true),
                     FamilyId = table.Column<int>(nullable: true),
                     Family2Id = table.Column<int>(nullable: true),
@@ -314,8 +319,8 @@ namespace Koudou.Data.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     CreationDate = table.Column<DateTime>(nullable: false),
                     ModificationDate = table.Column<DateTime>(nullable: false),
-                    xmin = table.Column<long>(nullable: false),
-                    Numer = table.Column<string>(nullable: true),
+                    xmin = table.Column<uint>(type: "xid", nullable: false),
+                    Numer = table.Column<string>(maxLength: 30, nullable: false),
                     Type = table.Column<int>(nullable: false),
                     PersonId = table.Column<int>(nullable: true),
                     FamilyId = table.Column<int>(nullable: true)
@@ -348,7 +353,7 @@ namespace Koudou.Data.Migrations
                     xmin = table.Column<uint>(type: "xid", nullable: false),
                     OldId = table.Column<int>(nullable: false),
                     Pseudo = table.Column<string>(maxLength: 50, nullable: false),
-                    Password = table.Column<string>(maxLength: 100, nullable: false),
+                    Password = table.Column<string>(maxLength: 250, nullable: false),
                     UtilityToken = table.Column<string>(maxLength: 100, nullable: true),
                     IsAcceptedCondition = table.Column<bool>(nullable: false, defaultValue: false),
                     PersonId = table.Column<int>(nullable: true),
@@ -618,6 +623,11 @@ namespace Koudou.Data.Migrations
                 column: "ClaimId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ClaimRoles_RoleId",
+                table: "ClaimRoles",
+                column: "RoleId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Comments_PhotoId",
                 table: "Comments",
                 column: "PhotoId");
@@ -733,7 +743,7 @@ namespace Koudou.Data.Migrations
                 column: "PhotoId",
                 principalTable: "Photos",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.Restrict);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

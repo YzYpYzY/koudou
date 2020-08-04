@@ -7,7 +7,7 @@
   "scripts": {
     "docker:create-network": "docker network create web",
     "db:init": "docker-compose -f api/db.docker-compose.yml --env-file api/.env up -d",
-    "db:add-migration": "dotnet ef migrations add --project api/Koudou.Data --startup-project api/Koudou.Api -v",
+    "db:reset-migration": "rm -rf api/Koudou.Data/Migrations && dotnet ef migrations add --project api/Koudou.Data --startup-project api/Koudou.Api -v \"Init\"",
     "db:update": "dotnet ef --project api/Koudou.Data --startup-project api/Koudou.Api database update -v",
     "db:seed": "dotnet run --project api/Koudou.Seed/Koudou.Seed.csproj",
     "db:stop": "docker-compose -f api/db.docker-compose.yml --env-file api/.env down",
