@@ -33,10 +33,9 @@ namespace Koudou.Api.Controllers
         }
 
         [HttpGet]
-        //[HasAccess(ClaimTypes.ReadNews)]
+        [HasAccess(ClaimTypes.ReadNews)]
         public PagedResponse<NewsDTO> Get([FromQuery] PagedRequestOptions options, [FromQuery] string filter)
         {
-            var test = User;
             Expression<Func<News, bool>> predicate = null;
 
             if (!string.IsNullOrWhiteSpace(filter))

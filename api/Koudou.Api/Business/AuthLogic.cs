@@ -51,8 +51,8 @@ namespace Koudou.Api.Business
             if(!Password.Compare(user.Password, password, PasswordsPepper)){
                 throw new RequestException(StatusCodes.Status401Unauthorized, "Authentication error");
             }
-            claims.Add(new System.Security.Claims.Claim("Identity", user.Id.ToString()));
-            claims.Add(new System.Security.Claims.Claim("Email", user.Person.Email));
+            claims.Add(new System.Security.Claims.Claim(JwtRegisteredClaimNames.Sub, user.Pseudo.ToString()));
+            claims.Add(new System.Security.Claims.Claim(JwtRegisteredClaimNames.Email, user.Person.Email));
             //Limited to one role
             var personRole = user.Person.PersonRoles.FirstOrDefault();
             if(personRole != null){

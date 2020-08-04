@@ -1,7 +1,4 @@
-﻿using System.Net;
-using System.Net.Http;
-using System.Web;
-using api.Controllers;
+﻿using System.Linq;
 using Koudou.Security;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -9,14 +6,14 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace Koudou.Api.Helpers
 {
-    public class HasAccess : AuthorizeAttribute
+    public class HasAccess : AuthorizeAttribute, IAuthorizationFilter
     {
         private ClaimTypes? _claimType;
 
-        public HasAccess()
+        public HasAccess() : base()
         {
         }
-        public HasAccess(ClaimTypes claimType)
+        public HasAccess(ClaimTypes claimType) : base()
         {
             _claimType = claimType;
         }
@@ -27,16 +24,8 @@ namespace Koudou.Api.Helpers
                 return;
             }
             if(_claimType != null){
-                var claims = context.HttpContext.User.Claims;
-                var claimIterator = claims.GetEnumerator();
-                var claimFound = false;
-                do {
-                    if(claimIterator.Current.Value == _claimType.ToString()){
-                        claimFound = true;
-                    }
-                } while(claimIterator.MoveNext());
-
-                if(!claimFound){
+                var claims = context.HttpContext.User.Claims.ToList();
+                if(!claims.Any(c => c.Value == _claimType.ToString())){
                     context.Result = new UnauthorizedResult();
                     return;
                 }
