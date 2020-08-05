@@ -36,7 +36,7 @@ namespace Koudou.Api.Controllers
             var claims = this.HttpContext.User.Claims.ToList();
             var result = "claims : ";
             foreach(var claim in claims){
-                result += claim.Value.ToString();
+                result += claim.Value.ToString() + " ";
             }
             return result;
         }

@@ -1,6 +1,7 @@
 using System;
 using api.Controllers;
 using Koudou.Api.Business;
+using Koudou.Api.Helpers;
 using Koudou.Api.Models;
 using Koudou.Api.Models.Auth;
 using Koudou.Data.Entities;
@@ -46,18 +47,40 @@ namespace Koudou.Api.Controllers
             return Authenticate(register.Pseudo, register.Password);
         }
 
+        [AllowAnonymous]
+        [HttpPost("RefreshToken")]
+        public ActionResult<TokenDTO> RefreshToken([FromBody]RefreshTokenDTO token)
+        {
+            ValidateDTO(token);
+            return _authLogic.RefreshToken(token.RefreshToken, getIpAddress());
+        }
+
+        [HasAccess]
+        [HttpPost("ChangePassword")]
+        public ActionResult<TokenDTO> ChangePassword([FromBody]ChangePasswordDTO dto)
+        {
+            ValidateDTO(dto);
+            _authLogic.ChangePassword(dto, GetUserData().Id);
+            return Ok();
+        }
+
+        private string getIpAddress()
+        {
+            return Request?.HttpContext?.Connection?.RemoteIpAddress?.MapToIPv4().ToString();
+        }
+
         private ActionResult<TokenDTO> Authenticate(string pseudo, string password)
         {
             try
             {
-                var token = _authLogic.Authenticate(pseudo, password);
+                var token = _authLogic.Authenticate(pseudo, password, getIpAddress());
 
                 return Ok(token);
             }
             catch (UnauthorizedAccessException ex)
             {
                 _logger?.LogError(ex, $"Authentication error for user '{pseudo}': unauthorized access");
-                return Unauthorized(ex);
+                return Unauthorized();
             }
             catch (Exception ex)
             {

@@ -32,6 +32,7 @@ namespace Koudou.Data {
         public DbSet<PersonRole> PersonRoles { get; set; }
         public DbSet<Phone> Phones { get; set; }
         public DbSet<Photo> Photos { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<Section> Sections { get; set; }
         public DbSet<SectionMember> SectionMembers { get; set; }

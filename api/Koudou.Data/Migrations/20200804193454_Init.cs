@@ -531,6 +531,34 @@ namespace Koudou.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "RefreshTokens",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    CreationDate = table.Column<DateTime>(nullable: false),
+                    ModificationDate = table.Column<DateTime>(nullable: false),
+                    xmin = table.Column<uint>(type: "xid", nullable: false),
+                    Token = table.Column<string>(maxLength: 250, nullable: false),
+                    Expires = table.Column<DateTime>(nullable: false),
+                    CreatedByIp = table.Column<string>(maxLength: 50, nullable: false),
+                    Revoked = table.Column<DateTime>(nullable: true),
+                    RevokedByIp = table.Column<string>(maxLength: 250, nullable: true),
+                    ReplacedByToken = table.Column<string>(maxLength: 250, nullable: true),
+                    UserId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RefreshTokens", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_RefreshTokens_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AlbumPhotos",
                 columns: table => new
                 {
@@ -713,6 +741,11 @@ namespace Koudou.Data.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_RefreshTokens_UserId",
+                table: "RefreshTokens",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_SectionMembers_MemberId",
                 table: "SectionMembers",
                 column: "MemberId");
@@ -778,6 +811,9 @@ namespace Koudou.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "Phones");
+
+            migrationBuilder.DropTable(
+                name: "RefreshTokens");
 
             migrationBuilder.DropTable(
                 name: "SectionMembers");

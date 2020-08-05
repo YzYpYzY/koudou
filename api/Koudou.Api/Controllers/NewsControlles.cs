@@ -58,19 +58,22 @@ namespace Koudou.Api.Controllers
         }
 
         [HttpGet("{id:int}")]
+        [HasAccess(ClaimTypes.ReadNews)]
         public NewsFullDTO GetOne(int id)
         {
             return _newsLogic.GetOne(id);
         }
 
         [HttpPost]
+        [HasAccess(ClaimTypes.CreateNews)]
         public NewsFullDTO Create(NewsFullDTO dto)
         {
             ValidateDTO(dto);
-            return _newsLogic.Create(dto);
+            return _newsLogic.Create(dto, GetUserData().Id);
         }
 
         [HttpPut("{id:int}")]
+        [HasAccess(ClaimTypes.UpdateNews)]
         public NewsFullDTO Update(int id, NewsFullDTO dto)
         {
             ValidateDTO(dto);
@@ -78,6 +81,7 @@ namespace Koudou.Api.Controllers
         }
 
         [HttpDelete("{id:int}")]
+        [HasAccess(ClaimTypes.DeleteNews)]
         public IActionResult Delete(int id)
         {
             _newsLogic.Delete(id);

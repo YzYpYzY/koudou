@@ -11,6 +11,7 @@ using Koudou.Models.Sections;
 using Koudou.Api.Business;
 using Microsoft.EntityFrameworkCore;
 using Koudou.Data.Helpers;
+using Koudou.Models.Members;
 
 namespace Koudou.Api.Business
 {
@@ -76,6 +77,29 @@ namespace Koudou.Api.Business
             Context.SaveChanges();
 
             return new SectionFullDTO().FromEntity(newSection);
+        }
+
+        public PagedResponse<SectionMemberDTO> GetAllMembersPaged(int sectionId, PagedRequestOptions options, Expression<Func<SectionMember, bool>> filter)
+        {
+            var response = new PagedResponse<SectionMemberDTO>() { Options = options };
+            var test = Context.SectionMembers.Where(sm => sm.SectionId == sectionId)                                    
+                                    .Include(sm => sm.Role)
+                                    .Include(s => s.Member)
+                                    .ThenInclude(m => m.Person).ToList();
+            // response.Values = Context.SectionMembers
+            //                         .Include(sm => sm.Role)
+            //                         .Include(s => s.Member)
+            //                         .ThenInclude(m => m.Person)
+            //                         .AsQueryable()
+            //                         //.ApplyFilter(filter)
+            //                         .ComputeTotalCount(response)
+            //                         .ValidatePropertyExists(Context, options.Sort)
+            //                         .ApplySort(options.Sort, options.SortDirection)
+            //                         .ApplyPaging(options.StartIndex, options.Count)
+            //                         .ToDTO<SectionMember, SectionMemberDTO>()
+            //                         .ToList();
+
+            return response;
         }
 
         public SectionFullDTO Update(int id, SectionFullDTO dto)

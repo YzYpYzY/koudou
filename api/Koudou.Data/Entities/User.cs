@@ -15,6 +15,7 @@ namespace Koudou.Data.Entities
         public Person Person { get; set; }
 
         public ICollection<Album> Albums { get; set; }
+        public ICollection<RefreshToken> RefreshTokens { get; set; }
 
         public User() : base(){}
         public User(string pseudo, string password, bool isAcceptedCondition = false) : base()

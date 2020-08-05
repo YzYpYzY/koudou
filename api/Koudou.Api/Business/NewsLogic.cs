@@ -36,7 +36,8 @@ namespace Koudou.Api.Business
         public NewsFullDTO GetOne(int id)
         {
             var news = Context.News
-                                .SingleOrDefault(n => n.Id == id);
+                .Include(n => n.User)
+                .SingleOrDefault(n => n.Id == id);
 
             if (news == null)
             {
@@ -46,9 +47,13 @@ namespace Koudou.Api.Business
             return new NewsFullDTO().FromEntity(news);
         }
 
-        public NewsFullDTO Create(NewsFullDTO dto)
+        public NewsFullDTO Create(NewsFullDTO dto, int userId)
         {
-            var newNews = new News(dto.Title, dto.Content, null);
+            var user = Context.Users.FirstOrDefault(u => u.Id == userId);
+            if(user == null){
+                throw new IdNotFoundRequestException(nameof(User), userId);
+            }
+            var newNews = new News(dto.Title, dto.Content, user);
             Context.Add(newNews);
             Context.SaveChanges();
 

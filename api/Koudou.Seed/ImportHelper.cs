@@ -413,6 +413,7 @@ namespace Koudou.Seed
                     public.""PersonRoles"",
                     public.""Phones"",
                     public.""Photos"",
+                    public.""RefreshTokens"",
                     public.""Roles"",
                     public.""Sections"",
                     public.""SectionMembers"",

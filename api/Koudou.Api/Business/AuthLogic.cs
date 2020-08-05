@@ -18,6 +18,7 @@ using Koudou.Api.Business.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Koudou.Security;
 using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Koudou.Api.Business
 {
@@ -33,26 +34,58 @@ namespace Koudou.Api.Business
             _signingCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature);
         }
 
-        public TokenDTO Authenticate(string pseudo, string password)
+        public TokenDTO Authenticate(string pseudo, string password, string ipAddress)
+        {
+            var user = Context.Users
+                .Include(u => u.Person.PersonRoles)
+                .ThenInclude(pr => pr.Role)
+                .ThenInclude(r => r.ClaimRoles)
+                .ThenInclude(c => c.Claim)
+                .FirstOrDefault(u => u.Pseudo == pseudo);
+
+            if(user == null){
+                throw new UnauthorizedAccessException();
+            }
+            if(!Password.Compare(user.Password, password, PasswordsPepper)){
+                throw new UnauthorizedAccessException();
+            }
+
+            var tokenDto = generateToken(user);
+            var refreshToken = generateRefreshToken(ipAddress);
+            refreshToken.User = user;
+            Context.RefreshTokens.Add(refreshToken);
+            Context.SaveChanges();
+            tokenDto.refresh_token = refreshToken.Token;
+            return tokenDto;
+        }
+
+        public int ChangePassword(ChangePasswordDTO dto, int? userId)
+        {
+            var user = Context.Users
+                .Include(u => u.Person.PersonRoles)
+                .ThenInclude(pr => pr.Role)
+                .ThenInclude(r => r.ClaimRoles)
+                .ThenInclude(c => c.Claim)
+                .FirstOrDefault(u => u.Id == userId);
+
+            if(user == null){
+                throw new UnauthorizedAccessException();
+            }
+            if(!Password.Compare(user.Password, dto.Password, PasswordsPepper)){
+                throw new UnauthorizedAccessException();
+            }
+
+            user.Password = Password.Encode(dto.NewPassword,PasswordsPepper);
+            return Context.SaveChanges();
+        }
+
+        private TokenDTO generateToken(User user)
         {
             var claims = new List<System.Security.Claims.Claim>();
             var expiration = DateTimeOffset.UtcNow.AddMinutes(_tokenSettings.AccessTokenExpiration);
-
-            var user = Context.Users
-            .Include(u => u.Person.PersonRoles)
-            .ThenInclude(pr => pr.Role)
-            .ThenInclude(r => r.ClaimRoles)
-            .ThenInclude(c => c.Claim)
-            .FirstOrDefault(u => u.Pseudo == pseudo);
-
-            if(user == null){
-                throw new RequestException(StatusCodes.Status401Unauthorized, "Authentication error");
-            }
-            if(!Password.Compare(user.Password, password, PasswordsPepper)){
-                throw new RequestException(StatusCodes.Status401Unauthorized, "Authentication error");
-            }
-            claims.Add(new System.Security.Claims.Claim(JwtRegisteredClaimNames.Sub, user.Pseudo.ToString()));
-            claims.Add(new System.Security.Claims.Claim(JwtRegisteredClaimNames.Email, user.Person.Email));
+            claims.Add(new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.PrimarySid, user.Id.ToString()));
+            claims.Add(new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.NameIdentifier, user.Pseudo.ToString()));
+            claims.Add(new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.Email, user.Person.Email));
             //Limited to one role
             var personRole = user.Person.PersonRoles.FirstOrDefault();
             if(personRole != null){
@@ -61,7 +94,6 @@ namespace Koudou.Api.Business
                     claims.Add(new System.Security.Claims.Claim("RessourceAccess", entity.Claim.Key));
                 }
             }
-            // TODO: add refresh token support
 
             var tokenHandler = new JwtSecurityTokenHandler();
             var tokenDescriptor = new SecurityTokenDescriptor()
@@ -70,16 +102,88 @@ namespace Koudou.Api.Business
                 Expires = expiration.DateTime,
                 SigningCredentials = _signingCredentials
             };
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-
+            var securityToken = tokenHandler.CreateToken(tokenDescriptor);
+            var token = tokenHandler.WriteToken(securityToken);
             return new TokenDTO()
             {
-                access_token = tokenHandler.WriteToken(token),
+                access_token = token,
                 expires_in = _tokenSettings.AccessTokenExpiration * 60,
-                expiration = new DateTimeOffset(token.ValidTo),
+                expiration = new DateTimeOffset(securityToken.ValidTo),
                 token_type = "Bearer",
-                scope = "koudou-api"
+                scope = "koudou-api",
+                refresh_token = null
             };
+        }
+
+        public TokenDTO RefreshToken(string token, string ipAddress)
+        {
+            var user = Context.Users
+                .Include(u => u.RefreshTokens)
+                .Include(u => u.Person.PersonRoles)
+                .ThenInclude(pr => pr.Role)
+                .ThenInclude(r => r.ClaimRoles)
+                .ThenInclude(c => c.Claim)
+                .SingleOrDefault(u => u.RefreshTokens.Any(t => t.Token == token));
+            
+            // return null if no user found with token
+            if (user == null) {
+                throw new RequestException(StatusCodes.Status401Unauthorized);
+            }
+
+            var refreshToken = user.RefreshTokens.SingleOrDefault(x => x.Token == token);
+
+            if(refreshToken != null){
+                // return null if token is no longer active
+                if (!refreshToken.IsActive) return null;
+
+                // replace old refresh token with a new one and save
+                var newRefreshToken = generateRefreshToken(ipAddress);
+                refreshToken.Revoked = DateTime.UtcNow;
+                refreshToken.RevokedByIp = ipAddress;
+                refreshToken.ReplacedByToken = newRefreshToken.Token;
+                user.RefreshTokens.Add(newRefreshToken);
+                Context.Update(user);
+                Context.SaveChanges();
+
+                // generate new jwt
+                var newToken = generateToken(user);
+                newToken.refresh_token = refreshToken.Token;
+                return newToken;
+            }
+            throw new RequestException(StatusCodes.Status401Unauthorized);
+        }
+
+        public bool RevokeToken(string token, string ipAddress)
+        {
+            var user = Context.Users.SingleOrDefault(u => u.RefreshTokens.Any(t => t.Token == token));
+            
+            // return false if no user found with token
+            if (user == null) return false;
+
+            var refreshToken = user.RefreshTokens.SingleOrDefault(u => u.Token == token);
+
+            // return false if token is not active
+            if(refreshToken != null){
+                if (!refreshToken.IsActive) return false;
+                // revoke token and save
+                refreshToken.Revoked = DateTime.UtcNow;
+                refreshToken.RevokedByIp = ipAddress;
+                Context.Update(user);
+                Context.SaveChanges();
+            }
+
+            return true;
+        }
+
+        private RefreshToken generateRefreshToken(string ipAddress)
+        {
+            return new RefreshToken
+                {
+                    Token = RandomGenerator.GetUniqueKey(),
+                    Expires = DateTime.UtcNow.AddDays(2),
+                    CreationDate = DateTime.UtcNow,
+                    CreatedByIp = ipAddress
+                };
         }
 
         public int Register(RegisterDTO register)

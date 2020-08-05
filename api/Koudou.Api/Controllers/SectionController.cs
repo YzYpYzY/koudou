@@ -14,6 +14,9 @@ using LinqKit;
 using Koudou.Models.Sections;
 using Koudou.Api.Business;
 using Microsoft.Extensions.Logging;
+using Koudou.Security;
+using Koudou.Api.Helpers;
+using Koudou.Models.Members;
 
 namespace Koudou.Api.Controllers
 {
@@ -29,6 +32,7 @@ namespace Koudou.Api.Controllers
         }
 
         [HttpGet]
+        [HasAccess(ClaimTypes.ReadSection)]
         public PagedResponse<SectionDTO> Get([FromQuery] PagedRequestOptions options, [FromQuery] string filter)
         {
             Expression<Func<Section, bool>> predicate = null;
@@ -52,12 +56,40 @@ namespace Koudou.Api.Controllers
         }
 
         [HttpGet("{id:int}")]
+        [HasAccess(ClaimTypes.ReadSection)]
         public SectionFullDTO GetOne(int id)
         {
             return _sectionsLogic.GetOne(id);
         }
 
+        [HttpGet("{id:int}/Members")]
+        [HasAccess(ClaimTypes.ReadSection)]
+        public PagedResponse<SectionMemberDTO> GetMembers(int id, [FromQuery] PagedRequestOptions options, [FromQuery] string filter)
+        {
+            Expression<Func<SectionMember, bool>> predicate = null;
+            predicate = PredicateBuilder.New<SectionMember>();
+            predicate = predicate.Or(sm => sm.SectionId == id);
+            if (!string.IsNullOrWhiteSpace(filter))
+            {
+                var f = filter.Trim().ToUpper();
+
+                predicate = predicate.Or(sm => sm.Member.Person.LastName.ToUpper().Contains(f));
+                predicate = predicate.Or(sm => sm.Member.Person.FirstName.ToUpper().Contains(f));
+                predicate = predicate.Or(sm => sm.Role.Name.ToUpper().Contains(f));
+            }
+
+            if (string.IsNullOrWhiteSpace(options.Sort))
+            {
+                options.Sort = nameof(SectionMember.Id);
+            }
+
+            var result = _sectionsLogic.GetAllMembersPaged(id, options, predicate);
+
+            return result;
+        }
+
         [HttpPost]
+        [HasAccess(ClaimTypes.CreateSection)]
         public SectionFullDTO Create(SectionFullDTO dto)
         {
             ValidateDTO(dto);
@@ -65,6 +97,7 @@ namespace Koudou.Api.Controllers
         }
 
         [HttpPut("{id:int}")]
+        [HasAccess(ClaimTypes.UpdateSection)]
         public SectionFullDTO Update(int id, SectionFullDTO dto)
         {
             ValidateDTO(dto);
@@ -73,6 +106,7 @@ namespace Koudou.Api.Controllers
 
         [HttpGet]
         [Route("Options")]
+        [HasAccess(ClaimTypes.ReadSection)]
         public List<OptionDTO> GetAllAsOption()
         {
             var result = _sectionsLogic.GetAllAsOptions();
@@ -80,6 +114,7 @@ namespace Koudou.Api.Controllers
         }
 
         [HttpDelete("{id:int}")]
+        [HasAccess(ClaimTypes.DeleteSection)]
         public IActionResult Delete(int id)
         {
             _sectionsLogic.Delete(id);
