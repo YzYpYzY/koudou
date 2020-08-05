@@ -1,11 +1,19 @@
-# Usefull command
+# Create docker network web
+- npm run docker:create-network
 
-docker-compose -f db.docker-compose.yml up -d
-docker-compose -f db.docker-compose.yml down
-docker volume prune
+# Start Db in docker
+- npm run db:init
+- npm run db:update
+- npm run db:seed
 
-dotnet restore
+# Remove Db
+- npm run db:clean
 
-from Data
-dotnet ef --startup-project ../Koudou.Api migrations add "Init" -c KoudouContext
-dotnet ef --startup-project ../Koudou.Api database update
+# Start Api in docker
+- npm run api:start
+
+# Rebuild Api in docker
+- npm run api:rebuild
+
+# Stop Api in docker
+- npm run api:stop

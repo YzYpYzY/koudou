@@ -40,6 +40,10 @@ namespace Koudou.Api.Business
         public MemberFullDTO GetOne(int id)
         {
             var member = Context.Members
+                                .Include(m => m.Person)
+                                .Include("Person.PersonRoles.Role")
+                                .Include(m => m.SectionMembers)
+                                .ThenInclude(ms => ms.Section)
                                 .SingleOrDefault(m => m.Id == id);
 
             if (member == null)
@@ -50,26 +54,23 @@ namespace Koudou.Api.Business
             return new MemberFullDTO().FromEntity(member);
         }
 
-        // public MemberDTO CreateMember(CreateMemberDTO dto, int groupId)
+        // public MemberDTO CreateMember(MemberFullDTO dto)
         // {
-        //     var group = Context.Groups.Find(groupId);
-
-        //     if (group == null)
+        //     var section = Context.Sections.Find(dto.SectionId);
+        //     if (section == null)
         //     {
-        //         throw new IdNotFoundRequestException(nameof(Group), groupId);
+        //         throw new IdNotFoundRequestException(nameof(Section), dto.SectionId.ToString()));
         //     }
-
-        //     var newMember = new Member(group, dto.CompanyName)
+        //     var role = Context.Roles.Find(dto.RoleId);
+        //     if (role == null)
         //     {
-        //         Prefix = dto.Prefix,
-        //         Suffix = dto.Suffix,
-        //         ShortDescription = dto.ShortDescription,
-        //         LongDescription = dto.LongDescription,
-        //         Email = dto.Email,
-        //         IsActive = false,
-        //         IsMember = true,
-        //         IsReferenced = true
-        //     };
+        //         throw new IdNotFoundRequestException(nameof(Role), dto.RoleId.ToString());
+        //     }
+        //     var newAdress = new Adress(dto.Street, dto.Number,  dto.Box,  dto.PostalCode,  dto.City) ;
+        //     var newPhone = new Phone(dto., PhoneType.Unknow);
+        //     var newPersonRole = new PersonRole();
+        //     var newPerson = new Person();
+        //     var newMember = new Member();
 
         //     Context.Add(newMember);
         //     Context.SaveChanges();

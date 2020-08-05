@@ -22,5 +22,6 @@ namespace Koudou.Security
         ReadMember = 3002,
         UpdateMember = 3003,
         DeleteMember = 3004,
+        ReadRole = 4000,
     }
 }

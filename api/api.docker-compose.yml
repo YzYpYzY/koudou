@@ -11,10 +11,17 @@ services:
     build:
       context: .
       dockerfile: api.Dockerfile
+    labels:
+      - "traefik.frontend.rule=Host:koudou.api.yzypyzy.com"
+      - "traefik.frontend.port=${KOUDOU_API_PORT}"
     ports:
       - "${KOUDOU_API_PORT}:80"
+    expose:
+      - "${KOUDOU_API_PORT}"
     networks:
       - web
+    external_links:
+      - db:koudou-db
 volumes:
   koudou-api-logs:
 networks:

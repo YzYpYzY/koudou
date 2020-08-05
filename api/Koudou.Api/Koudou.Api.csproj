@@ -29,6 +29,7 @@
   <ItemGroup>
    <None Include="appsettings.json" CopyToPublishDirectory="Always" />
    <None Include="appsettings.Development.json" CopyToPublishDirectory="Always" />
+   <None Include="appsettings.Release.json" CopyToPublishDirectory="Always" />
 </ItemGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

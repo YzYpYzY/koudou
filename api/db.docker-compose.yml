@@ -1,6 +1,6 @@
 version: "3.7"
 services:
-  koudou-db:
+  db:
     container_name: koudou-db
     labels:
       - "traefik.enable=false"
@@ -13,6 +13,18 @@ services:
       web:
     ports:
       - "${KOUDOU_DB_PORT}:5432"
+  admin:
+    container_name: koudou-db-admin
+    labels:
+      - "traefik.frontend.rule=Host:koudou-db.yzypyzy.com"
+      - "traefik.frontend.port=${KOUDOU_DB_ADMIN_PORT}"
+    image: adminer
+    ports:
+      - "${KOUDOU_DB_ADMIN_PORT}:8080"
+    expose:
+      - ${KOUDOU_DB_ADMIN_PORT}
+    networks:
+      web:
 volumes:
   koudou-db:
 networks:

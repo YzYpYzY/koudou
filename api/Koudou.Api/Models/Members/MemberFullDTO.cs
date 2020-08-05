@@ -14,7 +14,8 @@ namespace Koudou.Models.Members
         public string Totem { get; set; }
         public string TotemJungle { get; set; }
         public string Quali { get; set; }
-        public string SectionId { get; set; }
+        public int? SectionId { get; set; }
+        public int? RoleId { get; set; }
 
         public string LastName { get; set; }
         public string FirstName { get; set; }
@@ -44,7 +45,10 @@ namespace Koudou.Models.Members
             if(sectionMember == null){
                 sectionMember = entity.SectionMembers.FirstOrDefault();
             } 
-            SectionId = sectionMember?.SectionId.ToString();
+            SectionId = sectionMember?.SectionId;
+
+            var personRole = entity.Person.PersonRoles.FirstOrDefault();
+            RoleId = personRole?.RoleId;
 
             LastName = entity.Person?.LastName;
             FirstName = entity.Person?.FirstName;

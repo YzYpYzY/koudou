@@ -22,6 +22,7 @@ namespace Koudou.Security
             ClaimTypes.ReadMember,
             ClaimTypes.UpdateMember,
             ClaimTypes.DeleteMember,
+            ClaimTypes.ReadRole,
         };
 
         public static readonly List<ClaimTypes> MemberClaims = new List<ClaimTypes>(){
@@ -31,6 +32,7 @@ namespace Koudou.Security
             ClaimTypes.ReadSection,
             ClaimTypes.AccessMember,
             ClaimTypes.ReadMember,
+            ClaimTypes.ReadRole,
         };
     }
 }

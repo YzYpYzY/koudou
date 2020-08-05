@@ -14,6 +14,8 @@ using LinqKit;
 using Koudou.Api.Business;
 using Koudou.Models.Members;
 using Microsoft.Extensions.Logging;
+using Koudou.Api.Helpers;
+using Koudou.Security;
 
 namespace Koudou.Api.Controllers
 {
@@ -29,6 +31,7 @@ namespace Koudou.Api.Controllers
         }
 
         [HttpGet]
+        [HasAccess(ClaimTypes.ReadMember)]
         public PagedResponse<MemberDTO> Get([FromQuery] PagedRequestOptions options, [FromQuery] string filter)
         {
             Expression<Func<Member, bool>> predicate = null;
@@ -53,6 +56,7 @@ namespace Koudou.Api.Controllers
         }
 
         [HttpGet("{id:int}")]
+        [HasAccess(ClaimTypes.ReadMember)]
         public MemberFullDTO GetOne(int id)
         {
             return _membersLogic.GetOne(id);
