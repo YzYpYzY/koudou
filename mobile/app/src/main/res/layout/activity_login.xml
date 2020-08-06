@@ -33,6 +33,7 @@
         tools:layout_editor_absoluteX="30dp">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/login_pseudo_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -48,6 +49,7 @@
         app:layout_constraintTop_toBottomOf="@id/login_pseudo">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/login_password_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </com.google.android.material.textfield.TextInputLayout>

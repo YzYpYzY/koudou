@@ -12,7 +12,7 @@ services:
       context: .
       dockerfile: api.Dockerfile
     labels:
-      - "traefik.frontend.rule=Host:koudou.api.yzypyzy.com"
+      - "traefik.frontend.rule=Host:koudou-api.yzypyzy.com"
       - "traefik.frontend.port=${KOUDOU_API_PORT}"
     ports:
       - "${KOUDOU_API_PORT}:80"
