@@ -57,7 +57,7 @@ namespace Koudou.Api.Controllers
 
         [HasAccess]
         [HttpPost("ChangePassword")]
-        public ActionResult<TokenDTO> ChangePassword([FromBody]ChangePasswordDTO dto)
+        public OkResult ChangePassword([FromBody]ChangePasswordDTO dto)
         {
             ValidateDTO(dto);
             _authLogic.ChangePassword(dto, GetUserData().Id);

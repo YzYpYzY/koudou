@@ -109,7 +109,7 @@ namespace Koudou.Models.Base
             {
                 ValidationErrors.Add($"Property [{propertyName}] must contain a number");
             }
-            if (value.Length <= 8)
+            if (value.Length < 8)
             {
                 ValidationErrors.Add($"Property [{propertyName}] must be longer than 7 characters");
             }

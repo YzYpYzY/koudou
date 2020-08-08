@@ -176,12 +176,15 @@ namespace Koudou.Api
                             context.Response.StatusCode = 412;
                             await context.Response.WriteAsync("Update failed because incorrect row version.");
                         } else if(exceptionHandlerPathFeature?.Error is RequestException){
-                            // TODO: Log RequestException
                             var exception = exceptionHandlerPathFeature?.Error as RequestException;
                             var json = exception.GetJson();
                             context.Response.ContentType = "application/json";
                             context.Response.StatusCode = exception.StatusCode;
                             await context.Response.WriteAsync(json);
+                        } else if(exceptionHandlerPathFeature?.Error is UnauthorizedAccessException){
+                            context.Response.ContentType = "application/json";
+                            context.Response.StatusCode = 401;
+                            await context.Response.WriteAsync("Unauthorized");
                         }
                     });
         }
