@@ -87,4 +87,64 @@ public class NewsRepository extends BaseRepository{
             }
         });
     }
+
+    public void Create(NewsModel model){
+        newsService.Create(model).enqueue(new Callback<NewsModel>() {
+            @Override
+            public void onResponse(Call<NewsModel> call, Response<NewsModel> response) {
+                if(response.isSuccessful()){
+                    NewsModel model = response.body();
+                    successAction.setValue("CreateNews");
+                    selectedNews.setValue(model);
+                } else {
+                    treatError(response,"CreateNews", "La création de cette news a échouée.");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<NewsModel> call, Throwable t) {
+                treatError(t,"CreateNews", "La création de cette news a échouée.");
+            }
+        });
+    }
+
+    public void Update(NewsModel model){
+        newsService.Update(model, model.getId()).enqueue(new Callback<NewsModel>() {
+            @Override
+            public void onResponse(Call<NewsModel> call, Response<NewsModel> response) {
+                if(response.isSuccessful()){
+                    NewsModel model = response.body();
+                    successAction.setValue("UpdateNews");
+                    selectedNews.setValue(model);
+                } else {
+                    treatError(response,"UpdateNews", "La mise à jour de cette news a échouée.");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<NewsModel> call, Throwable t) {
+                treatError(t,"UpdateNews", "La mise à jour de cette news a échouée.");
+            }
+        });
+    }
+
+    public void Delete(int id){
+        newsService.Delete(id).enqueue(new Callback() {
+            @Override
+            public void onResponse(Call call, Response response) {
+                if(response.isSuccessful()){
+                    successAction.setValue("DeleteNews");
+                    selectedNews.setValue(null);
+                    Get(new PageRequestOptions(0, 20, null, null));
+                } else {
+                    treatError(response,"DeleteNews", "La supression de cette news a échouée.");
+                }
+            }
+
+            @Override
+            public void onFailure(Call call, Throwable t) {
+                treatError(t,"DeleteNews", "La supression de cette news a échouée.");
+            }
+        });
+    }
 }

@@ -45,6 +45,9 @@ public class BaseActivity extends AppCompatActivity {
     protected void showError(ErrorModel errorModel) {
         Toast.makeText(this, errorModel.getMessage(), Toast.LENGTH_LONG).show();
     }
+    protected void showHint(String hint) {
+        Toast.makeText(this, hint, Toast.LENGTH_LONG).show();
+    }
     protected void showSuccessMessage(String message) {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }

@@ -15,9 +15,11 @@ import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -26,4 +28,10 @@ public interface NewsService {
     Call<PagedResponseModel<NewsModel>> Get(@Query("startIndex") int startIndex, @Query("count") int count,  @Query("sort") String sort,  @Query("sortDirection") SortDirection sortDirection);
     @GET("api/1/News/{id}")
     Call<NewsModel> Get(@Path("id") int id);
+    @DELETE("api/1/News/{id}")
+    Call<Void> Delete(@Path("id") int id);
+    @POST("api/1/News")
+    Call<NewsModel> Create(@Body NewsModel model);
+    @PUT("api/1/News/{id}")
+    Call<NewsModel> Update(@Body NewsModel model, @Path("id") int id);
 }

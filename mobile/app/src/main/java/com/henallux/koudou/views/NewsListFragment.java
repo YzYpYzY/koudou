@@ -1,5 +1,6 @@
 package com.henallux.koudou.views;
 
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -16,11 +17,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.henallux.koudou.App;
 import com.henallux.koudou.R;
 import com.henallux.koudou.models.NewsModel;
 import com.henallux.koudou.models.PagedResponseModel;
-import com.henallux.koudou.viewModels.LoginViewModel;
 import com.henallux.koudou.viewModels.NewsViewModel;
 import com.henallux.koudou.views.tools.EndlessRecyclerViewScrollListener;
 import com.henallux.koudou.views.tools.OnItemSelectedListener;
@@ -72,17 +71,17 @@ public class NewsListFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        viewModel = ViewModelProviders.of(this).get(NewsViewModel.class);
+        viewModel = ViewModelProviders.of(getActivity()).get(NewsViewModel.class);
         viewModel.getNews().observe(getViewLifecycleOwner(), new Observer<PagedResponseModel<NewsModel>>() {
             @Override
             public void onChanged(PagedResponseModel<NewsModel> news) {
-                adapter.addNews(news.getValues());
+                adapter.addNews(news);
             }
         });
         viewModel.loadNews();
     }
 
-    private class NewsViewHolder extends RecyclerView.ViewHolder{
+    private class NewsViewHolder extends RecyclerView.ViewHolder {
 
         public TextView title;
         public TextView content;
@@ -95,11 +94,16 @@ public class NewsListFragment extends Fragment {
             content = itemView.findViewById(R.id.news_content);
             creator = itemView.findViewById(R.id.news_creator);
             date = itemView.findViewById(R.id.news_date);
+            itemView.setOnClickListener(view -> {
+                int currentPosition = getAdapterPosition();
+                listener.onItemSelected(currentPosition);
+            });
         }
     }
 
     private class NewsAdapter extends RecyclerView.Adapter<NewsViewHolder> {
         private List<NewsModel> news = new ArrayList<NewsModel>();
+        private int selectedPosition = -1;
 
         @NonNull
         @Override
@@ -110,7 +114,9 @@ public class NewsListFragment extends Fragment {
                     new OnItemSelectedListener() {
                         @Override
                         public void onItemSelected(int position) {
-                            NewsModel touchedNews = news.get(position);
+                            selectedPosition = position;
+                            viewModel.selectNews(news.get(position).getId());
+                            notifyDataSetChanged();
                         }
                     });
             return vh;
@@ -122,6 +128,11 @@ public class NewsListFragment extends Fragment {
             holder.content.setText(n.getContent());
             holder.creator.setText(n.getCreator());
             holder.date.setText(n.getDate());
+            if(position == selectedPosition){
+                holder.itemView.setSelected(true);
+            } else {
+                holder.itemView.setSelected(false);
+            }
         }
 
         @Override
@@ -129,8 +140,11 @@ public class NewsListFragment extends Fragment {
             return news == null ? 0 : news.size();
         }
 
-        public void addNews(List<NewsModel> news) {
-            this.news.addAll(news);
+        public void addNews(PagedResponseModel<NewsModel> news) {
+            if(news.getOptions().getStartIndex() == 0) {
+                this.news.clear();
+            }
+            this.news.addAll(news.getValues());
             notifyDataSetChanged();
         }
     }

@@ -20,7 +20,7 @@ import butterknife.OnClick;
 import static android.content.Intent.getIntent;
 
 public class ConfirmationFragment extends Fragment {
-
+    private String confirmationMessage = null;
     private ConfirmActivity activity;
     @BindView(R.id.confirmation_message)
     public TextView confirmMessage;
@@ -46,7 +46,11 @@ public class ConfirmationFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_confirmation, container, false);
         ButterKnife.bind(this, view);
-        confirmMessage.setText(activity.confirmMessage);
+        confirmMessage.setText(confirmationMessage);
         return view;
+    }
+
+    public void setConfirmationMessage(String confirmationMessage) {
+        this.confirmationMessage = confirmationMessage;
     }
 }
