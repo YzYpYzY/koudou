@@ -52,9 +52,13 @@ public class AuthRepository {
         authService.Authenticate(model).enqueue(new Callback<TokenModel>() {
             @Override
             public void onResponse(Call<TokenModel> call, Response<TokenModel> response) {
-                TokenModel model = response.body();
-                context.setToken(model);
-                successAction.setValue("Authenticate");
+                if(response.isSuccessful()){
+                    TokenModel model = response.body();
+                    context.setToken(model);
+                    successAction.setValue("Authenticate");
+                } else {
+                    error.setValue(new ErrorModel("Authenticate", "Connexion échouée."));
+                }
             }
 
             @Override
@@ -68,9 +72,13 @@ public class AuthRepository {
         authService.Register(model).enqueue(new Callback<TokenModel>() {
             @Override
             public void onResponse(Call<TokenModel> call, Response<TokenModel> response) {
-                TokenModel model = response.body();
-                context.setToken(model);
-                successAction.setValue("Register");
+                if(response.isSuccessful()){
+                    TokenModel model = response.body();
+                    context.setToken(model);
+                    successAction.setValue("Register");
+                } else {
+                    error.setValue(new ErrorModel("Register", "Inscription échouée."));
+                }
             }
 
             @Override

@@ -18,28 +18,29 @@ import retrofit2.Retrofit;
 
 public class TokenAuthenticator implements Authenticator {
     private App context;
-    private AuthService authService;
     public TokenAuthenticator(Context context) {
         this.context = (App) context;
-        authService = (AuthService) ((App) context).getService(AuthService.class);
     }
 
     @Override
     public Request authenticate(Route route, Response response) throws IOException {
+        String noRetryHeader = response.request().header("No-Retry-Auth");
+        if(!"true".equals(noRetryHeader)) {
+            String refreshToken = context.getStringSetting("refresh_token");
 
-        String refreshToken = context.getStringSetting("refresh_token");
+            AuthService authService = (AuthService) ((App) context).getService(AuthService.class);
+            retrofit2.Response<TokenModel> retrofitResponse = authService.RefreshToken(new RefreshTokenModel(refreshToken)).execute();
 
-        retrofit2.Response<TokenModel> retrofitResponse = authService.RefreshToken(new RefreshTokenModel(refreshToken)).execute();
+            if (retrofitResponse != null) {
+                TokenModel model = retrofitResponse.body();
+                context.setStringSetting("access_token", model.getAccess_token());
+                context.setStringSetting("refresh_token", model.getRefresh_token());
+                String newAccessToken = model.getAccess_token();
 
-        if (retrofitResponse != null) {
-            TokenModel model = retrofitResponse.body();
-            context.setStringSetting("access_token", model.getAccess_token());
-            context.setStringSetting("refresh_token", model.getRefresh_token());
-            String newAccessToken = model.getAccess_token();
-
-            return response.request().newBuilder()
-                    .header("Authorization", "Bearer "+ newAccessToken)
-                    .build();
+                return response.request().newBuilder()
+                        .header("Authorization", "Bearer " + newAccessToken)
+                        .build();
+            }
         }
         return null;
     }

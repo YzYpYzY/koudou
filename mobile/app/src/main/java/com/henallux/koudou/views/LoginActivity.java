@@ -45,6 +45,9 @@ public class LoginActivity extends AppCompatActivity implements Validator.Valida
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        if(((App) getApplication()).isLogged()){
+            goToNews();
+        }
         ButterKnife.bind(this);
         validator = new Validator(this);
         validator.setValidationListener(this);
@@ -67,6 +70,12 @@ public class LoginActivity extends AppCompatActivity implements Validator.Valida
 
     private void goToNews() {
         Intent intent = new Intent(this,NewsActivity.class);
+        startActivity(intent);
+    }
+
+    @OnClick(R.id.login_register_switch_btn)
+    public void goToRegister() {
+        Intent intent = new Intent(this,RegisterActivity.class);
         startActivity(intent);
     }
 

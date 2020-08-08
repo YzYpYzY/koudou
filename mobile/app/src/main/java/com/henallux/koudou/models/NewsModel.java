@@ -1,15 +1,16 @@
 package com.henallux.koudou.models;
 
-public class NewsModel {
+public class NewsModel extends BaseModel {
     private String title;
     private String content;
-    private String author;
+    private String creator;
     private String date;
 
-    public NewsModel(String title, String content, String author, String date){
+    public NewsModel(String title, String content, String creator, String date){
+        super();
         this.title = title;
         this.content = content;
-        this.author = author;
+        this.creator = creator;
         this.date = date;
     }
 
@@ -29,12 +30,12 @@ public class NewsModel {
         this.content = content;
     }
 
-    public String getAuthor() {
-        return author;
+    public String getCreator() {
+        return creator;
     }
 
-    public void setAuthor(String author) {
-        this.author = author;
+    public void setCreator(String creator) {
+        this.creator = creator;
     }
 
     public String getDate() {
