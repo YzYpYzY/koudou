@@ -36,4 +36,12 @@
     <string name="news_author_placeholder">Auteur</string>
     <string name="news_date_placeholder">Date</string>
     <string name="sharedPreferences_token">koudou_prefs</string>
+    <string name="main_error_placeholder">Erreur inconnue</string>
+    <string name="error_back">Retour</string>
+    <string name="profil_email_placeholder">Email</string>
+    <string name="profil_pseudo_placeholder">Pseudo</string>
+    <string name="profil_logout">Se déconnecter</string>
+    <string name="menu_create">Créer</string>
+    <string name="menu_delete">Supprimer</string>
+    <string name="menu_details">Détails</string>
 </resources>

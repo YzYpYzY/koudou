@@ -23,8 +23,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class NewsRepository {
-    private App context;
+public class NewsRepository extends BaseRepository{
     private static NewsRepository instance;
     private NewsService newsService;
 
@@ -38,16 +37,6 @@ public class NewsRepository {
         return selectedNews;
     }
 
-    private MutableLiveData<ErrorModel> error = new MutableLiveData<>();
-    public LiveData<ErrorModel> getError() {
-        return error;
-    }
-
-    private MutableLiveData<String> successAction = new MutableLiveData<>();
-    public LiveData<String> getSuccessAction() {
-        return successAction;
-    }
-
     public static NewsRepository getInstance(App context){
         if(instance == null){
             instance = new NewsRepository(context);
@@ -55,7 +44,7 @@ public class NewsRepository {
         return instance;
     }
     private NewsRepository(App context){
-        this.context = context;
+        super(context);
         newsService = (NewsService) context.getService(NewsService.class);
     }
 
@@ -68,13 +57,13 @@ public class NewsRepository {
                     successAction.setValue("GetNews");
                     news.setValue(model);
                 } else {
-                    error.setValue(new ErrorModel("GetNews", "La récupération des news a échouée."));
+                    treatError(response,"GetNews", "La récupération des news a échouée.");
                 }
             }
 
             @Override
             public void onFailure(Call<PagedResponseModel<NewsModel>> call, Throwable t) {
-                error.setValue(new ErrorModel("GetNews", "La récupération des news a échouée."));
+                treatError(t,"GetNews", "La récupération des news a échouée.");
             }
         });
     }
@@ -88,13 +77,13 @@ public class NewsRepository {
                     successAction.setValue("GetOneNews");
                     selectedNews.setValue(model);
                 } else {
-                    error.setValue(new ErrorModel("GetOneNews", "La récupération de cette news a échouée."));
+                    treatError(response,"GetOneNews", "La récupération de cette news a échouée.");
                 }
             }
 
             @Override
             public void onFailure(Call<NewsModel> call, Throwable t) {
-                error.setValue(new ErrorModel("GetOneNews", "La récupération de cette news a échouée."));
+                treatError(t,"GetOneNews", "La récupération de cette news a échouée.");
             }
         });
     }

@@ -16,7 +16,7 @@
     "api:rebuild": "docker-compose -f api/api.docker-compose.yml --env-file api/.env build",
     "api:stop": "docker-compose -f api/api.docker-compose.yml --env-file api/.env down",
     "app:start": "ng serve",
-    "mobile:reverse-proxy-local-api": "/c/Users/jculot/AppData/Local/Android/Sdk/platform-tools/adb.exe reverse tcp:5001 tcp:5001"
+    "mobile:reverse-proxy-local-api": "/Users/culot/AppData/Local/Android/Sdk/platform-tools/adb.exe reverse tcp:5001 tcp:5001"
   },
   "dependencies": {}
 }

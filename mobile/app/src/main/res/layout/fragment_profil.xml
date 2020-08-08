@@ -6,42 +6,55 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".views.ProfilFragment">
 
-    <com.google.android.material.textfield.TextInputLayout
+    <TextView
+        android:id="@+id/profil_pseudo_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:padding="20dp"
+        android:text="@string/profil_pseudo_placeholder"
+        android:textColor="@color/colorAccent"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/profil_pseudo_label" />
+
+    <TextView
         android:id="@+id/profil_pseudo"
-        style="@style/KoudouTextLayout"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="@string/login_pseudo"
-        app:layout_constraintTop_toTopOf="parent" >
+        android:gravity="center_vertical"
+        android:padding="20dp"
+        android:text="@string/profil_pseudo_placeholder"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/profil_pseudo_label" />
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </com.google.android.material.textfield.TextInputLayout>
-    <com.google.android.material.textfield.TextInputLayout
+    <TextView
+        android:id="@+id/profil_email_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:padding="20dp"
+        android:text="@string/profil_email_placeholder"
+        android:textColor="@color/colorAccent"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/profil_pseudo" />
+
+    <TextView
         android:id="@+id/profil_email"
-        style="@style/KoudouTextLayout"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="@string/login_email"
-        app:layout_constraintTop_toBottomOf="@+id/profil_pseudo">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </com.google.android.material.textfield.TextInputLayout>
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/profil_password"
-        style="@style/KoudouTextLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/login_password"
-        app:layout_constraintTop_toBottomOf="@id/profil_email">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </com.google.android.material.textfield.TextInputLayout>
+        android:gravity="center_vertical"
+        android:padding="20dp"
+        android:text="@string/profil_email_placeholder"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/profil_email_label" />
 
     <Button
         android:id="@+id/profil_change_password_btn"
@@ -51,6 +64,15 @@
         android:text="@string/profil_change_password_btn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/profil_password" />
+        app:layout_constraintTop_toBottomOf="@id/profil_email" />
+    <Button
+        android:id="@+id/profil_logout_btn"
+        style="@style/KoudouButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/profil_logout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/profil_change_password_btn" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

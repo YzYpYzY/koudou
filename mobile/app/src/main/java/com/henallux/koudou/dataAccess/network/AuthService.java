@@ -24,6 +24,7 @@ public interface AuthService {
     @POST("api/1/Auth/RefreshToken")
     Call<TokenModel> RefreshToken(@Body RefreshTokenModel refreshToken);
 
+    @Headers({ "No-Retry-Auth: true" })
     @POST("api/1/Auth/ChangePassword")
-    Call<Boolean> ChangePassword(@Body ChangePasswordModel changePassword);
+    Call<Void> ChangePassword(@Body ChangePasswordModel changePassword);
 }

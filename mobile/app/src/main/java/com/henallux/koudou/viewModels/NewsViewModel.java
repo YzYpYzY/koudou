@@ -15,11 +15,11 @@ import com.henallux.koudou.models.PagedResponseModel;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NewsViewModel extends AndroidViewModel {
+public class NewsViewModel extends ViewModel {
     private NewsRepository newsRepository;
 
-    public NewsViewModel(App app){
-        super(app);
+    public NewsViewModel(){
+        App app = App.getInstance();
         newsRepository = NewsRepository.getInstance(app);
     }
 

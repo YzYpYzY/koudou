@@ -17,4 +17,7 @@
     <style name="KoudouTextLayout" parent="Widget.MaterialComponents.TextInputLayout.FilledBox">
         <item name="android:layout_margin">20dp</item>
     </style>
+    <style name="KoudouButtonAction" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:layout_weight">1</item>
+    </style>
 </resources>

@@ -72,7 +72,7 @@ public class NewsListFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        viewModel =  new NewsViewModel((App) getActivity().getApplication());
+        viewModel = ViewModelProviders.of(this).get(NewsViewModel.class);
         viewModel.getNews().observe(getViewLifecycleOwner(), new Observer<PagedResponseModel<NewsModel>>() {
             @Override
             public void onChanged(PagedResponseModel<NewsModel> news) {

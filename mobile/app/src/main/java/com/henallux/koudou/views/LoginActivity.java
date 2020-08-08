@@ -28,14 +28,14 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class LoginActivity extends AppCompatActivity implements Validator.ValidationListener {
+public class LoginActivity extends BaseActivity implements Validator.ValidationListener {
 
     @BindView(R.id.login_pseudo_text)
-    @NotEmpty
+    @NotEmpty(message = "Le pseudo est obligatoire.")
     public TextInputEditText pseudo;
 
     @BindView(R.id.login_password_text)
-    @NotEmpty
+    @NotEmpty(message = "Le mot de passe est obligatoire.")
     public TextInputEditText password;
 
     private Validator validator;
@@ -45,13 +45,13 @@ public class LoginActivity extends AppCompatActivity implements Validator.Valida
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        if(((App) getApplication()).isLogged()){
+        if(app.isLogged()){
             goToNews();
         }
         ButterKnife.bind(this);
         validator = new Validator(this);
         validator.setValidationListener(this);
-        viewModel = new LoginViewModel((App) getApplication());
+        viewModel = ViewModelProviders.of(this).get(LoginViewModel.class);
         viewModel.getError().observe(this, new Observer<ErrorModel>() {
             @Override
             public void onChanged(ErrorModel errorModel) {
@@ -69,18 +69,13 @@ public class LoginActivity extends AppCompatActivity implements Validator.Valida
     }
 
     private void goToNews() {
-        Intent intent = new Intent(this,NewsActivity.class);
-        startActivity(intent);
+        app.navigate(this, NewsActivity.class, null);
     }
+
 
     @OnClick(R.id.login_register_switch_btn)
     public void goToRegister() {
-        Intent intent = new Intent(this,RegisterActivity.class);
-        startActivity(intent);
-    }
-
-    private void showError(ErrorModel errorModel) {
-        Toast.makeText(this, errorModel.getMessage(), Toast.LENGTH_LONG).show();
+        app.navigate(this, RegisterActivity.class, null);
     }
 
     @OnClick(R.id.login_connect_btn)

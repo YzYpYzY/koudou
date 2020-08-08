@@ -5,12 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".views.NewsActivity">
+
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent">
-
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/topAppBar"
             style="@style/Widget.MaterialComponents.Toolbar.Primary"
@@ -24,9 +24,42 @@
         android:id="@+id/fragment_news_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/bottomAppBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/appBarLayout"
-        >
-    </androidx.fragment.app.FragmentContainerView>
+        app:layout_constraintTop_toBottomOf="@id/appBarLayout" />
+
+    <LinearLayout
+        android:id="@+id/bottomAppBar"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:gravity="fill"
+        android:background="@color/colorAccent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+        <Button
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:id="@+id/news_delete_menu"
+        android:text="@string/menu_delete"
+            style="@style/KoudouButtonAction"
+        android:drawableTop="@drawable/ic_baseline_delete_24" />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/news_add_menu"
+            android:text="@string/menu_create"
+            style="@style/KoudouButtonAction"
+            android:drawableTop="@drawable/ic_baseline_add_24" />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/news_details_menu"
+            android:text="@string/menu_details"
+            style="@style/KoudouButtonAction"
+
+            android:drawableTop="@drawable/ic_baseline_chevron_right_24" />
+    </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

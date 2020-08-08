@@ -2,26 +2,25 @@ package com.henallux.koudou;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-
-import androidx.lifecycle.ViewModel;
+import android.os.Bundle;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.henallux.koudou.dataAccess.network.InternetConnectionListener;
-import com.henallux.koudou.dataAccess.network.NetworkConnectionInterceptor;
 import com.henallux.koudou.dataAccess.network.TokenAuthenticator;
 import com.henallux.koudou.models.TokenModel;
-import com.henallux.koudou.viewModels.LoginViewModel;
+import com.henallux.koudou.models.enums.ErrorType;
+import com.henallux.koudou.tools.JWTUtils;
+import com.henallux.koudou.views.ErrorActivity;
+import com.henallux.koudou.views.LoginActivity;
+
+import org.json.JSONObject;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.security.cert.CertificateException;
-import java.util.Dictionary;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -40,14 +39,24 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class App extends Application {
+    private static final String BASE_URL = "https://127.0.0.1:5001/";//https://koudou.api.yzypyzy.com/";
+
     static boolean ISDEBUG;
+    private static App instance;
 
     private Map<String, Object> services;
 
-    private InternetConnectionListener mInternetConnectionListener;
     private SharedPreferences settings;
+    private Class currentActivity = LoginActivity.class;
+    private Bundle currentActivityBundle = null;
 
-    private static final String BASE_URL = "https://127.0.0.1:5001/";//https://koudou.api.yzypyzy.com/";
+    public App (){
+        super();
+        instance = this;
+    }
+    public static App getInstance() {
+        return instance;
+    }
 
     public boolean isLogged() {
         return getStringSetting("access_token") != null;
@@ -61,14 +70,6 @@ public class App extends Application {
         settings = this.getSharedPreferences(this.getResources()
                 .getString(R.string.sharedPreferences_token), this.MODE_PRIVATE);
         this.services = new HashMap<String, Object>();
-    }
-
-    public void setInternetConnectionListener(InternetConnectionListener listener) {
-        mInternetConnectionListener = listener;
-    }
-
-    public void removeInternetConnectionListener() {
-        mInternetConnectionListener = null;
     }
 
     public Object getService(Class serviceClass) {
@@ -86,19 +87,32 @@ public class App extends Application {
     public void setStringSetting(String name, String value){
         SharedPreferences.Editor editor = settings.edit();
         editor.putString(name, value);
-        editor.commit();
+        editor.apply();
+    }
+
+    public void removeStringSetting(String name){
+        SharedPreferences.Editor editor = settings.edit();
+        editor.remove(name);
+        editor.apply();
     }
 
     public void setToken(TokenModel token){
+        try{
+            JSONObject tokenDecoded = JWTUtils.decode(token.getAccess_token());
+            setStringSetting("pseudo", tokenDecoded.getString("nameid"));
+            setStringSetting("email", tokenDecoded.getString("email"));
+        } catch (Exception e){
+            Toast.makeText(this,"La connexion a échouée", Toast.LENGTH_SHORT);
+        }
         setStringSetting("access_token", token.getAccess_token());
         setStringSetting("refresh_token", token.getRefresh_token());
     }
 
-    private boolean isInternetAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    public void cleanToken(){
+        removeStringSetting("pseudo");
+        removeStringSetting("email");
+        removeStringSetting("access_token");
+        removeStringSetting("refresh_token");
     }
 
     private Retrofit provideRetrofit() {
@@ -169,20 +183,66 @@ public class App extends Application {
                     }
                 }
         );
-        okHttpClientBuilder.addInterceptor(new NetworkConnectionInterceptor() {
-            @Override
-            public boolean isInternetAvailable() {
-                return App.this.isInternetAvailable();
-            }
-
-            @Override
-            public void onInternetUnavailable() {
-                if (mInternetConnectionListener != null) {
-                    mInternetConnectionListener.onInternetUnavailable();
-                }
-            }
-        });
 
         return okHttpClientBuilder.build();
+    }
+
+    public void displayErrorPage(ErrorType type) {
+        Intent intent = new Intent(this, ErrorActivity.class);
+        String message = null;
+        Boolean backAvailable = false;
+        switch (type){
+            case Connection:
+                message = "La connection internet est indisponible";
+                break;
+            case UnavailableApi:
+                message = "Le serveur est injoignable";
+                break;
+            case Server:
+                message = "Le serveur a rencontré une erreur";
+                backAvailable = true;
+                break;
+            case Unknown:
+                message = "Une erreur inconnue a été rencontrée";
+                backAvailable = true;
+                break;
+        }
+        intent.putExtra("error_message", message);
+        intent.putExtra("back_available", backAvailable);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
+
+    public void navigate (Context context, Class activity, Bundle options){
+        currentActivity = activity;
+        currentActivityBundle = options;
+        Intent intent = new Intent(this, activity);
+
+        if(options != null){
+            context.startActivity(intent, options);
+        } else {
+            context.startActivity(intent);
+        }
+    }
+    public void backToActivity(){
+        Intent intent = new Intent(this, currentActivity);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        if(currentActivityBundle != null){
+            startActivity(intent, currentActivityBundle);
+        } else {
+            startActivity(intent);
+        }
+    }
+
+    public Class getCurrentActivity() {
+        return currentActivity;
+    }
+
+    public void logout() {
+        cleanToken();
+        Intent intent = new Intent(this, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent, null);
     }
 }

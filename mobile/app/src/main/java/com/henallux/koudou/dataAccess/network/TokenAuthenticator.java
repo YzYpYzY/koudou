@@ -33,13 +33,15 @@ public class TokenAuthenticator implements Authenticator {
 
             if (retrofitResponse != null) {
                 TokenModel model = retrofitResponse.body();
-                context.setStringSetting("access_token", model.getAccess_token());
-                context.setStringSetting("refresh_token", model.getRefresh_token());
-                String newAccessToken = model.getAccess_token();
+                if(model != null){
+                    context.setStringSetting("access_token", model.getAccess_token());
+                    context.setStringSetting("refresh_token", model.getRefresh_token());
+                    String newAccessToken = model.getAccess_token();
 
-                return response.request().newBuilder()
-                        .header("Authorization", "Bearer " + newAccessToken)
-                        .build();
+                    return response.request().newBuilder()
+                            .header("Authorization", "Bearer " + newAccessToken)
+                            .build();
+                }
             }
         }
         return null;

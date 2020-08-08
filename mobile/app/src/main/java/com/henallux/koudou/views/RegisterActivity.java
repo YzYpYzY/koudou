@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.henallux.koudou.App;
@@ -28,37 +29,40 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import retrofit2.http.POST;
 
 public class RegisterActivity extends AppCompatActivity implements Validator.ValidationListener {
 
     @BindView(R.id.login_pseudo_text)
-    @NotEmpty
+    @NotEmpty(message = "Le pseudo est obligatoire.")
     public TextInputEditText pseudo;
     @BindView(R.id.login_email_text)
-    @NotEmpty
-    @Email
+    @NotEmpty(message = "L'email est obligatoire.")
+    @Email(message = "Le format email n'est pas respecté.")
     public TextInputEditText email;
     @BindView(R.id.login_password_text)
-    @NotEmpty
-    @Password(min = 8, scheme = Password.Scheme.ALPHA_MIXED_CASE)
+    @NotEmpty(message = "Le mot de passe est obligatoire.")
+    @Password(min = 8, scheme = Password.Scheme.ALPHA_MIXED_CASE, message = "Le mot de passe doit contenir au moins : 8 caractères, une majuscule, une minuscule et un chiffre.")
     public TextInputEditText password;
     @BindView(R.id.login_confirm_password_text)
-    @NotEmpty
-    @ConfirmPassword
+    @NotEmpty(message = "La confirmation du mot de passe est obligatoire.")
+    @ConfirmPassword(message = "La confirmation du mot de passe n'est pas égale au mot de passe.")
     public TextInputEditText confirmPassword;
 
     private Validator validator;
     private RegisterViewModel viewModel;
+    private App app;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        app = (App) getApplication();
         setContentView(R.layout.activity_register);
         ButterKnife.bind(this);
         validator = new Validator(this);
         validator.setValidationListener(this);
 
-        viewModel = new RegisterViewModel((App) getApplication());
+        viewModel = ViewModelProviders.of(this).get(RegisterViewModel.class);
         viewModel.getError().observe(this, new Observer<ErrorModel>() {
             @Override
             public void onChanged(ErrorModel errorModel) {
@@ -76,14 +80,12 @@ public class RegisterActivity extends AppCompatActivity implements Validator.Val
     }
 
     private void goToNews() {
-        Intent intent = new Intent(this,NewsActivity.class);
-        startActivity(intent);
+        app.navigate(this, NewsActivity.class,null);
     }
 
     @OnClick(R.id.login_connect_switch_btn)
     public void goToLogin() {
-        Intent intent = new Intent(this, LoginActivity.class);
-        startActivity(intent);
+        app.navigate(this, LoginActivity.class,null);
     }
 
     private void showError(ErrorModel errorModel) {
