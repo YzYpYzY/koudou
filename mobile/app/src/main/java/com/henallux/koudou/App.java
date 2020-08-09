@@ -23,6 +23,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.security.cert.CertificateException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -37,15 +38,16 @@ import javax.net.ssl.X509TrustManager;
 
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
+import okhttp3.Protocol;
 import okhttp3.Request;
 import okhttp3.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class App extends Application {
-    private static final String BASE_URL = "https://127.0.0.1:5001/";//https://koudou.api.yzypyzy.com/";
+    private static final String BASE_URL = "https://koudou-api.yzypyzy.com/"; //"https://127.0.0.1:5001/"; //"https://koudou-api.yzypyzy.com/"; //
 
-    static boolean ISDEBUG;
+    static boolean ISDEBUG = false;
     private static App instance;
 
     private Map<String, Object> services;
@@ -76,6 +78,11 @@ public class App extends Application {
         } catch (Exception e){
             this.cleanToken();
             return false;
+        }
+    }
+    public void chechIsLogged(){
+        if(!isLogged()){
+            navigate(this, LoginActivity.class, null);
         }
     }
 
@@ -194,6 +201,7 @@ public class App extends Application {
             }
         }
 
+        okHttpClientBuilder.protocols(Collections.singletonList(Protocol.HTTP_1_1));
         okHttpClientBuilder.connectTimeout(30, TimeUnit.SECONDS);
         okHttpClientBuilder.readTimeout(30, TimeUnit.SECONDS);
         okHttpClientBuilder.writeTimeout(30, TimeUnit.SECONDS);

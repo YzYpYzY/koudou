@@ -35,9 +35,15 @@ public class MemberActivity extends BaseActivity implements ConfirmActivity {
     private Fragment activeFragment;
 
     @Override
+    public void onBackPressed() {
+        //super.onBackPressed(); DISABLE BACK PRESS
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_member);
+        app.chechIsLogged();
         viewModel = ViewModelProviders.of(this).get(MemberViewModel.class);
         initTopBar();
         fragmentManager = getSupportFragmentManager();

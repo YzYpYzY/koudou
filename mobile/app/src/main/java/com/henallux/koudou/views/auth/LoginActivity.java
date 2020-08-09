@@ -38,6 +38,11 @@ public class LoginActivity extends BaseActivity implements Validator.ValidationL
     private LoginViewModel viewModel;
 
     @Override
+    public void onBackPressed() {
+        //super.onBackPressed(); DISABLE BACK PRESS
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);

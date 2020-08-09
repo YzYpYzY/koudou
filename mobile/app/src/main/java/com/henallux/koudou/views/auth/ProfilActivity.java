@@ -18,9 +18,15 @@ public class ProfilActivity extends BaseActivity {
     private ProfilViewModel viewModel;
 
     @Override
+    public void onBackPressed() {
+        //super.onBackPressed(); DISABLE BACK PRESS
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profil);
+        app.chechIsLogged();
         initTopBar();
         viewModel = ViewModelProviders.of(this).get(ProfilViewModel.class);
         viewModel.getError().observe(this, new Observer<ErrorModel>() {

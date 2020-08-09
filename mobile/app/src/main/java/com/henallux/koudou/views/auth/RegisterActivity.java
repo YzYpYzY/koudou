@@ -51,6 +51,11 @@ public class RegisterActivity extends AppCompatActivity implements Validator.Val
     private App app;
 
     @Override
+    public void onBackPressed() {
+        //super.onBackPressed(); DISABLE BACK PRESS
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         app = (App) getApplication();

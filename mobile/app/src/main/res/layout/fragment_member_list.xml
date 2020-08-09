@@ -5,8 +5,8 @@
     android:layout_height="wrap_content"
     android:layout_weight="1"
     android:orientation="vertical"
-    android:paddingTop="60dp"
-    android:paddingBottom="70dp"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp"
     tools:context=".views.member.MemberListFragment">
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/members_list"

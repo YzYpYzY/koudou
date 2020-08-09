@@ -35,9 +35,14 @@ public class NewsActivity extends BaseActivity implements ConfirmActivity {
     private Fragment activeFragment;
 
     @Override
+    public void onBackPressed() {
+        //super.onBackPressed(); DISABLE BACK PRESS
+    }
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_news);
+        app.chechIsLogged();
         viewModel = ViewModelProviders.of(this).get(NewsViewModel.class);
         initTopBar();
         fragmentManager = getSupportFragmentManager();

@@ -27,7 +27,7 @@
         <activity android:name=".views.auth.ProfilActivity" />
         <activity
             android:name=".views.auth.RegisterActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="fullSensor"/>
         <activity
             android:name=".views.news.NewsActivity"
             android:screenOrientation="portrait" />
