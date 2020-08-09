@@ -1,4 +1,4 @@
-package com.henallux.koudou.views;
+package com.henallux.koudou.views.auth;
 
 import android.os.Bundle;
 
@@ -14,14 +14,11 @@ import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.henallux.koudou.R;
-import com.henallux.koudou.models.NewsModel;
-import com.henallux.koudou.viewModels.LoginViewModel;
-import com.henallux.koudou.viewModels.NewsViewModel;
 import com.henallux.koudou.viewModels.ProfilViewModel;
-import com.henallux.koudou.views.tools.ConfirmActivity;
 import com.mobsandgeeks.saripaar.ValidationError;
 import com.mobsandgeeks.saripaar.Validator;
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
+import com.mobsandgeeks.saripaar.annotation.Password;
 
 import java.util.List;
 
@@ -29,40 +26,26 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class CreateNewsFragment extends Fragment implements Validator.ValidationListener{
+public class ModifyPasswordFragment extends Fragment implements Validator.ValidationListener{
 
-    @BindView(R.id.news_title_text)
-    @NotEmpty(message = "Le titre est obligatoire.")
-    public TextInputEditText title;
-
-    @BindView(R.id.news_content_text)
-    @NotEmpty(message = "Le contenu est obligatoire.")
-    public TextInputEditText content;
-
-    @OnClick(R.id.news_cancel)
-    public void cancel() {
-        activity.goToList();
-    }
-
-    @OnClick(R.id.news_confirm)
-    public void validate() {
-        validator.validate();
-    }
+    @BindView(R.id.modify_password_password_text)
+    @NotEmpty(messageResId = R.string.valid_password_required)
+    public TextInputEditText password;
+    @BindView(R.id.modify_password_new_password_text)
+    @NotEmpty(messageResId = R.string.valid_new_password_required)
+    @Password(min = 8, scheme = Password.Scheme.ALPHA_MIXED_CASE, messageResId = R.string.valid_password_complexity)
+    public TextInputEditText newPassword;
+    @BindView(R.id.modify_password_confirm_password_text)
+    @NotEmpty(messageResId = R.string.valid_password_confirm_required)
+    public TextInputEditText confirmPassword;
 
     private Validator validator;
-    private NewsViewModel viewModel;
-    private NewsActivity activity;
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        activity = (NewsActivity)getActivity();
-    }
+    private ProfilViewModel viewModel;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_create_news, container, false);
+        View view = inflater.inflate(R.layout.fragment_modify_password, container, false);
         ButterKnife.bind(this, view);
         validator = new Validator(this);
         validator.setValidationListener(this);
@@ -72,15 +55,25 @@ public class CreateNewsFragment extends Fragment implements Validator.Validation
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        viewModel = ViewModelProviders.of(getActivity()).get(NewsViewModel.class);
+        viewModel = ViewModelProviders.of(this).get(ProfilViewModel.class);
+    }
+
+    @OnClick(R.id.modify_password_cancel)
+    public void goToLogin() {
+        ((ProfilActivity)getActivity()).goToProfil();
+    }
+
+    @OnClick(R.id.modify_password_confirm)
+    public void validate() {
+        validator.validate();
     }
 
     @Override
     public void onValidationSucceeded() {
-        viewModel.model = new NewsModel(null, null, null, null);
-        viewModel.model.setTitle(title.getText().toString());
-        viewModel.model.setContent(content.getText().toString());
-        viewModel.createNews();
+        viewModel.model.setPassword(password.getText().toString());
+        viewModel.model.setNewPassword(newPassword.getText().toString());
+        viewModel.model.setConfirmNewPassword(confirmPassword.getText().toString());
+        viewModel.ChangePassword();
     }
 
     @Override

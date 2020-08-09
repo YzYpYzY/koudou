@@ -2,10 +2,10 @@ package com.henallux.koudou.models;
 
 public class RegisterModel {
 
-    private String Pseudo;
-    private String Email;
-    private String Password;
-    private String ConfirmPassword;
+    private String pseudo;
+    private String email;
+    private String password;
+    private String confirmPassword;
 
     public RegisterModel(String pseudo, String email, String password, String confirmPassword) {
         setPseudo(pseudo);
@@ -15,34 +15,34 @@ public class RegisterModel {
     }
 
     public String getPseudo() {
-        return Pseudo;
+        return pseudo;
     }
 
     public void setPseudo(String pseudo) {
-        Pseudo = pseudo;
+        this.pseudo = pseudo;
     }
 
     public String getEmail() {
-        return Email;
+        return email;
     }
 
     public void setEmail(String email) {
-        Email = email;
+        this.email = email;
     }
 
     public String getPassword() {
-        return Password;
+        return password;
     }
 
     public void setPassword(String password) {
-        Password = password;
+        this.password = password;
     }
 
     public String getConfirmPassword() {
-        return ConfirmPassword;
+        return confirmPassword;
     }
 
     public void setConfirmPassword(String confirmPassword) {
-        ConfirmPassword = confirmPassword;
+        this.confirmPassword = confirmPassword;
     }
 }

@@ -2,9 +2,9 @@ package com.henallux.koudou.models;
 
 public class CredentialsModel {
 
-    private String Pseudo;
+    private String pseudo;
 
-    private String Password;
+    private String password;
 
     public CredentialsModel(String pseudo, String password) {
         setPseudo(pseudo);
@@ -12,18 +12,18 @@ public class CredentialsModel {
     }
 
     public String getPseudo() {
-        return Pseudo;
+        return pseudo;
     }
 
     public void setPseudo(String pseudo) {
-        Pseudo = pseudo;
+        this.pseudo = pseudo;
     }
 
     public String getPassword() {
-        return Password;
+        return password;
     }
 
     public void setPassword(String password) {
-        Password = password;
+        this.password = password;
     }
 }

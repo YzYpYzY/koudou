@@ -1,6 +1,7 @@
 package com.henallux.koudou.dataAccess.repositories;
 
 import com.henallux.koudou.App;
+import com.henallux.koudou.R;
 import com.henallux.koudou.models.ChangePasswordModel;
 import com.henallux.koudou.models.CredentialsModel;
 import com.henallux.koudou.dataAccess.network.AuthService;
@@ -28,80 +29,80 @@ public class AuthRepository extends BaseRepository{
         authService = (AuthService) context.getService(AuthService.class);
     }
 
-    public void Authenticate(CredentialsModel model){
+    public void authenticate(CredentialsModel model){
 
-        authService.Authenticate(model).enqueue(new Callback<TokenModel>() {
+        authService.authenticate(model).enqueue(new Callback<TokenModel>() {
             @Override
             public void onResponse(Call<TokenModel> call, Response<TokenModel> response) {
                 if(response.isSuccessful()){
                     TokenModel model = response.body();
-                    context.setToken(model);
+                    app.setToken(model);
                     successAction.setValue("Authenticate");
                 } else {
-                    treatError(response, "Authenticate", "Connexion échouée.");
+                    treatError(response, "Authenticate", app.getString(R.string.error_authenticate_fail));
                 }
             }
 
             @Override
             public void onFailure(Call<TokenModel> call, Throwable t) {
-                treatError(t, "Authenticate", "Connexion échouée.");
+                treatError(t, "Authenticate", app.getString(R.string.error_authenticate_fail));
             }
         });
     }
 
-    public void  Register(RegisterModel model){
-        authService.Register(model).enqueue(new Callback<TokenModel>() {
+    public void register(RegisterModel model){
+        authService.register(model).enqueue(new Callback<TokenModel>() {
             @Override
             public void onResponse(Call<TokenModel> call, Response<TokenModel> response) {
                 if(response.isSuccessful()){
                     TokenModel model = response.body();
-                    context.setToken(model);
+                    app.setToken(model);
                     successAction.setValue("Register");
                 } else {
-                    treatError(response, "Register", "Inscription échouée.");
+                    treatError(response, "Register", app.getString(R.string.error_register_fail));
                 }
             }
 
             @Override
             public void onFailure(Call<TokenModel> call, Throwable t) {
-                treatError(t,"Register", "Inscription échouée.");
+                treatError(t,"Register", app.getString(R.string.error_register_fail));
             }
         });
     }
 
-    public void  RefreshToken(RefreshTokenModel model){
-        authService.RefreshToken(model).enqueue(new Callback<TokenModel>() {
+    public void refreshToken(RefreshTokenModel model){
+        authService.refreshToken(model).enqueue(new Callback<TokenModel>() {
             @Override
             public void onResponse(Call<TokenModel> call, Response<TokenModel> response) {
                 if(response.isSuccessful()){
                     TokenModel model = response.body();
-                    context.setToken(model);
+                    app.setToken(model);
                 } else {
-                    treatError(response,"RefreshToken", "Renouvellement de la connexion échouée.");
+                    treatError(response,"RefreshToken", app.getString(R.string.error_refresh_token_fail));
                 }
             }
 
             @Override
             public void onFailure(Call<TokenModel> call, Throwable t) {
-                treatError(t,"RefreshToken", "Renouvellement de la connexion échouée.");
+                treatError(t,"RefreshToken", app.getString(R.string.error_refresh_token_fail));
             }
         });
     }
 
-    public void  ChangePassword(ChangePasswordModel model){
-        authService.ChangePassword(model).enqueue(new Callback() {
+    public void changePassword(ChangePasswordModel model){
+        authService.changePassword(model).enqueue(new Callback() {
             @Override
             public void onResponse(Call call, Response response) {
                 if(response.isSuccessful()){
                     successAction.setValue("ChangePassword");
                 } else {
-                    treatError(response,"ChangePassword", "La modification du mot de passe a échouée.");
+                    treatError(response,"ChangePassword", app.getString(R.string.error_password_change_fail));
                 }
             }
 
             @Override
             public void onFailure(Call call, Throwable t) {
-                treatError(t,"ChangePassword", "La modification du mot de passe a échouée.");
+                treatError(t,"ChangePassword",  app.getString(R.string.error_password_change_fail));
             }
         });
     }

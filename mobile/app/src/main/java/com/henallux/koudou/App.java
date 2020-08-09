@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -13,14 +14,17 @@ import com.henallux.koudou.dataAccess.network.TokenAuthenticator;
 import com.henallux.koudou.models.TokenModel;
 import com.henallux.koudou.models.enums.ErrorType;
 import com.henallux.koudou.tools.JWTUtils;
+import com.henallux.koudou.tools.RessourceClaims;
 import com.henallux.koudou.views.ErrorActivity;
-import com.henallux.koudou.views.LoginActivity;
+import com.henallux.koudou.views.auth.LoginActivity;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.security.cert.CertificateException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -49,6 +53,7 @@ public class App extends Application {
     private SharedPreferences settings;
     private Class currentActivity = LoginActivity.class;
     private Bundle currentActivityBundle = null;
+    private HashSet<RessourceClaims> userClaims = new HashSet<>();
 
     public App (){
         super();
@@ -59,7 +64,33 @@ public class App extends Application {
     }
 
     public boolean isLogged() {
-        return getStringSetting("access_token") != null;
+        try {
+            String access_token = getStringSetting("access_token");
+            if (access_token != null) {
+                if (userClaims.isEmpty()) {
+                    setClaims(access_token);
+                }
+                return true;
+            }
+            return false;
+        } catch (Exception e){
+            this.cleanToken();
+            return false;
+        }
+    }
+
+    private void setClaims(String access_token) throws Exception {
+        JSONObject tokenDecoded = JWTUtils.decode(access_token);
+        JSONArray claims = tokenDecoded.getJSONArray("RessourceAccess");
+        for (int i = 0; i < claims.length(); i++) {
+            String name = (String) claims.get(i);
+            try {
+                RessourceClaims claimType = RessourceClaims.valueOf(name);
+                userClaims.add(claimType);
+            } catch (Exception e) {
+                Log.i("Security", "Claim " + name + "doesn't exist in the app.");
+            }
+        }
     }
 
     @Override
@@ -101,11 +132,12 @@ public class App extends Application {
             JSONObject tokenDecoded = JWTUtils.decode(token.getAccess_token());
             setStringSetting("pseudo", tokenDecoded.getString("nameid"));
             setStringSetting("email", tokenDecoded.getString("email"));
+            setStringSetting("access_token", token.getAccess_token());
+            setStringSetting("refresh_token", token.getRefresh_token());
+            setClaims(token.getAccess_token());
         } catch (Exception e){
-            Toast.makeText(this,"La connexion a échouée", Toast.LENGTH_SHORT);
+            Toast.makeText(this, R.string.error_connection_fail, Toast.LENGTH_SHORT);
         }
-        setStringSetting("access_token", token.getAccess_token());
-        setStringSetting("refresh_token", token.getRefresh_token());
     }
 
     public void cleanToken(){
@@ -113,6 +145,7 @@ public class App extends Application {
         removeStringSetting("email");
         removeStringSetting("access_token");
         removeStringSetting("refresh_token");
+        userClaims.clear();
     }
 
     private Retrofit provideRetrofit() {
@@ -193,17 +226,17 @@ public class App extends Application {
         Boolean backAvailable = false;
         switch (type){
             case Connection:
-                message = "La connection internet est indisponible";
+                message = getString(R.string.error_app_unavailable_internet);
                 break;
             case UnavailableApi:
-                message = "Le serveur est injoignable";
+                message = getString(R.string.error_app_unavailable_api);
                 break;
             case Server:
-                message = "Le serveur a rencontré une erreur";
+                message = getString(R.string.error_app_api);
                 backAvailable = true;
                 break;
             case Unknown:
-                message = "Une erreur inconnue a été rencontrée";
+                message = getString(R.string.error_app_unknown);
                 backAvailable = true;
                 break;
         }
@@ -244,5 +277,12 @@ public class App extends Application {
         Intent intent = new Intent(this, LoginActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent, null);
+    }
+
+    public boolean hasAccess(RessourceClaims claim) {
+        if(claim == null){
+            return true;
+        }
+        return userClaims.contains(claim);
     }
 }

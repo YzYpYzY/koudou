@@ -1,23 +1,19 @@
-package com.henallux.koudou.views;
+package com.henallux.koudou.views.auth;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
-import com.henallux.koudou.App;
 import com.henallux.koudou.R;
 import com.henallux.koudou.models.ErrorModel;
-import com.henallux.koudou.models.TokenModel;
 import com.henallux.koudou.viewModels.LoginViewModel;
+import com.henallux.koudou.views.BaseActivity;
+import com.henallux.koudou.views.news.NewsActivity;
 import com.mobsandgeeks.saripaar.ValidationError;
 import com.mobsandgeeks.saripaar.Validator;
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
@@ -31,11 +27,11 @@ import butterknife.OnClick;
 public class LoginActivity extends BaseActivity implements Validator.ValidationListener {
 
     @BindView(R.id.login_pseudo_text)
-    @NotEmpty(message = "Le pseudo est obligatoire.")
+    @NotEmpty(messageResId = R.string.valid_pseudo_required)
     public TextInputEditText pseudo;
 
     @BindView(R.id.login_password_text)
-    @NotEmpty(message = "Le mot de passe est obligatoire.")
+    @NotEmpty(messageResId = R.string.valid_password_required)
     public TextInputEditText password;
 
     private Validator validator;
@@ -68,11 +64,6 @@ public class LoginActivity extends BaseActivity implements Validator.ValidationL
         });
     }
 
-    private void goToNews() {
-        app.navigate(this, NewsActivity.class, null);
-    }
-
-
     @OnClick(R.id.login_register_switch_btn)
     public void goToRegister() {
         app.navigate(this, RegisterActivity.class, null);
@@ -83,15 +74,9 @@ public class LoginActivity extends BaseActivity implements Validator.ValidationL
         validator.validate();
     }
 
-    private void Authenticate(){
-        viewModel.model.setPassword(password.getText().toString());
-        viewModel.model.setPseudo(pseudo.getText().toString());
-        viewModel.Authenticate();
-    }
-
     @Override
     public void onValidationSucceeded() {
-        Authenticate();
+        authenticate();
     }
 
     @Override
@@ -107,5 +92,15 @@ public class LoginActivity extends BaseActivity implements Validator.ValidationL
                 Toast.makeText(this, message, Toast.LENGTH_LONG).show();
             }
         }
+    }
+
+    private void goToNews() {
+        app.navigate(this, NewsActivity.class, null);
+    }
+
+    private void authenticate(){
+        viewModel.model.setPassword(password.getText().toString());
+        viewModel.model.setPseudo(pseudo.getText().toString());
+        viewModel.Authenticate();
     }
 }

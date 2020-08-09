@@ -3,21 +3,12 @@ package com.henallux.koudou.dataAccess.repositories;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.google.gson.JsonElement;
 import com.henallux.koudou.App;
-import com.henallux.koudou.dataAccess.network.AuthService;
+import com.henallux.koudou.R;
 import com.henallux.koudou.dataAccess.network.NewsService;
-import com.henallux.koudou.models.ChangePasswordModel;
-import com.henallux.koudou.models.CredentialsModel;
-import com.henallux.koudou.models.ErrorModel;
 import com.henallux.koudou.models.NewsModel;
 import com.henallux.koudou.models.PageRequestOptions;
 import com.henallux.koudou.models.PagedResponseModel;
-import com.henallux.koudou.models.RefreshTokenModel;
-import com.henallux.koudou.models.RegisterModel;
-import com.henallux.koudou.models.TokenModel;
-
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -48,8 +39,8 @@ public class NewsRepository extends BaseRepository{
         newsService = (NewsService) context.getService(NewsService.class);
     }
 
-    public void Get(PageRequestOptions option){
-        newsService.Get(option.getStartIndex(), option.getCount(), option.getSort(), option.getSortDirection()).enqueue(new Callback<PagedResponseModel<NewsModel>>() {
+    public void get(PageRequestOptions option){
+        newsService.get(option.getStartIndex(), option.getCount(), option.getSort(), option.getSortDirection()).enqueue(new Callback<PagedResponseModel<NewsModel>>() {
             @Override
             public void onResponse(Call<PagedResponseModel<NewsModel>> call, Response<PagedResponseModel<NewsModel>> response) {
                 if(response.isSuccessful()){
@@ -57,19 +48,19 @@ public class NewsRepository extends BaseRepository{
                     successAction.setValue("GetNews");
                     news.setValue(model);
                 } else {
-                    treatError(response,"GetNews", "La récupération des news a échouée.");
+                    treatError(response,"GetNews", app.getString(R.string.error_news_get_fail));
                 }
             }
 
             @Override
             public void onFailure(Call<PagedResponseModel<NewsModel>> call, Throwable t) {
-                treatError(t,"GetNews", "La récupération des news a échouée.");
+                treatError(t,"GetNews", app.getString(R.string.error_news_get_fail));
             }
         });
     }
 
-    public void GetOne(int id){
-        newsService.Get(id).enqueue(new Callback<NewsModel>() {
+    public void getOne(int id){
+        newsService.get(id).enqueue(new Callback<NewsModel>() {
             @Override
             public void onResponse(Call<NewsModel> call, Response<NewsModel> response) {
                 if(response.isSuccessful()){
@@ -77,19 +68,19 @@ public class NewsRepository extends BaseRepository{
                     successAction.setValue("GetOneNews");
                     selectedNews.setValue(model);
                 } else {
-                    treatError(response,"GetOneNews", "La récupération de cette news a échouée.");
+                    treatError(response,"GetOneNews", app.getString(R.string.error_news_getone_fail));
                 }
             }
 
             @Override
             public void onFailure(Call<NewsModel> call, Throwable t) {
-                treatError(t,"GetOneNews", "La récupération de cette news a échouée.");
+                treatError(t,"GetOneNews", app.getString(R.string.error_news_getone_fail));
             }
         });
     }
 
-    public void Create(NewsModel model){
-        newsService.Create(model).enqueue(new Callback<NewsModel>() {
+    public void create(NewsModel model){
+        newsService.create(model).enqueue(new Callback<NewsModel>() {
             @Override
             public void onResponse(Call<NewsModel> call, Response<NewsModel> response) {
                 if(response.isSuccessful()){
@@ -97,19 +88,19 @@ public class NewsRepository extends BaseRepository{
                     successAction.setValue("CreateNews");
                     selectedNews.setValue(model);
                 } else {
-                    treatError(response,"CreateNews", "La création de cette news a échouée.");
+                    treatError(response,"CreateNews", app.getString(R.string.error_news_create_fail));
                 }
             }
 
             @Override
             public void onFailure(Call<NewsModel> call, Throwable t) {
-                treatError(t,"CreateNews", "La création de cette news a échouée.");
+                treatError(t,"CreateNews", app.getString(R.string.error_news_create_fail));
             }
         });
     }
 
-    public void Update(NewsModel model){
-        newsService.Update(model, model.getId()).enqueue(new Callback<NewsModel>() {
+    public void update(NewsModel model){
+        newsService.update(model, model.getId()).enqueue(new Callback<NewsModel>() {
             @Override
             public void onResponse(Call<NewsModel> call, Response<NewsModel> response) {
                 if(response.isSuccessful()){
@@ -117,34 +108,38 @@ public class NewsRepository extends BaseRepository{
                     successAction.setValue("UpdateNews");
                     selectedNews.setValue(model);
                 } else {
-                    treatError(response,"UpdateNews", "La mise à jour de cette news a échouée.");
+                    treatError(response,"UpdateNews", app.getString(R.string.error_news_update_fail));
                 }
             }
 
             @Override
             public void onFailure(Call<NewsModel> call, Throwable t) {
-                treatError(t,"UpdateNews", "La mise à jour de cette news a échouée.");
+                treatError(t,"UpdateNews", app.getString(R.string.error_news_update_fail));
             }
         });
     }
 
-    public void Delete(int id){
-        newsService.Delete(id).enqueue(new Callback() {
+    public void delete(int id){
+        newsService.delete(id).enqueue(new Callback() {
             @Override
             public void onResponse(Call call, Response response) {
                 if(response.isSuccessful()){
                     successAction.setValue("DeleteNews");
                     selectedNews.setValue(null);
-                    Get(new PageRequestOptions(0, 20, null, null));
+                    get(new PageRequestOptions(0, 20, null, null));
                 } else {
-                    treatError(response,"DeleteNews", "La supression de cette news a échouée.");
+                    treatError(response,"DeleteNews", app.getString(R.string.error_news_delete_fail));
                 }
             }
 
             @Override
             public void onFailure(Call call, Throwable t) {
-                treatError(t,"DeleteNews", "La supression de cette news a échouée.");
+                treatError(t,"DeleteNews", app.getString(R.string.error_news_delete_fail));
             }
         });
+    }
+
+    public void clearSelectedNews() {
+        selectedNews.setValue(null);
     }
 }

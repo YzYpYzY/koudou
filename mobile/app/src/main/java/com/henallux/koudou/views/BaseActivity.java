@@ -9,6 +9,9 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.henallux.koudou.App;
 import com.henallux.koudou.R;
 import com.henallux.koudou.models.ErrorModel;
+import com.henallux.koudou.views.auth.ProfilActivity;
+import com.henallux.koudou.views.member.MemberActivity;
+import com.henallux.koudou.views.news.NewsActivity;
 
 public class BaseActivity extends AppCompatActivity {
 
@@ -32,7 +35,7 @@ public class BaseActivity extends AppCompatActivity {
                     newActivity = NewsActivity.class;
                     break;
                 case R.id.member_menu:
-                    //newActivity = MembersActivity.class;
+                    newActivity = MemberActivity.class;
                     break;
             }
             if(newActivity != app.getCurrentActivity()){
@@ -45,9 +48,11 @@ public class BaseActivity extends AppCompatActivity {
     protected void showError(ErrorModel errorModel) {
         Toast.makeText(this, errorModel.getMessage(), Toast.LENGTH_LONG).show();
     }
+
     protected void showHint(String hint) {
         Toast.makeText(this, hint, Toast.LENGTH_LONG).show();
     }
+
     protected void showSuccessMessage(String message) {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }

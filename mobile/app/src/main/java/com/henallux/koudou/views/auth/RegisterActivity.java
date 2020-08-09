@@ -1,6 +1,5 @@
-package com.henallux.koudou.views;
+package com.henallux.koudou.views.auth;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -14,9 +13,8 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.henallux.koudou.App;
 import com.henallux.koudou.R;
 import com.henallux.koudou.models.ErrorModel;
-import com.henallux.koudou.models.RegisterModel;
-import com.henallux.koudou.viewModels.LoginViewModel;
 import com.henallux.koudou.viewModels.RegisterViewModel;
+import com.henallux.koudou.views.news.NewsActivity;
 import com.mobsandgeeks.saripaar.ValidationError;
 import com.mobsandgeeks.saripaar.Validator;
 import com.mobsandgeeks.saripaar.annotation.ConfirmPassword;
@@ -29,24 +27,23 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import retrofit2.http.POST;
 
 public class RegisterActivity extends AppCompatActivity implements Validator.ValidationListener {
 
     @BindView(R.id.login_pseudo_text)
-    @NotEmpty(message = "Le pseudo est obligatoire.")
+    @NotEmpty(messageResId = R.string.valid_pseudo_required)
     public TextInputEditText pseudo;
     @BindView(R.id.login_email_text)
-    @NotEmpty(message = "L'email est obligatoire.")
-    @Email(message = "Le format email n'est pas respecté.")
+    @NotEmpty(messageResId = R.string.valid_email_required)
+    @Email(messageResId = R.string.valid_email_format)
     public TextInputEditText email;
     @BindView(R.id.login_password_text)
-    @NotEmpty(message = "Le mot de passe est obligatoire.")
-    @Password(min = 8, scheme = Password.Scheme.ALPHA_MIXED_CASE, message = "Le mot de passe doit contenir au moins : 8 caractères, une majuscule, une minuscule et un chiffre.")
+    @NotEmpty(messageResId = R.string.valid_password_required)
+    @Password(min = 8, scheme = Password.Scheme.ALPHA_MIXED_CASE, messageResId = R.string.valid_password_complexity)
     public TextInputEditText password;
     @BindView(R.id.login_confirm_password_text)
-    @NotEmpty(message = "La confirmation du mot de passe est obligatoire.")
-    @ConfirmPassword(message = "La confirmation du mot de passe n'est pas égale au mot de passe.")
+    @NotEmpty(messageResId = R.string.valid_new_password_required)
+    @ConfirmPassword(messageResId = R.string.valid_password_same_new_password)
     public TextInputEditText confirmPassword;
 
     private Validator validator;
@@ -79,30 +76,14 @@ public class RegisterActivity extends AppCompatActivity implements Validator.Val
         });
     }
 
-    private void goToNews() {
-        app.navigate(this, NewsActivity.class,null);
-    }
-
     @OnClick(R.id.login_connect_switch_btn)
     public void goToLogin() {
         app.navigate(this, LoginActivity.class,null);
     }
 
-    private void showError(ErrorModel errorModel) {
-        Toast.makeText(this, errorModel.getMessage(), Toast.LENGTH_LONG).show();
-    }
-
     @OnClick(R.id.login_register_btn)
     public void RegisterClick(){
         validator.validate();
-    }
-
-    private void Register(){
-        viewModel.model.setPseudo(pseudo.getText().toString());
-        viewModel.model.setEmail(email.getText().toString());
-        viewModel.model.setPassword(password.getText().toString());
-        viewModel.model.setConfirmPassword(confirmPassword.getText().toString());
-        viewModel.Register();
     }
 
     @Override
@@ -123,5 +104,20 @@ public class RegisterActivity extends AppCompatActivity implements Validator.Val
                 Toast.makeText(this, message, Toast.LENGTH_LONG).show();
             }
         }
+    }
+
+    private void Register(){
+        viewModel.model.setPseudo(pseudo.getText().toString());
+        viewModel.model.setEmail(email.getText().toString());
+        viewModel.model.setPassword(password.getText().toString());
+        viewModel.model.setConfirmPassword(confirmPassword.getText().toString());
+        viewModel.Register();
+    }
+
+    private void showError(ErrorModel errorModel) {
+        Toast.makeText(this, errorModel.getMessage(), Toast.LENGTH_LONG).show();
+    }
+    private void goToNews() {
+        app.navigate(this, NewsActivity.class,null);
     }
 }

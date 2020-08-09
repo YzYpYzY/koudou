@@ -1,4 +1,4 @@
-package com.henallux.koudou.views;
+package com.henallux.koudou.views.news;
 
 import android.os.Bundle;
 
@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.henallux.koudou.R;
 import com.henallux.koudou.viewModels.NewsViewModel;
+import com.henallux.koudou.views.news.NewsActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -27,12 +28,10 @@ public class DetailsNewsFragment extends Fragment {
     @BindView(R.id.news_content)
     public TextView content;
     private NewsViewModel viewModel;
-    private NewsActivity activity;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        activity = (NewsActivity)getActivity();
     }
 
     @Override
@@ -42,11 +41,12 @@ public class DetailsNewsFragment extends Fragment {
         ButterKnife.bind(this, view);
         viewModel = ViewModelProviders.of(this).get(NewsViewModel.class);
         viewModel.getSelectedNews().observe(getActivity(), newsModel -> {
-            title.setText(newsModel.getTitle());
-            creator.setText(newsModel.getCreator());
-            date.setText(newsModel.getDate());
-            content.setText(newsModel.getContent());
-
+            if(newsModel != null){
+                title.setText(newsModel.getTitle());
+                creator.setText(newsModel.getCreator());
+                date.setText(newsModel.getDate());
+                content.setText(newsModel.getContent());
+            }
         });
         return view;
     }

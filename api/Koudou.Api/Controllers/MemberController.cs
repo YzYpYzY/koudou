@@ -62,25 +62,25 @@ namespace Koudou.Api.Controllers
             return _membersLogic.GetOne(id);
         }
 
-        // [HttpPost]
-        // public MemberFullDTO Create(MemberFullDTO dto)
-        // {
-        //     ValidateDTO(dto);
-        //     return _membersLogic.Create(dto);
-        // }
+        [HttpPost]
+        public MemberFullDTO Create(MemberFullDTO dto)
+        {
+            ValidateDTO(dto);
+            return _membersLogic.Create(dto);
+        }
 
-        // [HttpPut("{id:int}")]
-        // public MemberFullDTO Update(int id, MemberFullDTO dto)
-        // {
-        //     ValidateDTO(dto);
-        //     return _membersLogic.Update(id, dto);
-        // }
+        [HttpPut("{id:int}")]
+        public MemberFullDTO Update(int id, MemberFullDTO dto)
+        {
+            ValidateDTO(dto);
+            return _membersLogic.Update(id, dto);
+        }
 
-        // [HttpDelete("{id:int}")]
-        // public IActionResult Delete(int id)
-        // {
-        //     _membersLogic.Delete(id);
-        //     return Ok();
-        // }
+        [HttpDelete("{id:int}")]
+        public IActionResult Delete(int id)
+        {
+            _membersLogic.Delete(id);
+            return Ok();
+        }
     }
 }

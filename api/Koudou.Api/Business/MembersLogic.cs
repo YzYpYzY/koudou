@@ -8,6 +8,7 @@ using Koudou.Models.Base;
 using Koudou.Models.Members;
 using Koudou.Api.Business;
 using Microsoft.EntityFrameworkCore;
+using Koudou.Helpers;
 
 namespace Koudou.Api.Business
 {
@@ -54,60 +55,52 @@ namespace Koudou.Api.Business
             return new MemberFullDTO().FromEntity(member);
         }
 
-        // public MemberDTO CreateMember(MemberFullDTO dto)
-        // {
-        //     var section = Context.Sections.Find(dto.SectionId);
-        //     if (section == null)
-        //     {
-        //         throw new IdNotFoundRequestException(nameof(Section), dto.SectionId.ToString()));
-        //     }
-        //     var role = Context.Roles.Find(dto.RoleId);
-        //     if (role == null)
-        //     {
-        //         throw new IdNotFoundRequestException(nameof(Role), dto.RoleId.ToString());
-        //     }
-        //     var newAdress = new Adress(dto.Street, dto.Number,  dto.Box,  dto.PostalCode,  dto.City) ;
-        //     var newPhone = new Phone(dto., PhoneType.Unknow);
-        //     var newPersonRole = new PersonRole();
-        //     var newPerson = new Person();
-        //     var newMember = new Member();
+        public MemberFullDTO Create(MemberFullDTO dto)
+        {
+            var newPerson = new Person();
+            newPerson.FirstName = dto.FirstName;
+            newPerson.LastName = dto.LastName;
+            newPerson.Birthdate = DateHelper.StringToDateTime(dto.Birthdate);
+            newPerson.Sex = dto.Sex != null ? (char) dto.Sex : 'U';
+            newPerson.Comment = dto.Comment;
 
-        //     Context.Add(newMember);
-        //     Context.SaveChanges();
+            Context.Add(newPerson);
+            var newMember = new Member();
+            Context.SaveChanges();
 
-        //     return new MemberDTO().FromEntity(newMember);
-        // }
+            newMember.Person = newPerson;
+            Context.Add(newMember);
+            Context.SaveChanges();
 
-        // public MemberDTO UpdateMember(int id, UpdateMemberDTO dto)
-        // {
-        //     var member = Context.Members
-        //                         .Include(m => m.Group)
-        //                         .SingleOrDefault(m => m.Id == id);
+            return new MemberFullDTO().FromEntity(newMember);
+        }
 
-        //     if (member == null)
-        //     {
-        //         throw new IdNotFoundRequestException(nameof(Member), id);
-        //     }
-        // 
-        //     Context.Entry(member).OriginalValues["xmin"] = dto.RowVersion;
-        //     member.CompanyName = dto.CompanyName;
-        //     member.Prefix = dto.Prefix;
-        //     member.Suffix = dto.Suffix;
-        //     member.ShortDescription = dto.ShortDescription;
-        //     member.LongDescription = dto.LongDescription;
-        //     member.Email = dto.Email;
-        //     member.IsActive = dto.IsActive;
-        //     member.IsMember = dto.IsMember;
-        //     member.IsReferenced = dto.IsReferenced;
+        public MemberFullDTO Update(int id, MemberFullDTO dto)
+        {
+            var member = Context.Members
+                                .Include(m => m.Person)
+                                .SingleOrDefault(m => m.Id == id);
 
-        //     Context.SaveChanges();
+            if (member == null)
+            {
+                throw new IdNotFoundRequestException(nameof(Member), id);
+            }
+        
+            Context.Entry(member).OriginalValues["xmin"] = dto.RowVersion;
+            member.Person.LastName = dto.LastName;
+            member.Person.FirstName = dto.FirstName;
+            member.Person.Birthdate = DateHelper.StringToDateTime(dto.Birthdate);
+            member.Person.Sex = dto.Sex != null ? (char) dto.Sex : 'U';
+            member.Person.Comment = dto.Comment;
 
-        //     var newDTO = new MemberDTO().FromEntity(member);
+            Context.SaveChanges();
 
-        //     return newDTO;
-        // }
+            var newDTO = new MemberFullDTO().FromEntity(member);
 
-        public void DeleteMember(int id)
+            return newDTO;
+        }
+
+        public void Delete(int id)
         {
             var member = Context.Members
                                 .SingleOrDefault(m => m.Id == id);

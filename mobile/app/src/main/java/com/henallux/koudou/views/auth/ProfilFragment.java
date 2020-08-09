@@ -1,4 +1,4 @@
-package com.henallux.koudou.views;
+package com.henallux.koudou.views.auth;
 
 import androidx.lifecycle.ViewModelProviders;
 
@@ -13,10 +13,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.henallux.koudou.App;
 import com.henallux.koudou.R;
-import com.henallux.koudou.viewModels.LoginViewModel;
 import com.henallux.koudou.viewModels.ProfilViewModel;
+import com.henallux.koudou.views.auth.ProfilActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

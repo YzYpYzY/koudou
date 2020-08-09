@@ -2,17 +2,17 @@ package com.henallux.koudou.models;
 
 public class RefreshTokenModel {
 
-    private String RefreshToken;
-
-    public String getRefreshToken() {
-        return RefreshToken;
-    }
+    private String refreshToken;
 
     public RefreshTokenModel(String refreshToken) {
-        RefreshToken = refreshToken;
+        this.refreshToken = refreshToken;
+    }
+
+    public String getRefreshToken() {
+        return refreshToken;
     }
 
     public void setRefreshToken(String refreshToken) {
-        RefreshToken = refreshToken;
+        this.refreshToken = refreshToken;
     }
 }

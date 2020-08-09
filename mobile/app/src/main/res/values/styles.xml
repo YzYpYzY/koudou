@@ -19,5 +19,13 @@
     </style>
     <style name="KoudouButtonAction" parent="Widget.AppCompat.Button.Borderless">
         <item name="android:layout_weight">1</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:textColor">@color/textContrasted</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+    </style>
+
+    <style name="KoudouTextLayoutDropdown" parent="Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu">
+        <item name="android:layout_margin">20dp</item>
     </style>
 </resources>

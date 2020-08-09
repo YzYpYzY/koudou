@@ -1,7 +1,5 @@
 package com.henallux.koudou.dataAccess.repositories;
 
-import android.content.Context;
-import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 
 import androidx.lifecycle.LiveData;
@@ -13,16 +11,13 @@ import com.henallux.koudou.models.enums.ErrorType;
 
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
-import java.net.InetAddress;
 import java.net.URL;
 
 import retrofit2.Response;
 
-import static androidx.core.content.ContextCompat.getSystemService;
-
 public class BaseRepository {
 
-    protected App context;
+    protected App app;
 
     protected MutableLiveData<ErrorModel> error = new MutableLiveData<>();
     public LiveData<ErrorModel> getError() {
@@ -35,14 +30,14 @@ public class BaseRepository {
     }
 
     public BaseRepository(App context){
-        this.context = context;
+        this.app = context;
     }
 
     protected void treatError(Throwable exception, String from, String message){
         if(exception.getClass().equals(ConnectException.class)){
             new testNetwork().execute();
         }else{
-            context.displayErrorPage(ErrorType.Unknown);
+            app.displayErrorPage(ErrorType.Unknown);
         }
     }
     protected void treatError(Response response, String from, String message){
@@ -50,7 +45,7 @@ public class BaseRepository {
         switch (response.code()){
             case 500:
                 type = ErrorType.Server;
-                context.displayErrorPage(type);
+                app.displayErrorPage(type);
                 return;
             case 400:
                 type = ErrorType.BadRequest;
@@ -95,9 +90,9 @@ public class BaseRepository {
         @Override
         protected void onPostExecute(Void param) {
             if(isConnected){
-                context.displayErrorPage(ErrorType.UnavailableApi);
+                app.displayErrorPage(ErrorType.UnavailableApi);
             } else {
-                context.displayErrorPage(ErrorType.Connection);
+                app.displayErrorPage(ErrorType.Connection);
             }
         }
     }

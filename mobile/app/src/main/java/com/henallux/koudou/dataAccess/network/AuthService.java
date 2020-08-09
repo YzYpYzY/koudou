@@ -14,17 +14,17 @@ import retrofit2.http.POST;
 public interface AuthService {
     @Headers({ "No-Retry-Auth: true" })
     @POST("api/1/Auth/Authenticate")
-    Call<TokenModel> Authenticate(@Body CredentialsModel credentials);
+    Call<TokenModel> authenticate(@Body CredentialsModel credentials);
 
     @Headers({ "No-Retry-Auth: true" })
     @POST("api/1/Auth/Register")
-    Call<TokenModel> Register(@Body RegisterModel register);
+    Call<TokenModel> register(@Body RegisterModel register);
 
     @Headers({ "No-Retry-Auth: true" })
     @POST("api/1/Auth/RefreshToken")
-    Call<TokenModel> RefreshToken(@Body RefreshTokenModel refreshToken);
+    Call<TokenModel> refreshToken(@Body RefreshTokenModel refreshToken);
 
     @Headers({ "No-Retry-Auth: true" })
     @POST("api/1/Auth/ChangePassword")
-    Call<Void> ChangePassword(@Body ChangePasswordModel changePassword);
+    Call<Void> changePassword(@Body ChangePasswordModel changePassword);
 }

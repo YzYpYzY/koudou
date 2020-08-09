@@ -7,15 +7,13 @@ import androidx.lifecycle.ViewModel;
 import com.henallux.koudou.App;
 import com.henallux.koudou.dataAccess.repositories.AuthRepository;
 import com.henallux.koudou.models.ChangePasswordModel;
-import com.henallux.koudou.models.CredentialsModel;
 import com.henallux.koudou.models.ErrorModel;
 
 public class ProfilViewModel extends ViewModel {
+    public ChangePasswordModel model;
 
     private App app;
-    public ChangePasswordModel model;
     private AuthRepository authRepository;
-
     private MutableLiveData<String> pseudo = new MutableLiveData<>(null);
     private MutableLiveData<String> email = new MutableLiveData<>(null);
 
@@ -44,7 +42,7 @@ public class ProfilViewModel extends ViewModel {
     }
 
     public void ChangePassword(){
-        authRepository.ChangePassword(model);
+        authRepository.changePassword(model);
     }
 
     public void logout() {

@@ -41,14 +41,17 @@ namespace Koudou.Models.Members
             TotemJungle = entity.TotemJungle;
             Quali = entity.Quali;
 
-            var sectionMember = entity.SectionMembers.FirstOrDefault(sm => sm.Section.ParentSectionId != null);
-            if(sectionMember == null){
-                sectionMember = entity.SectionMembers.FirstOrDefault();
-            } 
-            SectionId = sectionMember?.SectionId;
-
-            var personRole = entity.Person.PersonRoles.FirstOrDefault();
-            RoleId = personRole?.RoleId;
+            if(entity.SectionMembers != null){
+                var sectionMember = entity.SectionMembers?.FirstOrDefault(sm => sm.Section.ParentSectionId != null);
+                if(sectionMember == null){
+                    sectionMember = entity.SectionMembers?.FirstOrDefault();
+                } 
+                SectionId = sectionMember?.SectionId;
+            }
+            if(entity.Person.PersonRoles != null){
+                var personRole = entity.Person?.PersonRoles.FirstOrDefault();
+                RoleId = personRole?.RoleId;
+            }
 
             LastName = entity.Person?.LastName;
             FirstName = entity.Person?.FirstName;
@@ -72,7 +75,6 @@ namespace Koudou.Models.Members
         public override void Validate(){
             ValidateStringNotEmpty(nameof(LastName), this.LastName);
             ValidateStringNotEmpty(nameof(FirstName), this.FirstName);
-            ValidateStringIsEmail(nameof(Email), this.Email);
             if(Birthdate != null){
                 ValidateDateBefore(nameof(Birthdate), this.Birthdate, DateTime.Now);
             }

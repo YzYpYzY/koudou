@@ -2,37 +2,37 @@ package com.henallux.koudou.models;
 
 public class ChangePasswordModel {
 
-    private String Password;
-    private String NewPassword;
-    private String ConfirmNewPassword;
+    private String password;
+    private String newPassword;
+    private String confirmNewPassword;
 
     public ChangePasswordModel(String password, String newPassword, String confirmNewPassword) {
-        Password = password;
-        NewPassword = newPassword;
-        ConfirmNewPassword = confirmNewPassword;
+        this.password = password;
+        this.newPassword = newPassword;
+        this.confirmNewPassword = confirmNewPassword;
     }
 
     public String getPassword() {
-        return Password;
+        return password;
     }
 
     public void setPassword(String password) {
-        Password = password;
+        this.password = password;
     }
 
     public String getNewPassword() {
-        return NewPassword;
+        return newPassword;
     }
 
     public void setNewPassword(String newPassword) {
-        NewPassword = newPassword;
+        this.newPassword = newPassword;
     }
 
     public String getConfirmNewPassword() {
-        return ConfirmNewPassword;
+        return confirmNewPassword;
     }
 
     public void setConfirmNewPassword(String confirmNewPassword) {
-        ConfirmNewPassword = confirmNewPassword;
+        this.confirmNewPassword = confirmNewPassword;
     }
 }

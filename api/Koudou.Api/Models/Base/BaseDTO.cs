@@ -89,9 +89,9 @@ namespace Koudou.Models.Base
 
         protected void ValidateDateBefore(string propertyName, string value, DateTime upperBound)
         {
-            if(DateHelper.StringToDateTime(value) < upperBound)
+            if(DateHelper.StringToDateTime(value) > upperBound)
             {
-                ValidationErrors.Add($"Date [{propertyName}] must not be earlier than {upperBound.ToShortDateString()}");
+                ValidationErrors.Add($"Date [{propertyName}] must be earlier than {upperBound.ToShortDateString()}");
             }
         }
 

@@ -20,11 +20,9 @@ import butterknife.OnClick;
 import static android.content.Intent.getIntent;
 
 public class ConfirmationFragment extends Fragment {
-    private String confirmationMessage = null;
-    private ConfirmActivity activity;
+
     @BindView(R.id.confirmation_message)
     public TextView confirmMessage;
-
     @OnClick(R.id.confirm_button_false)
     public void cancel() {
         activity.confirmationCancel();
@@ -33,6 +31,9 @@ public class ConfirmationFragment extends Fragment {
     public void confirm() {
         activity.confirmationValid();
     }
+
+    private String confirmationMessage = null;
+    private ConfirmActivity activity;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

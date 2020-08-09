@@ -1,19 +1,17 @@
 package com.henallux.koudou.viewModels;
 
-import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.henallux.koudou.App;
 import com.henallux.koudou.dataAccess.repositories.AuthRepository;
-import com.henallux.koudou.models.CredentialsModel;
 import com.henallux.koudou.models.ErrorModel;
 import com.henallux.koudou.models.RegisterModel;
 
 public class RegisterViewModel extends ViewModel {
-    private AuthRepository authRepository;
-
     public RegisterModel model;
+
+    private AuthRepository authRepository;
 
     public RegisterViewModel(){
         App app = App.getInstance();
@@ -30,6 +28,6 @@ public class RegisterViewModel extends ViewModel {
     }
 
     public void Register(){
-        authRepository.Register(model);
+        authRepository.register(model);
     }
 }

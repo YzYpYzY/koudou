@@ -1,6 +1,5 @@
-package com.henallux.koudou.views;
+package com.henallux.koudou.views.member;
 
-import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -18,24 +17,20 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.henallux.koudou.R;
-import com.henallux.koudou.models.NewsModel;
+import com.henallux.koudou.models.MemberModel;
 import com.henallux.koudou.models.PagedResponseModel;
-import com.henallux.koudou.viewModels.NewsViewModel;
+import com.henallux.koudou.viewModels.MemberViewModel;
 import com.henallux.koudou.views.tools.EndlessRecyclerViewScrollListener;
 import com.henallux.koudou.views.tools.OnItemSelectedListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class NewsListFragment extends Fragment {
+public class MemberListFragment extends Fragment {
 
-    private NewsViewModel viewModel;
-    private NewsAdapter adapter;
-
+    private MemberViewModel viewModel;
+    private MemberListFragment.MemberAdapter adapter;
     private EndlessRecyclerViewScrollListener scrollListener;
-
-    public NewsListFragment() {
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -45,55 +40,51 @@ public class NewsListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         super.onCreateView(inflater,container, savedInstanceState);
-        this.adapter = new NewsAdapter();
-        View view = inflater.inflate(R.layout.fragment_news_list, container, false);
-        RecyclerView newsRecyclerView = view.findViewById(R.id.news_list);
+        this.adapter = new MemberListFragment.MemberAdapter();
+        View view = inflater.inflate(R.layout.fragment_member_list, container, false);
+        RecyclerView memberRecyclerView = view.findViewById(R.id.members_list);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this.getContext());
-        newsRecyclerView.setLayoutManager(linearLayoutManager);
-        newsRecyclerView.setAdapter(adapter);
+        memberRecyclerView.setLayoutManager(linearLayoutManager);
+        memberRecyclerView.setAdapter(adapter);
         scrollListener = new EndlessRecyclerViewScrollListener(linearLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
                 // Triggered only when new data needs to be appended to the list
                 // Add whatever code is needed to append new items to the bottom of the list
-                loadNextNews(page);
+                loadNextMember(page);
             }
         };
         // Adds the scroll listener to RecyclerView
-        newsRecyclerView.addOnScrollListener(scrollListener);
+        memberRecyclerView.addOnScrollListener(scrollListener);
         return view;
-    }
-
-    private void loadNextNews(int page) {
-        viewModel.loadNextNews(page);
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        viewModel = ViewModelProviders.of(getActivity()).get(NewsViewModel.class);
-        viewModel.getNews().observe(getViewLifecycleOwner(), new Observer<PagedResponseModel<NewsModel>>() {
+        viewModel = ViewModelProviders.of(getActivity()).get(MemberViewModel.class);
+        viewModel.getMembers().observe(getViewLifecycleOwner(), new Observer<PagedResponseModel<MemberModel>>() {
             @Override
-            public void onChanged(PagedResponseModel<NewsModel> news) {
-                adapter.addNews(news);
+            public void onChanged(PagedResponseModel<MemberModel> member) {
+                adapter.addMembers(member);
             }
         });
-        viewModel.loadNews();
+        viewModel.loadMembers();
     }
 
-    private class NewsViewHolder extends RecyclerView.ViewHolder {
+    private void loadNextMember(int page) {
+        viewModel.loadNextMembers(page);
+    }
 
-        public TextView title;
-        public TextView content;
-        public TextView creator;
-        public TextView date;
+    private class MemberViewHolder extends RecyclerView.ViewHolder {
 
-        public NewsViewHolder(@NonNull View itemView, OnItemSelectedListener listener) {
+        public TextView firstname;
+        public TextView lastname;
+
+        public MemberViewHolder(@NonNull View itemView, OnItemSelectedListener listener) {
             super(itemView);
-            title = itemView.findViewById(R.id.news_title);
-            content = itemView.findViewById(R.id.news_content);
-            creator = itemView.findViewById(R.id.news_creator);
-            date = itemView.findViewById(R.id.news_date);
+            firstname = itemView.findViewById(R.id.member_firstname);
+            lastname = itemView.findViewById(R.id.member_lastname);
             itemView.setOnClickListener(view -> {
                 int currentPosition = getAdapterPosition();
                 listener.onItemSelected(currentPosition);
@@ -101,33 +92,31 @@ public class NewsListFragment extends Fragment {
         }
     }
 
-    private class NewsAdapter extends RecyclerView.Adapter<NewsViewHolder> {
-        private List<NewsModel> news = new ArrayList<NewsModel>();
+    private class MemberAdapter extends RecyclerView.Adapter<MemberListFragment.MemberViewHolder> {
+        private List<MemberModel> members = new ArrayList<MemberModel>();
         private int selectedPosition = -1;
 
         @NonNull
         @Override
-        public NewsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        public MemberListFragment.MemberViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             ConstraintLayout v = (ConstraintLayout) LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_list_news, parent, false);
-            NewsViewHolder vh = new NewsViewHolder(v,
+                    .inflate(R.layout.item_list_member, parent, false);
+            MemberListFragment.MemberViewHolder vh = new MemberListFragment.MemberViewHolder(v,
                     new OnItemSelectedListener() {
                         @Override
                         public void onItemSelected(int position) {
                             selectedPosition = position;
-                            viewModel.selectNews(news.get(position).getId());
+                            viewModel.selectMember(members.get(position).getId());
                             notifyDataSetChanged();
                         }
                     });
             return vh;
         }
         @Override
-        public void onBindViewHolder(@NonNull NewsViewHolder holder, int position) {
-            NewsModel n = news.get(position);
-            holder.title.setText(n.getTitle());
-            holder.content.setText(n.getContent());
-            holder.creator.setText(n.getCreator());
-            holder.date.setText(n.getDate());
+        public void onBindViewHolder(@NonNull MemberListFragment.MemberViewHolder holder, int position) {
+            MemberModel m = members.get(position);
+            holder.firstname.setText(m.getFirstName());
+            holder.lastname.setText(m.getLastName());
             if(position == selectedPosition){
                 holder.itemView.setSelected(true);
             } else {
@@ -137,14 +126,14 @@ public class NewsListFragment extends Fragment {
 
         @Override
         public int getItemCount() {
-            return news == null ? 0 : news.size();
+            return members == null ? 0 : members.size();
         }
 
-        public void addNews(PagedResponseModel<NewsModel> news) {
-            if(news.getOptions().getStartIndex() == 0) {
-                this.news.clear();
+        public void addMembers(PagedResponseModel<MemberModel> members) {
+            if(members.getOptions().getStartIndex() == 0) {
+                this.members.clear();
             }
-            this.news.addAll(news.getValues());
+            this.members.addAll(members.getValues());
             notifyDataSetChanged();
         }
     }

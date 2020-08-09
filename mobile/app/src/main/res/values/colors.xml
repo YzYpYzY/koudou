@@ -5,4 +5,6 @@
     <color name="colorAccent">#81C784</color>
     <color name="colorAccentLight">#2381C784</color>
     <color name="colorDefault">#8F8F8F</color>
+    <color name="textContrasted">#FFFFFF</color>
+    <color name="field_back">#FFE4E1E1</color>
 </resources>

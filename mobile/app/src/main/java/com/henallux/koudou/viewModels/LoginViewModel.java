@@ -1,8 +1,6 @@
 package com.henallux.koudou.viewModels;
 
-import android.app.Application;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.henallux.koudou.App;
@@ -12,7 +10,6 @@ import com.henallux.koudou.models.ErrorModel;
 
 public class LoginViewModel extends ViewModel {
     private AuthRepository authRepository;
-
     public CredentialsModel model;
 
     public LoginViewModel(){
@@ -30,6 +27,6 @@ public class LoginViewModel extends ViewModel {
     }
 
     public void Authenticate(){
-        authRepository.Authenticate(model);
+        authRepository.authenticate(model);
     }
 }

@@ -1,24 +1,16 @@
-package com.henallux.koudou.views;
+package com.henallux.koudou.views.auth;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.os.Bundle;
-import android.widget.TextView;
 
-import com.google.android.material.textfield.TextInputEditText;
 import com.henallux.koudou.R;
 import com.henallux.koudou.models.ErrorModel;
-import com.henallux.koudou.viewModels.LoginViewModel;
 import com.henallux.koudou.viewModels.ProfilViewModel;
-import com.mobsandgeeks.saripaar.annotation.NotEmpty;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
+import com.henallux.koudou.views.BaseActivity;
 
 public class ProfilActivity extends BaseActivity {
 
@@ -42,7 +34,7 @@ public class ProfilActivity extends BaseActivity {
             public void onChanged(String successAction) {
                 switch (successAction){
                     case "ChangePassword":
-                        showSuccessMessage("Mot de passe modifié.");
+                        showSuccessMessage(getString(R.string.success_password_modify));
                         goToProfil();
                 }
             }
