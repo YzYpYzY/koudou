@@ -61,7 +61,6 @@ export class KoudouStore {
                     isLogged: true,
                     user: res.user,
                     token: res.token,
-                    currentProfil: res.currentProfil,
                 });
                 return dispatch(new Navigate(['/']));
             }),
@@ -84,7 +83,6 @@ export class KoudouStore {
                     isLogged: true,
                     user: res.user,
                     token: res.token,
-                    currentProfil: res.currentProfil,
                 });
                 return dispatch(new Navigate(['/']));
             }),
@@ -98,8 +96,8 @@ export class KoudouStore {
     }
 
     @Action(KoudouActions.Logout)
-    logout({ patchState, dispatch }: StateContext<KoudouState>) {
-        return this.authService.logout().pipe(
+    logout({ patchState, dispatch, getState }: StateContext<KoudouState>) {
+        return this.authService.logout(getState().token.refresh_token).pipe(
             map(() => {
                 patchState({
                     isLogged: false,

@@ -12,6 +12,8 @@
             [formModel]="profilFormDescriptor"
             (formReady)="setProfilForm($event)"
         ></yzy-form>
-        <div class="error">{{ error$ | async }}</div>
+        <button (click)="changePasswordView()">
+            Changer de mot de passe
+        </button>
     </div>
 </ng-template>

@@ -54,6 +54,14 @@ namespace Koudou.Api.Controllers
             ValidateDTO(token);
             return _authLogic.RefreshToken(token.RefreshToken, getIpAddress());
         }
+        [AllowAnonymous]
+        [HttpPost("RevokeToken")]
+        public ActionResult RevokeToken([FromBody]RefreshTokenDTO token)
+        {
+            ValidateDTO(token);
+            _authLogic.RevokeToken(token.RefreshToken, getIpAddress());
+            return Ok();
+        }
 
         [HasAccess]
         [HttpPost("ChangePassword")]

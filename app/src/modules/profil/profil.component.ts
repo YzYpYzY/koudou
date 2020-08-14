@@ -22,14 +22,22 @@ export class ProfilComponent implements OnInit {
                 type: FieldTypes.Text,
                 name: 'pseudo',
                 label: 'Pseudo',
-                validators: [Validators.required],
+                isReadOnly: true,
+                validators: [],
             },
             {
                 type: FieldTypes.Email,
                 name: 'email',
                 label: 'E-mail',
-                validators: [Validators.required, Validators.email],
+                isReadOnly: true,
+                validators: [],
             },
+        ],
+    };
+
+    changePasswordFormDescriptor: FormModel = {
+        title: null,
+        fields: [
             {
                 type: FieldTypes.Password,
                 name: 'password',
@@ -38,14 +46,31 @@ export class ProfilComponent implements OnInit {
             },
             {
                 type: FieldTypes.Password,
-                name: 'confirmPassword',
-                label: 'Confirmation mot de passe',
+                name: 'newPassword',
+                label: 'Nouveau mot de passe',
+                validators: [Validators.required],
+            },
+            {
+                type: FieldTypes.Password,
+                name: 'confirmNewPassword',
+                label: 'Confirmation du nouveau mot de passe',
                 validators: [Validators.required],
             },
         ],
     };
     headerActions: YzYAction[] = [
-        { name: 'edit', class: 'gg-pen', type: YzYActionTypes.Warning },
+        {
+            name: 'cancel',
+            class: 'gg-cancel',
+            type: YzYActionTypes.Default,
+            hide: true,
+        },
+        {
+            name: 'save',
+            class: 'gg-save',
+            type: YzYActionTypes.Success,
+            hide: true,
+        },
     ];
     constructor(private koudouService: KoudouService) {}
 
@@ -70,4 +95,6 @@ export class ProfilComponent implements OnInit {
 
     // tslint:disable-next-line: variable-name
     handleHeaderActions(_action: YzYAction): void {}
+
+    changePasswordView() {}
 }
