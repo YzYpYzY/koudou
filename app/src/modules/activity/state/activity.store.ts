@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { State, Selector, Action, StateContext } from '@ngxs/store';
-import { tap, catchError, mergeMap, map } from 'rxjs/operators';
+import { tap, catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { ActivityState, ActivityStateDefault } from './activity.state';
 import { ActivityApiService } from '../activity-api.service';
@@ -98,8 +98,8 @@ export class ActivityStore {
 
     @Action(ActivityActions.Select)
     select(
-        { patchState, dispatch }: StateContext<ActivityState>,
-        { activityId },
+        { patchState }: StateContext<ActivityState>,
+        { activityId }: ActivityActions.Select,
     ) {
         patchState({
             selectedActivityId: activityId,
@@ -161,7 +161,7 @@ export class ActivityStore {
             isActivityLoading: true,
         });
         return this.activityApiService.remove(activityId).pipe(
-            tap((res: boolean) => {
+            tap(() => {
                 patchState({
                     selectedActivityId: null,
                     selectedActivity: null,

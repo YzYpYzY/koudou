@@ -100,7 +100,7 @@ export class KoudouStore {
     @Action(KoudouActions.Logout)
     logout({ patchState, dispatch }: StateContext<KoudouState>) {
         return this.authService.logout().pipe(
-            map((res: boolean) => {
+            map(() => {
                 patchState({
                     isLogged: false,
                     user: null,

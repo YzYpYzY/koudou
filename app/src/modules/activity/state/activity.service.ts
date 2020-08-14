@@ -1,6 +1,6 @@
 import { CrudStates } from '@core/enums';
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { IListRequest } from '@core/models/IListRequest';
 import { Store, Select } from '@ngxs/store';
 import { ActivityActions } from './activity.actions';
@@ -20,6 +20,8 @@ export class ActivityService {
     error$: Observable<string>;
     @Select(ActivityStore.state$)
     state$: Observable<CrudStates>;
+    @Select(ActivityStore.error$)
+    activityError$: Observable<string>;
 
     constructor(private store: Store) {}
 

@@ -6,10 +6,10 @@ import {
     FormModel,
     FieldTypes,
     YzYAction,
-    BaseComponent,
     YzYActionTypes,
     AnswerType,
     Answer,
+    YzYActionEvent,
 } from 'yzy-ng';
 import { FormGroup } from '@angular/forms';
 import { takeUntil } from 'rxjs/operators';
@@ -18,7 +18,7 @@ import { IPayment } from './models/IPayment';
 import { IListRequest } from '../../core/models/IListRequest';
 import { PaymentService } from './state/payment.service';
 import { PaymentTypePipe } from './pipes/payment-type.pipe';
-
+import { BaseComponent } from '@core/base/base.component';
 @Component({
     selector: 'koudou-payment',
     templateUrl: './payment.component.html',
@@ -60,7 +60,6 @@ export class PaymentComponent extends BaseComponent implements OnInit {
     state = CrudStates.List;
     request: IListRequest;
     itemByPage = 20;
-    valuesForForm = null;
     paymentIdForDelete: number = null;
     question = 'Ètes-vous certains de vouloir supprimer cette payment ?';
     answer = [
@@ -162,17 +161,17 @@ export class PaymentComponent extends BaseComponent implements OnInit {
         }
     }
 
-    handleLineActions({ action, key }): void {
+    handleLineActions({ action, key }: YzYActionEvent): void {
         switch (action.name) {
             case 'read':
-                this.select(key);
+                this.select(key as number);
                 break;
             case 'edit':
-                this.select(key);
+                this.select(key as number);
                 this.update();
                 break;
             case 'delete':
-                this.showDelete(key);
+                this.showDelete(key as number);
                 break;
         }
     }

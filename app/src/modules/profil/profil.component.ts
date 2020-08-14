@@ -68,5 +68,6 @@ export class ProfilComponent implements OnInit {
         this.setValues();
     }
 
-    handleHeaderActions(action: YzYAction): void {}
+    // tslint:disable-next-line: variable-name
+    handleHeaderActions(_action: YzYAction): void {}
 }

@@ -13,7 +13,7 @@ export interface SectionState {
     isSectionLoading: boolean;
 }
 
-export const SectionStateDefault = {
+export const SectionStateDefault: SectionState = {
     sections: null,
     sectionsCount: 0,
     selectedSectionId: null,

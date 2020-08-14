@@ -7,11 +7,11 @@ import {
     FormModel,
     FieldTypes,
     YzYAction,
-    BaseComponent,
+    YzYActionEvent,
     YzYActionTypes,
     AnswerType,
     Answer,
-    OptionModel,
+    OptionModel
 } from 'yzy-ng';
 import { FormGroup } from '@angular/forms';
 import { takeUntil } from 'rxjs/operators';
@@ -20,6 +20,8 @@ import { IActivity } from './models/IActivity';
 import { IListRequest } from '../../core/models/IListRequest';
 import { ActivityService } from './state/activity.service';
 import { KoudouService } from '../../state/koudou.service';
+import { Select } from '@ngxs/store';
+import { BaseComponent } from '@core/base/base.component';
 
 @Component({
     selector: 'koudou-activity',
@@ -59,18 +61,20 @@ export class ActivityComponent extends BaseComponent implements OnInit {
     state = CrudStates.List;
     request: IListRequest;
     itemByPage = 20;
-    valuesForForm = null;
     activityIdForDelete: number = null;
     question = 'Ètes-vous certains de vouloir supprimer cette activité ?';
     answer = [
         { label: 'Annuler', value: false, type: AnswerType.Default },
         { label: 'Oui', value: true, type: AnswerType.Danger },
     ];
+    @Select()
+    activityError$: Observable<string>;
     constructor(
         private activityService: ActivityService,
         private koudouService: KoudouService,
     ) {
         super();
+        this.activityError$ = this.activityService.activityError$;
         this.activityService.activitys$
             .pipe(takeUntil(this.destroy$))
             .subscribe((activitys) => {
@@ -163,17 +167,17 @@ export class ActivityComponent extends BaseComponent implements OnInit {
         }
     }
 
-    handleLineActions({ action, key }): void {
+    handleLineActions({ action, key }: YzYActionEvent): void {
         switch (action.name) {
             case 'read':
-                this.select(key);
+                this.select(key as number);
                 break;
             case 'edit':
-                this.select(key);
+                this.select(key as number);
                 this.update();
                 break;
             case 'delete':
-                this.showDelete(key);
+                this.showDelete(key as number);
                 break;
         }
     }

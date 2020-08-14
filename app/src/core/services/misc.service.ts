@@ -1,9 +1,9 @@
-import { environment } from './../../environments/environment';
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, of, throwError } from 'rxjs';
-import { delay, mergeMap, map } from 'rxjs/operators';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { delay } from 'rxjs/operators';
 import { OptionModel } from 'yzy-ng';
+import { environment } from './../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class MiscService {

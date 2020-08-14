@@ -15,7 +15,6 @@ import {
 import {
     TranslateModule,
     TranslateLoader,
-    TranslatePipe,
     TranslateService,
 } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';

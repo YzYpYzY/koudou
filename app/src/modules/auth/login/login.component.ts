@@ -1,18 +1,15 @@
-import { IRegister } from 'src/modules/auth/models/IRegister';
-import { BaseComponent } from '@core/base/base.component';
-import { FormModel, FieldTypes, YzYFormGroup } from 'yzy-ng';
 import { Component, OnInit } from '@angular/core';
 import {
-    FormControl,
-    FormBuilder,
-    Validators,
-    FormGroup,
+    Validators
 } from '@angular/forms';
+import { BaseComponent } from '@core/base/base.component';
+import { Observable } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { IRegister } from 'src/modules/auth/models/IRegister';
+import { KoudouService } from 'src/state/koudou.service';
+import { FieldTypes, FormModel, YzYFormGroup } from 'yzy-ng';
 import { LoginStateTypes } from '../enum/LoginStateTypes';
 import { ILogin } from '../models/ILogin';
-import { KoudouService } from 'src/state/koudou.service';
-import { Observable, of } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
 
 @Component({
     selector: 'koudou-login',
@@ -74,7 +71,7 @@ export class LoginComponent extends BaseComponent implements OnInit {
     };
     isDarkMode: boolean;
 
-    constructor(private fb: FormBuilder, private koudouService: KoudouService) {
+    constructor(private koudouService: KoudouService) {
         super();
     }
 

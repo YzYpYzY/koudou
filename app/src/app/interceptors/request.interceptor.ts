@@ -1,4 +1,4 @@
-import { IUserToken } from './../../core/models/IUserToken';
+import { IUserToken } from '@core/models/IUserToken';
 import { Injectable } from '@angular/core';
 import {
     HttpInterceptor,
@@ -6,7 +6,6 @@ import {
     HttpHandler,
     HttpEvent,
 } from '@angular/common/http';
-import { Store } from '@ngxs/store';
 import { Observable } from 'rxjs';
 import { KoudouService } from 'src/state/koudou.service';
 

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { State, Selector, Action, StateContext } from '@ngxs/store';
-import { tap, catchError, mergeMap, map } from 'rxjs/operators';
+import { tap, catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { MemberState, MemberStateDefault } from './member.state';
 import { MemberApiService } from '../member-api.service';
@@ -73,7 +73,7 @@ export class MemberStore {
 
     @Action(MemberActions.FetchOne)
     fetchOne(
-        { patchState, getState }: StateContext<MemberState>,
+        { patchState }: StateContext<MemberState>,
         { memberId }: MemberActions.FetchOne,
     ) {
         patchState({
@@ -97,11 +97,12 @@ export class MemberStore {
     }
 
     @Action(MemberActions.Select)
-    select({ patchState, dispatch }: StateContext<MemberState>, { memberId }) {
+    select({ patchState, dispatch }: StateContext<MemberState>, { memberId }: MemberActions.Select) {
         patchState({ selectedMemberId: memberId, selectedMember: null });
         if (memberId != null) {
             return dispatch(new MemberActions.FetchOne(memberId));
         }
+        return null;
     }
 
     @Action(MemberActions.Save)
@@ -158,7 +159,7 @@ export class MemberStore {
             isMemberLoading: true,
         });
         return this.memberApiService.remove(memberId).pipe(
-            tap((res: boolean) => {
+            tap(() => {
                 patchState({
                     selectedMemberId: null,
                     selectedMember: null,

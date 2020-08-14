@@ -13,7 +13,7 @@ export interface NewsState {
     isNewsLoading: boolean;
 }
 
-export const NewsStateDefault = {
+export const NewsStateDefault: NewsState = {
     news: null,
     newsCount: 0,
     selectedNewsId: null,

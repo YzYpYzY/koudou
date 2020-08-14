@@ -13,7 +13,7 @@ export interface PaymentState {
     isPaymentLoading: boolean;
 }
 
-export const PaymentStateDefault = {
+export const PaymentStateDefault: PaymentState = {
     payments: null,
     paymentsCount: 0,
     selectedPaymentId: null,

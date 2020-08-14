@@ -1,4 +1,3 @@
-import { IActivity } from './../models/IActivity';
 import { CrudStates } from '@core/enums';
 import { IListRequest } from '@core/models/IListRequest';
 import { IFullActivity } from '../models/IFullActivity';

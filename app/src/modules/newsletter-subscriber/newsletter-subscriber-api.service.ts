@@ -11,7 +11,7 @@ import { ServiceList } from '@core/services/ServiceList';
 @Injectable({ providedIn: 'root' })
 export class NewsletterSubscriberApiService extends BaseService {
     constructor(
-        private httpClient: HttpClient,
+        httpClient: HttpClient,
         protected notificationService: NotificationService,
     ) {
         super(httpClient, notificationService);

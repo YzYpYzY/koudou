@@ -1,5 +1,5 @@
 import { OnDestroy } from '@angular/core';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 
 export class BaseComponent implements OnDestroy {
     protected destroy$: Subject<boolean> = new Subject<boolean>();

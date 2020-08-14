@@ -12,7 +12,7 @@ export interface KoudouState {
     sectionOptions: OptionModel[];
 }
 
-export const KoudouStateDefault = {
+export const KoudouStateDefault: KoudouState = {
     isLogged: false,
     user: null,
     token: null,

@@ -14,7 +14,7 @@ export interface ActivityState {
     isActivityLoading: boolean;
 }
 
-export const ActivityStateDefault = {
+export const ActivityStateDefault: ActivityState = {
     activitys: null,
     activitysCount: 0,
     selectedActivityId: null,

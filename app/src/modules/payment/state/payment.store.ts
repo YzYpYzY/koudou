@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { State, Selector, Action, StateContext } from '@ngxs/store';
-import { tap, catchError, mergeMap, map } from 'rxjs/operators';
+import { tap, catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { PaymentState, PaymentStateDefault } from './payment.state';
 import { PaymentApiService } from '../payment-api.service';
@@ -72,8 +72,8 @@ export class PaymentStore {
 
     @Action(PaymentActions.Select)
     select(
-        { patchState, dispatch }: StateContext<PaymentState>,
-        { paymentId },
+        { patchState }: StateContext<PaymentState>,
+        { paymentId }: PaymentActions.Select,
     ) {
         patchState({
             selectedPaymentId: paymentId,
@@ -135,7 +135,7 @@ export class PaymentStore {
             isPaymentLoading: true,
         });
         return this.paymentApiService.remove(paymentId).pipe(
-            tap((res: boolean) => {
+            tap(() => {
                 patchState({
                     selectedPaymentId: null,
                     selectedPayment: null,

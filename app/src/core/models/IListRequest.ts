@@ -1,6 +1,3 @@
-import { ISort } from './ISort';
-import { IFilter } from './IFilter';
-
 export interface IListRequest {
     startIndex: number;
     count: number;

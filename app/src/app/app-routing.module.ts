@@ -2,8 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { ErrorComponent } from '../modules/other/error/error.component';
 import { HomeComponent } from '../modules/other/home/home.component';
-import { ProfilModule } from '../modules/profil/profil.module';
-import { RootGuard } from '../core/guard/root.guard';
+import { RootGuard } from '@core/guard/root.guard';
 import { NotConnectedGuard } from '@core/guard/not-connected.guard';
 
 const routes: Routes = [

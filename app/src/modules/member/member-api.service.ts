@@ -12,7 +12,7 @@ import { IMemberDetails } from './models/IMemberDetails';
 @Injectable({ providedIn: 'root' })
 export class MemberApiService extends BaseService {
     constructor(
-        private httpClient: HttpClient,
+        httpClient: HttpClient,
         protected notificationService: NotificationService,
     ) {
         super(httpClient, notificationService);

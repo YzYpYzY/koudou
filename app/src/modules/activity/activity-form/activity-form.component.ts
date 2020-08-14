@@ -10,8 +10,6 @@ import {
     YzYAction,
     YzYActionTypes,
     YzYFormGroup,
-    Answer,
-    AnswerType,
 } from 'yzy-ng';
 
 @Component({

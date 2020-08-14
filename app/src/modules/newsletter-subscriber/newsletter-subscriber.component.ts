@@ -6,7 +6,6 @@ import {
     FormModel,
     FieldTypes,
     YzYAction,
-    BaseComponent,
     YzYActionTypes,
 } from 'yzy-ng';
 import { FormGroup } from '@angular/forms';
@@ -15,7 +14,7 @@ import { Observable } from 'rxjs';
 import { INewsletterSubscriber } from './models/INewsletterSubscriber';
 import { IListRequest } from '../../core/models/IListRequest';
 import { NewsletterSubscriberService } from './state/newsletter-subscriber.service';
-
+import { BaseComponent } from '@core/base/base.component';
 @Component({
     selector: 'koudou-newsletter-subscriber',
     templateUrl: './newsletter-subscriber.component.html',
@@ -47,7 +46,6 @@ export class NewsletterSubscriberComponent extends BaseComponent
     state = CrudStates.List;
     request: IListRequest;
     itemByPage = 30;
-    valuesForForm = null;
     constructor(
         private newsletterSubscriberService: NewsletterSubscriberService,
     ) {

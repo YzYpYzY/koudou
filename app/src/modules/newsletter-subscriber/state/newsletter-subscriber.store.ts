@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { State, Selector, Action, StateContext } from '@ngxs/store';
-import { tap, catchError, mergeMap, map } from 'rxjs/operators';
+import { tap, catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 import {
     NewsletterSubscriberState,
@@ -77,8 +77,8 @@ export class NewsletterSubscriberStore {
 
     @Action(NewsletterSubscriberActions.Select)
     select(
-        { patchState, dispatch }: StateContext<NewsletterSubscriberState>,
-        { newsletterSubscriberId },
+        { patchState }: StateContext<NewsletterSubscriberState>,
+        { newsletterSubscriberId }: NewsletterSubscriberActions.Select,
     ) {
         patchState({
             selectedNewsletterSubscriberId: newsletterSubscriberId,
@@ -148,7 +148,7 @@ export class NewsletterSubscriberStore {
         return this.newsletterSubscriberApiService
             .remove(newsletterSubscriberId)
             .pipe(
-                tap((res: boolean) => {
+                tap(() => {
                     patchState({
                         selectedNewsletterSubscriberId: null,
                         selectedNewsletterSubscriber: null,

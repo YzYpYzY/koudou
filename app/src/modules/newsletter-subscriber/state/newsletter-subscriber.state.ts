@@ -13,7 +13,7 @@ export interface NewsletterSubscriberState {
     isNewsletterSubscriberLoading: boolean;
 }
 
-export const NewsletterSubscriberStateDefault = {
+export const NewsletterSubscriberStateDefault: NewsletterSubscriberState = {
     newsletterSubscribers: null,
     newsletterSubscribersCount: 0,
     selectedNewsletterSubscriberId: null,

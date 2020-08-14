@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { map } from 'rxjs/operators';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { NotificationType } from '../services/notification.service';
 import { NotificationService } from '../services/notification.service';
 
@@ -28,8 +28,8 @@ export class BaseService {
     private formatParameters(params: object): string {
         let formatedParams = '';
         for (const key in params) {
-            if (params[key] !== '' && params[key] !== null) {
-                formatedParams += `${key}=${params[key]}&`;
+            if ((params as any)[key] !== '' && (params as any)[key] !== null) {
+                formatedParams += `${key}=${(params as any)[key]}&`;
             }
         }
         if (formatedParams !== '') {
@@ -43,7 +43,7 @@ export class BaseService {
 
     delete(route: string[]): Observable<boolean> {
         const url = this.formatUrl(route);
-        return this.client.delete(url).pipe(map(result => true));
+        return this.client.delete(url).pipe(map(() => true));
     }
 
     post<T = Response>(route: string[], body: {}): Observable<T> {

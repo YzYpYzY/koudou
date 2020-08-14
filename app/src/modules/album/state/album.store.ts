@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { State, Selector, Action, StateContext } from '@ngxs/store';
-import { tap, catchError, mergeMap, map } from 'rxjs/operators';
+import { tap, catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { AlbumState, AlbumStateDefault } from './album.state';
 import { AlbumApiService } from '../album-api.service';
@@ -71,7 +71,7 @@ export class AlbumStore {
     }
 
     @Action(AlbumActions.Select)
-    select({ patchState, dispatch }: StateContext<AlbumState>, { albumId }) {
+    select({ patchState }: StateContext<AlbumState>, { albumId }: AlbumActions.Select) {
         patchState({
             selectedAlbumId: albumId,
             selectedAlbum: null,
@@ -132,7 +132,7 @@ export class AlbumStore {
             isAlbumLoading: true,
         });
         return this.albumApiService.remove(albumId).pipe(
-            tap((res: boolean) => {
+            tap(() => {
                 patchState({
                     selectedAlbumId: null,
                     selectedAlbum: null,

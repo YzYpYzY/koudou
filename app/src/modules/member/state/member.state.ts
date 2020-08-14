@@ -14,7 +14,7 @@ export interface MemberState {
     isMemberLoading: boolean;
 }
 
-export const MemberStateDefault = {
+export const MemberStateDefault: MemberState = {
     members: null,
     membersCount: 0,
     selectedMemberId: null,

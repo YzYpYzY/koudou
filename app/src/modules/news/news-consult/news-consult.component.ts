@@ -1,9 +1,9 @@
 import { IListRequest } from '@core/models/IListRequest';
-import { takeUntil, tap } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import { NewsService } from './../state/news.service';
 import { Component, OnInit } from '@angular/core';
 import { INews } from '../models/INews';
-import { BaseComponent } from 'yzy-ng';
+import { BaseComponent } from '@core/base/base.component';
 
 @Component({
     selector: 'koudou-news-consult',

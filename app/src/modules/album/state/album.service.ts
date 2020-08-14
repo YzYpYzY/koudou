@@ -1,6 +1,6 @@
 import { CrudStates } from '@core/enums';
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { IListRequest } from '@core/models/IListRequest';
 import { Store, Select } from '@ngxs/store';
 import { AlbumActions } from './album.actions';

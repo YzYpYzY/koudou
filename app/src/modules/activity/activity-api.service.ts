@@ -12,7 +12,7 @@ import { IFullActivity } from './models/IFullActivity';
 @Injectable({ providedIn: 'root' })
 export class ActivityApiService extends BaseService {
     constructor(
-        private httpClient: HttpClient,
+        httpClient: HttpClient,
         protected notificationService: NotificationService,
     ) {
         super(httpClient, notificationService);

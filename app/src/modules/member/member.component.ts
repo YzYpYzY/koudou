@@ -13,10 +13,9 @@ import {
     YzYAction,
     YzYActionTypes,
     YzYSort,
-    ColumnTypes,
 } from 'yzy-ng';
 import { IListRequest } from '@core/models/IListRequest';
-import { Observable, combineLatest } from 'rxjs';
+import { Observable } from 'rxjs';
 
 @Component({
     selector: 'koudou-member',
@@ -26,6 +25,7 @@ import { Observable, combineLatest } from 'rxjs';
 export class MemberComponent extends BaseComponent implements OnInit {
     CrudStates = CrudStates;
     selectedMember$: Observable<IMemberDetails>;
+    selectedMember: IMemberDetails;
     members: IMember[] = [];
     membersCount = 0;
     columns: Column[] = [
@@ -50,7 +50,7 @@ export class MemberComponent extends BaseComponent implements OnInit {
     state = CrudStates.List;
     request: IListRequest;
     itemByPage = 30;
-    valuesForForm = null;
+
     constructor(private memberService: MemberService) {
         super();
         this.memberService.members$

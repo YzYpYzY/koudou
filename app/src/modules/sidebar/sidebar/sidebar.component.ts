@@ -1,9 +1,9 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
-import { KoudouService } from 'src/state/koudou.service';
-import { Observable } from 'rxjs';
-import { takeWhile, takeUntil } from 'rxjs/operators';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Router } from '@angular/router';
 import { BaseComponent } from '@core/base/base.component';
+import { takeUntil } from 'rxjs/operators';
+import { KoudouService } from 'src/state/koudou.service';
+import { Nav } from '../models/Nav';
 
 @Component({
     selector: 'koudou-sidebar',
@@ -11,7 +11,7 @@ import { BaseComponent } from '@core/base/base.component';
     styleUrls: ['./sidebar.component.scss'],
 })
 export class SidebarComponent extends BaseComponent implements OnInit {
-    navigations = [
+    navigations: Nav[] = [
         {
             label: 'Actualités',
             url: 'news',
@@ -42,12 +42,12 @@ export class SidebarComponent extends BaseComponent implements OnInit {
             isActive: false,
             icon: 'gg-media-podcast',
         },
-        {
-            label: 'Activités',
-            url: 'activities',
-            isActive: false,
-            icon: 'gg-dribbble',
-        },
+        // {
+        //     label: 'Activités',
+        //     url: 'activities',
+        //     isActive: false,
+        //     icon: 'gg-dribbble',
+        // },
         {
             label: 'Mailing',
             url: 'mailing',
@@ -85,7 +85,7 @@ export class SidebarComponent extends BaseComponent implements OnInit {
             });
     }
 
-    navigate(nav): void {
+    navigate(nav: Nav): void {
         this.selectNav(nav.url);
         this.router.navigate([nav.url]);
         this.hide.emit();

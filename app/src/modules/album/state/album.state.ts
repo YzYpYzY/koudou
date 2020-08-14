@@ -13,7 +13,7 @@ export interface AlbumState {
     isAlbumLoading: boolean;
 }
 
-export const AlbumStateDefault = {
+export const AlbumStateDefault: AlbumState = {
     albums: null,
     albumsCount: 0,
     selectedAlbumId: null,

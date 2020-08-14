@@ -25,8 +25,8 @@
     </ng-container>
     <ng-container *ngSwitchDefault>
         <koudou-member-form
-            *ngIf="valuesForForm"
-            [member]="valuesForForm.selectedMember"
+            *ngIf="selectedMember"
+            [member]="selectedMember"
             [state]="state"
             (save)="save($event)"
             (cancel)="cancel()"

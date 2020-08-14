@@ -6,10 +6,10 @@ import {
     FormModel,
     FieldTypes,
     YzYAction,
-    BaseComponent,
     YzYActionTypes,
     AnswerType,
     Answer,
+    YzYActionEvent,
 } from 'yzy-ng';
 import { FormGroup } from '@angular/forms';
 import { takeUntil } from 'rxjs/operators';
@@ -17,7 +17,7 @@ import { Observable } from 'rxjs';
 import { INews } from './models/INews';
 import { IListRequest } from '../../core/models/IListRequest';
 import { NewsService } from './state/news.service';
-
+import { BaseComponent } from '@core/base/base.component';
 @Component({
     selector: 'koudou-news',
     templateUrl: './news.component.html',
@@ -56,7 +56,6 @@ export class NewsComponent extends BaseComponent implements OnInit {
     state = CrudStates.List;
     request: IListRequest;
     itemByPage = 20;
-    valuesForForm = null;
     newsIdForDelete: number = null;
     question = 'Ètes-vous certains de vouloir supprimer cet news ?';
     answer = [
@@ -149,17 +148,17 @@ export class NewsComponent extends BaseComponent implements OnInit {
         }
     }
 
-    handleLineActions({ action, key }): void {
+    handleLineActions({ action, key }: YzYActionEvent): void {
         switch (action.name) {
             case 'read':
-                this.select(key);
+                this.select(key as number);
                 break;
             case 'edit':
-                this.select(key);
+                this.select(key as number);
                 this.update();
                 break;
             case 'delete':
-                this.showDelete(key);
+                this.showDelete(key as number);
                 break;
         }
     }

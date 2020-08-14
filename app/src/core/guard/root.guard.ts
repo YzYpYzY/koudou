@@ -12,7 +12,8 @@ import { take, map } from 'rxjs/operators';
 export class RootGuard implements CanActivate {
     constructor(private router: Router, private koudouService: KoudouService) {}
 
-    canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+    // tslint:disable-next-line: variable-name
+    canActivate(_route: ActivatedRouteSnapshot, _state: RouterStateSnapshot) {
         return this.koudouService.isLogged$.pipe(
             take(1),
             map(isLogged => {

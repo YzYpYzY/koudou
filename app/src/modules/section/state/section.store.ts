@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { State, Selector, Action, StateContext } from '@ngxs/store';
-import { tap, catchError, mergeMap, map } from 'rxjs/operators';
+import { tap, catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { SectionState, SectionStateDefault } from './section.state';
 import { SectionApiService } from '../section-api.service';
@@ -72,8 +72,8 @@ export class SectionStore {
 
     @Action(SectionActions.Select)
     select(
-        { patchState, dispatch }: StateContext<SectionState>,
-        { sectionId },
+        { patchState }: StateContext<SectionState>,
+        { sectionId }: SectionActions.Select,
     ) {
         patchState({
             selectedSectionId: sectionId,
@@ -135,7 +135,7 @@ export class SectionStore {
             isSectionLoading: true,
         });
         return this.sectionApiService.remove(sectionId).pipe(
-            tap((res: boolean) => {
+            tap(() => {
                 patchState({
                     selectedSectionId: null,
                     selectedSection: null,
