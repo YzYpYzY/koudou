@@ -103,9 +103,18 @@ koudou-logo {
     transform: rotate(-45deg);
 }
 
-.error {
-    max-width: 20rem;
-    word-break: break-word;
+yzy-field-error {
+    position: relative !important;
+    top: -0.5rem !important;
+}
+yzy-field.hasError {
+    padding-bottom: 0 !important;
+}
+.field-errors {
+    .error {
+        max-width: 20rem;
+        word-break: break-word;
+    }
 }
 yzy-bar {
     .title {
@@ -123,7 +132,10 @@ yzy-bar {
 }
 
 .dark {
-    .action-success, .action-warning, .action-info, .action-error {
+    .action-success,
+    .action-warning,
+    .action-info,
+    .action-error {
         color: rgb(63, 63, 63);
     }
     .gg-check-custom {
@@ -184,14 +196,15 @@ yzy-form {
         margin-bottom: 2rem;
     }
 }
-.top-bar koudou-logo{
+.top-bar koudou-logo {
     font-size: 1.5rem;
-    margin-top: .5rem;
-    margin-left: .5rem;
-    .buble{
+    margin-top: 0.5rem;
+    margin-left: 0.5rem;
+    .buble {
         border-color: rgb(44, 44, 44);
     }
-    .name, .subTitle {
+    .name,
+    .subTitle {
         color: #000;
     }
 }

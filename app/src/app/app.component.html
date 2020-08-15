@@ -15,10 +15,9 @@
 </ng-container>
 <div class="main">
     <div class="top-bar" *ngIf="isLogged$ | async">
-        <div class="user" (click)="navigateToProfil()">
-            <img src="{{ user.img }}" alt="user" />
-            <div class="user-mail">
-                {{ user.mail }}
+        <div class="user" *ngIf="user$ | async as user">
+            <div class="user-mail" (click)="navigateToProfil()">
+                {{ user.email }}
             </div>
             <div class="logout" (click)="logout()">
                 <i class="gg-log-out"></i>

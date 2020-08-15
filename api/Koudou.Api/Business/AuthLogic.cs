@@ -155,7 +155,7 @@ namespace Koudou.Api.Business
 
         public bool RevokeToken(string token, string ipAddress)
         {
-            var user = Context.Users.SingleOrDefault(u => u.RefreshTokens.Any(t => t.Token == token));
+            var user = Context.Users.Include(u => u.RefreshTokens).SingleOrDefault(u => u.RefreshTokens.Any(t => t.Token == token));
             
             // return false if no user found with token
             if (user == null) return false;

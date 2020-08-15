@@ -75,7 +75,6 @@ export class ProfilComponent implements OnInit {
     constructor(private koudouService: KoudouService) {}
 
     ngOnInit() {
-        this.error$ = this.koudouService.error$;
         this.koudouService.user$.subscribe((user) => {
             this.user = user;
             this.setValues();

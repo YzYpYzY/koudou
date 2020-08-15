@@ -1,4 +1,4 @@
-<ng-container *ngIf="isLoading; else content">
+<ng-container *ngIf="loading$ | async; else content">
     <koudou-loader></koudou-loader>
 </ng-container>
 <ng-template #content>

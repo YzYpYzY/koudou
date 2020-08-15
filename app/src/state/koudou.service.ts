@@ -1,3 +1,4 @@
+import { KoudouError } from './../core/models/KoudouError';
 import { IUserToken } from '../core/models/IUserToken';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
@@ -20,14 +21,14 @@ export class KoudouService {
     user$: Observable<IUser>;
     @Select(KoudouStore.token$)
     token$: Observable<IUserToken>;
-    @Select(KoudouStore.currentProfil$)
-    currentProfil$: Observable<string>;
     @Select(KoudouStore.error$)
-    error$: Observable<string>;
+    error$: Observable<KoudouError>;
     @Select(KoudouStore.isDarkMode$)
     isDarkMode$: Observable<boolean>;
     @Select(KoudouStore.sectionOptions$)
     sectionOptions$: Observable<OptionModel[]>;
+    @Select(KoudouStore.loading$)
+    loading$: Observable<boolean>;
 
     login(login: ILogin) {
         this.store.dispatch(new KoudouActions.Login(login));

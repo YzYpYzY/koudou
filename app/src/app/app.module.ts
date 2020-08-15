@@ -1,3 +1,5 @@
+import { NotificationModule } from './../core/notification/notification.module';
+import { NotificationComponent } from '@core/notification/notification.component';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
@@ -38,6 +40,7 @@ import { DropdownOptionsComponent } from 'yzy-ng';
         OtherModule,
         CoreModule,
         HttpClientModule,
+        NotificationModule,
         TranslateModule.forRoot({
             loader: {
                 provide: TranslateLoader,
@@ -72,7 +75,7 @@ import { DropdownOptionsComponent } from 'yzy-ng';
         },
     ],
     bootstrap: [AppComponent],
-    entryComponents: [DropdownOptionsComponent],
+    entryComponents: [DropdownOptionsComponent, NotificationComponent],
 })
 export class AppModule {}
 

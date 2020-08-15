@@ -4,5 +4,4 @@ export interface IUser {
     pseudo: string;
     email: string;
     claims: string[];
-    profil: string;
 }

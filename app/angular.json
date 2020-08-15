@@ -34,7 +34,8 @@
                             "../../yzy-ng/dist/yzy-ng-themes/base-theme.css",
                             "src/styles/styles.scss"
                         ],
-                        "scripts": []
+                        "scripts": [],
+                        "allowedCommonJsDependencies": ["jwt-decode"]
                     },
                     "configurations": {
                         "production": {

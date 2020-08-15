@@ -1,4 +1,6 @@
-{ 
+{
     "field.error.required": "Ce champs est requis.",
-    "field.error.email": "Cette adresse email n'est pas valide."
+    "field.error.email": "Cette adresse email n'est pas valide.",
+    "field.error.password": "Ce mot de passe est invalide. Il doit contenir : une majuscule, une minuscule, un chiffre et au minimum 8 caractères.",
+    "field.error.mustMatchPassword": "Ces deux mot de passe ne sont pas équivalent."
 }

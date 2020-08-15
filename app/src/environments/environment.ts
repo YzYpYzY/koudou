@@ -4,7 +4,7 @@
 
 export const environment = {
     production: false,
-    api: 'https://koudou-api.yzypyzy.com/api/1',
+    api: 'https://localhost:5001/api/1',
 };
 
 /*

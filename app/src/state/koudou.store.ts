@@ -9,6 +9,8 @@ import { of } from 'rxjs';
 import { Navigate } from '@ngxs/router-plugin';
 import { OptionModel } from 'yzy-ng';
 import { MiscService } from '../core/services/misc.service';
+import { KoudouError } from '../core/models/KoudouError';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Injectable()
 @State<KoudouState>({
@@ -28,10 +30,6 @@ export class KoudouStore {
     static token$(state: KoudouState) {
         return state.token;
     }
-    @Selector()
-    static currentProfil$(state: KoudouState) {
-        return state.currentProfil;
-    }
 
     @Selector()
     static error$(state: KoudouState) {
@@ -45,6 +43,10 @@ export class KoudouStore {
     static sectionOptions$(state: KoudouState) {
         return state.sectionOptions;
     }
+    @Selector()
+    static loading$(state: KoudouState) {
+        return state.loading;
+    }
     constructor(
         private authService: AuthService,
         private miscService: MiscService,
@@ -55,18 +57,27 @@ export class KoudouStore {
         { patchState, dispatch }: StateContext<KoudouState>,
         { login }: KoudouActions.Login,
     ) {
+        patchState({ loading: true });
         return this.authService.login(login).pipe(
             map((res: ILoginResponse) => {
                 patchState({
                     isLogged: true,
                     user: res.user,
                     token: res.token,
+                    loading: false,
                 });
                 return dispatch(new Navigate(['/']));
             }),
-            catchError((error: Error) => {
+            catchError((error: HttpErrorResponse) => {
+                let message = 'La connexion a échoué';
+                switch (error.status) {
+                    case 401:
+                        message = "Ce couple d'identifiant n'existe pas.";
+                        break;
+                }
                 patchState({
-                    error: error.message,
+                    error: new KoudouError(message),
+                    loading: false,
                 });
                 return of(error);
             }),
@@ -77,18 +88,21 @@ export class KoudouStore {
         { patchState, dispatch }: StateContext<KoudouState>,
         { register }: KoudouActions.Register,
     ) {
+        patchState({ loading: true });
         return this.authService.register(register).pipe(
             map((res: ILoginResponse) => {
                 patchState({
                     isLogged: true,
                     user: res.user,
                     token: res.token,
+                    loading: false,
                 });
                 return dispatch(new Navigate(['/']));
             }),
             catchError((error: Error) => {
                 patchState({
-                    error: error.message,
+                    error: new KoudouError("L'inscription a échoué."),
+                    loading: false,
                 });
                 return of(error);
             }),
@@ -97,19 +111,21 @@ export class KoudouStore {
 
     @Action(KoudouActions.Logout)
     logout({ patchState, dispatch, getState }: StateContext<KoudouState>) {
+        patchState({ loading: true });
         return this.authService.logout(getState().token.refresh_token).pipe(
             map(() => {
                 patchState({
                     isLogged: false,
                     user: null,
                     token: null,
-                    currentProfil: null,
+                    loading: false,
                 });
                 return dispatch(new Navigate(['auth/login']));
             }),
             catchError((error: Error) => {
                 patchState({
-                    error: error.message,
+                    error: new KoudouError('La déconnexion a échoué.'),
+                    loading: false,
                 });
                 return of(error);
             }),
@@ -134,7 +150,9 @@ export class KoudouStore {
             }),
             catchError((error: Error) => {
                 patchState({
-                    error: error.message,
+                    error: new KoudouError(
+                        'Le chargement des sections a échoué.',
+                    ),
                 });
                 return of(error);
             }),

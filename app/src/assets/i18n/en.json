@@ -1,4 +1,6 @@
-{ 
+{
     "field.error.required": "This field is required",
-    "field.error.email": "This adress is invalid."
+    "field.error.email": "This adress is invalid.",
+    "field.error.password": "This password is invalid. one uppercase, one lowercase, one number and 8 characters required.",
+    "field.error.mustMatchPassword": "This two passwords aren't equals."
 }

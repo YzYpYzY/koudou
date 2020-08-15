@@ -29,8 +29,11 @@ export class RequestInterceptor implements HttpInterceptor {
     ): Observable<HttpEvent<any>> {
         return next.handle(req.clone({ setHeaders: this.setHeaders() })).pipe(
             catchError((err) => {
-                if (req.url.includes('login') || req.url.includes('refresh')) {
-                    if (req.url.includes('refresh')) {
+                if (
+                    req.url.includes('Authenticate') ||
+                    req.url.includes('RefreshToken')
+                ) {
+                    if (req.url.includes('RefreshToken')) {
                         this.koudouSercice.logout();
                     }
                     throw err;

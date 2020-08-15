@@ -2,13 +2,13 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
-import { NotificationType } from '../services/notification.service';
-import { NotificationService } from '../services/notification.service';
+import { NotificationService } from '../notification/notification.service';
+import { NotificationTypes } from '../enums/NotificationTypes';
 
 export class BaseService {
     constructor(
         protected client: HttpClient,
-        protected notificationService: NotificationService
+        protected notificationService: NotificationService,
     ) {
         this.client = client;
     }
@@ -18,7 +18,7 @@ export class BaseService {
         if (params) {
             url += '?' + this.formatParameters(params);
         }
-        return this.client.get(url).pipe(map(res => res as T));
+        return this.client.get(url).pipe(map((res) => res as T));
     }
 
     private formatUrl(route: string[]): string {
@@ -35,7 +35,7 @@ export class BaseService {
         if (formatedParams !== '') {
             formatedParams = formatedParams.substr(
                 0,
-                formatedParams.length - 1
+                formatedParams.length - 1,
             );
         }
         return formatedParams;
@@ -48,32 +48,32 @@ export class BaseService {
 
     post<T = Response>(route: string[], body: {}): Observable<T> {
         const url = this.formatUrl(route);
-        return this.client.post(url, body).pipe(map(value => value as T));
+        return this.client.post(url, body).pipe(map((value) => value as T));
     }
 
     put<T = Response>(route: string[], body: {}): Observable<T> {
         const url = this.formatUrl(route);
-        return this.client.put(url, body).pipe(map(value => value as T));
+        return this.client.put(url, body).pipe(map((value) => value as T));
     }
 
     error(message: string): void {
         this.notificationService.notify({
-            text: message,
-            type: NotificationType.Error,
+            message,
+            type: NotificationTypes.Error,
         });
     }
 
     success(message: string): void {
         this.notificationService.notify({
-            text: message,
-            type: NotificationType.Success,
+            message,
+            type: NotificationTypes.Success,
         });
     }
 
     warning(message: string): void {
         this.notificationService.notify({
-            text: message,
-            type: NotificationType.Warning,
+            message,
+            type: NotificationTypes.Warning,
         });
     }
 }

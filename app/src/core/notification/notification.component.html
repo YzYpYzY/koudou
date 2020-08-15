@@ -1,0 +1,26 @@
+<div
+    #notif
+    class="notification"
+    *ngFor="let notification of notifications; trackBy: trackNotif"
+    [ngClass]="{
+        success: notification.type == NotificationTypes.Success,
+        info: notification.type == NotificationTypes.Information,
+        warning: notification.type == NotificationTypes.Warning,
+        error: notification.type == NotificationTypes.Error,
+        fadeout: notification.fadeout
+    }"
+>
+    <div class="notif-content">
+        <div class="title" *ngIf="notification.title">
+            {{ notification.title }}
+        </div>
+        <div class="message">{{ notification.message }}</div>
+    </div>
+    <div
+        class="notif-close"
+        [ngClass]="{ waitForClose: notification.duration == 0 }"
+        (click)="close(notification.id)"
+    >
+        {{ notification.duration }}
+    </div>
+</div>

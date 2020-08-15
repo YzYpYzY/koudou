@@ -5,7 +5,7 @@ import { IListRequest } from '@core/models/IListRequest';
 import { IListResponse } from '@core/models/IListResponse';
 import { IMember } from './models/IMember';
 import { BaseService } from '@core/base/base.service';
-import { NotificationService } from '@core/services/notification.service';
+import { NotificationService } from '@core/notification/notification.service';
 import { ServiceList } from '@core/services/ServiceList';
 import { IMemberDetails } from './models/IMemberDetails';
 

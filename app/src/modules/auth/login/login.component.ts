@@ -1,15 +1,17 @@
+import { NotificationService } from '@core/notification/notification.service';
+import { NotificationTypes } from './../../../core/enums/NotificationTypes';
 import { Component, OnInit } from '@angular/core';
-import {
-    Validators
-} from '@angular/forms';
+import { Validators } from '@angular/forms';
 import { BaseComponent } from '@core/base/base.component';
 import { Observable } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, tap } from 'rxjs/operators';
 import { IRegister } from 'src/modules/auth/models/IRegister';
 import { KoudouService } from 'src/state/koudou.service';
 import { FieldTypes, FormModel, YzYFormGroup } from 'yzy-ng';
 import { LoginStateTypes } from '../enum/LoginStateTypes';
 import { ILogin } from '../models/ILogin';
+import { MustMatchPassword } from '@core/validators/must-match-password.validator';
+import { Password } from '@core/validators/password.validator';
 
 @Component({
     selector: 'koudou-login',
@@ -21,8 +23,7 @@ export class LoginComponent extends BaseComponent implements OnInit {
     loginForm: YzYFormGroup;
     registerForm: YzYFormGroup;
     state = LoginStateTypes.Login;
-    error$: Observable<string>;
-    isLoading = false;
+    loading$: Observable<boolean>;
     loginFormModel: FormModel = {
         title: 'Connexion',
         fields: [
@@ -59,24 +60,38 @@ export class LoginComponent extends BaseComponent implements OnInit {
                 type: FieldTypes.Password,
                 name: 'password',
                 label: 'Mot de passe',
-                validators: [Validators.required],
+                validators: [Validators.required, Password],
             },
             {
                 type: FieldTypes.Password,
                 name: 'confirmPassword',
                 label: 'Confirmation mot de passe',
-                validators: [Validators.required],
+                validators: [Validators.required, MustMatchPassword],
             },
         ],
     };
     isDarkMode: boolean;
 
-    constructor(private koudouService: KoudouService) {
+    constructor(
+        private koudouService: KoudouService,
+        private notificationService: NotificationService,
+    ) {
         super();
     }
 
     ngOnInit() {
-        this.error$ = this.koudouService.error$;
+        this.loading$ = this.koudouService.loading$;
+        this.koudouService.error$
+            .pipe(
+                takeUntil(this.destroy$),
+                tap((error) => {
+                    this.notificationService.notify({
+                        message: error.message,
+                        type: NotificationTypes.Error,
+                    });
+                }),
+            )
+            .subscribe();
         this.koudouService.isDarkMode$
             .pipe(takeUntil(this.destroy$))
             .subscribe((value) => {
@@ -98,7 +113,6 @@ export class LoginComponent extends BaseComponent implements OnInit {
     login() {
         if (this.loginForm.testValidityAndDisplayErrors()) {
             const login = this.loginForm.getTypedValue() as ILogin;
-            this.isLoading = true;
             this.koudouService.login(login);
         }
     }
@@ -106,7 +120,6 @@ export class LoginComponent extends BaseComponent implements OnInit {
     register() {
         if (this.registerForm.testValidityAndDisplayErrors()) {
             const register = this.registerForm.getTypedValue() as IRegister;
-            this.isLoading = true;
             this.koudouService.register(register);
         }
     }

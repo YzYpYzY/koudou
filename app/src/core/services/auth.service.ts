@@ -35,10 +35,12 @@ export class AuthService {
                 refreshToken,
             })
             .pipe(
-                map((res) => ({
-                    user: this.decodeToken(res.access_token),
-                    token: res,
-                })),
+                map((res) => {
+                    return {
+                        user: this.decodeToken(res.access_token),
+                        token: res,
+                    };
+                }),
             );
     }
 
@@ -62,14 +64,14 @@ export class AuthService {
     decodeToken(token: string): IUser {
         const decodedToken: IAccessTokenDTO = jwt_decode(token);
         const infos = {
-            profil: decodedToken.currentProfil,
-            claims: decodedToken.ressourcesAccess,
-            pseudo: decodedToken.pseudo,
+            id: decodedToken.primarysid,
+            claims: decodedToken.RessourceAccess,
+            pseudo: decodedToken.nameid,
             email: decodedToken.email,
             firstname: decodedToken.firstname,
             lastname: decodedToken.lastname,
-            pseudo: decodedToken.pseudo,
         };
+        debugger;
         return infos;
     }
 }
