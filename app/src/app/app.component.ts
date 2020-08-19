@@ -58,6 +58,6 @@ export class AppComponent extends BaseComponent {
         this.koudouService.logout();
     }
     navigateToProfil(): void {
-        this.koudouService.navigate(['profil']);
+        this.koudouService.navigate(['auth/profil']);
     }
 }

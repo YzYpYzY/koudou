@@ -19,6 +19,8 @@ export class NewsService {
     error$: Observable<string>;
     @Select(NewsStore.state$)
     state$: Observable<CrudStates>;
+    @Select(NewsStore.loading$)
+    loading$: Observable<boolean>;
 
     constructor(private store: Store) {}
 

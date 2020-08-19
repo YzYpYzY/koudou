@@ -1,5 +1,7 @@
 import { IRegister } from 'src/modules/auth/models/IRegister';
 import { ILogin } from '../modules/auth/models/ILogin';
+import { IChangePassword } from '../modules/auth/models/IChangePassword';
+import { ProfilState } from 'src/modules/auth/enum/ProfilState';
 
 export namespace KoudouActions {
     export class Loading {
@@ -15,6 +17,14 @@ export namespace KoudouActions {
     export class Register {
         static readonly type = '[LoginView] Register';
         constructor(public register: IRegister) {}
+    }
+    export class SetProfilState {
+        static readonly type = '[ProfilView] SetProfilState';
+        constructor(public newState: ProfilState) {}
+    }
+    export class ChangePassword {
+        static readonly type = '[ProfilView] Change password';
+        constructor(public changePassword: IChangePassword) {}
     }
     export class Logout {
         static readonly type = '[Sidebar] Logout';

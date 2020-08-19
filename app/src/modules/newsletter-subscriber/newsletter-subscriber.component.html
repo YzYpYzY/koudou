@@ -1,6 +1,9 @@
-<ng-container [ngSwitch]="state">
+<ng-container
+    [ngSwitch]="state"
+    *ngIf="newsletterSubscriberIdForDelete == null"
+>
     <ng-container *ngSwitchCase="CrudStates.List">
-        <div class="table-container">
+        <div class="table-container" *loading="loading$ | async">
             <yzy-bar
                 [title]="'Mailing list'"
                 [formModel]="filtersModel"
@@ -13,15 +16,30 @@
                 [items]="newsletterSubscribers"
                 [itemsCount]="newsletterSubscribersCount"
                 [itemByPage]="itemByPage"
+                [lineActions]="lineActions"
                 [pageLinkNumber]="5"
                 [isPaginator]="true"
                 [isFrontDataTreatment]="false"
-                (onSelect)="select($event)"
                 (onSort)="sort($event)"
                 (onPageChange)="pageChange($event)"
+                (onAction)="handleLineActions($event)"
             >
             </yzy-table>
         </div>
     </ng-container>
-    <ng-container *ngSwitchDefault> </ng-container>
+    <ng-container *ngSwitchDefault>
+        <koudou-subscriber-form
+            [selectedSubscriber]="selectedNewsletterSubscriber"
+            [isLoading]="loading$ | async"
+            [isReadOnly]="state == CrudStates.Read"
+            (action)="handleFormActions($event)"
+            (save)="save($event)"
+        ></koudou-subscriber-form>
+    </ng-container>
 </ng-container>
+<yzy-question
+    [question]="question"
+    [answers]="answer"
+    *ngIf="newsletterSubscriberIdForDelete != null"
+    (select)="confirmDelete($event)"
+></yzy-question>

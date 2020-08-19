@@ -8,8 +8,10 @@ import {
 } from './newsletter-subscriber.state';
 import { NewsletterSubscriberApiService } from '../newsletter-subscriber-api.service';
 import { NewsletterSubscriberActions } from './newsletter-subscriber.actions';
-import { INewsletterSubscriber } from '../models/INewsletterSubscriber';
+import { NewsletterSubscriber } from '../models/INewsletterSubscriber';
 import { IListResponse } from '@core/models/IListResponse';
+import { CrudStates, NotificationTypes } from '@core/enums';
+import { NotificationService } from '@core/notification/notification.module';
 
 @Injectable()
 @State<NewsletterSubscriberState>({
@@ -42,11 +44,12 @@ export class NewsletterSubscriberStore {
         return state.viewState;
     }
     @Selector()
-    static isNewsletterSubscriberLoading$(state: NewsletterSubscriberState) {
-        return state.isNewsletterSubscriberLoading;
+    static loading$(state: NewsletterSubscriberState) {
+        return state.loading;
     }
     constructor(
         private newsletterSubscriberApiService: NewsletterSubscriberApiService,
+        private notificationService: NotificationService,
     ) {}
 
     @Action(NewsletterSubscriberActions.FetchAll)
@@ -55,20 +58,25 @@ export class NewsletterSubscriberStore {
         { request }: NewsletterSubscriberActions.FetchAll,
     ) {
         patchState({
-            isNewsletterSubscriberLoading: true,
+            loading: true,
         });
         return this.newsletterSubscriberApiService.fetchAll(request).pipe(
-            tap((res: IListResponse<INewsletterSubscriber>) => {
+            tap((res: IListResponse<NewsletterSubscriber>) => {
                 patchState({
                     newsletterSubscribers: res.values,
                     newsletterSubscribersCount: res.totalCount,
-                    isNewsletterSubscriberLoading: false,
+                    loading: false,
+                    request: { ...request },
                 });
             }),
             catchError((error: Error) => {
                 patchState({
                     error: error.message,
-                    isNewsletterSubscriberLoading: false,
+                    loading: false,
+                });
+                this.notificationService.notify({
+                    type: NotificationTypes.Error,
+                    message: 'Les souscriptions ne peuvent être chargées.',
                 });
                 return of(error);
             }),
@@ -77,59 +85,95 @@ export class NewsletterSubscriberStore {
 
     @Action(NewsletterSubscriberActions.Select)
     select(
-        { patchState }: StateContext<NewsletterSubscriberState>,
+        { patchState, getState }: StateContext<NewsletterSubscriberState>,
         { newsletterSubscriberId }: NewsletterSubscriberActions.Select,
     ) {
+        const selectedNewsletterSubscriber = getState().newsletterSubscribers.find(
+            (n) => n.id == newsletterSubscriberId,
+        );
         patchState({
             selectedNewsletterSubscriberId: newsletterSubscriberId,
-            selectedNewsletterSubscriber: null,
+            selectedNewsletterSubscriber: selectedNewsletterSubscriber,
+            viewState: CrudStates.Read,
         });
     }
 
     @Action(NewsletterSubscriberActions.Save)
     save(
-        { patchState }: StateContext<NewsletterSubscriberState>,
+        {
+            dispatch,
+            patchState,
+            getState,
+        }: StateContext<NewsletterSubscriberState>,
         { newsletterSubscriber }: NewsletterSubscriberActions.Save,
     ) {
         patchState({
-            isNewsletterSubscriberLoading: true,
+            loading: true,
         });
         if (newsletterSubscriber.id) {
             return this.newsletterSubscriberApiService
                 .update(newsletterSubscriber.id, newsletterSubscriber)
                 .pipe(
-                    tap((res: INewsletterSubscriber) => {
+                    tap((res: NewsletterSubscriber) => {
                         patchState({
-                            selectedNewsletterSubscriberId:
-                                newsletterSubscriber.id,
+                            selectedNewsletterSubscriberId: res.id,
                             selectedNewsletterSubscriber: res,
-                            isNewsletterSubscriberLoading: false,
+                            loading: false,
+                            viewState: CrudStates.Read,
                         });
+                        this.notificationService.notify({
+                            type: NotificationTypes.Success,
+                            message: 'La souscription a été modifiée.',
+                        });
+                        return dispatch(
+                            new NewsletterSubscriberActions.FetchAll(
+                                getState().request,
+                            ),
+                        );
                     }),
                     catchError((error: Error) => {
                         patchState({
                             error: error.message,
-                            isNewsletterSubscriberLoading: false,
+                            loading: false,
+                        });
+                        this.notificationService.notify({
+                            type: NotificationTypes.Error,
+                            message: "La souscription n'a pu être modifiée.",
                         });
                         return of(error);
                     }),
                 );
         } else {
+            newsletterSubscriber.id = -1;
+            newsletterSubscriber.rowVersion = 0;
             return this.newsletterSubscriberApiService
                 .create(newsletterSubscriber)
                 .pipe(
-                    tap((res: INewsletterSubscriber) => {
+                    tap((res: NewsletterSubscriber) => {
                         patchState({
-                            selectedNewsletterSubscriberId:
-                                newsletterSubscriber.id,
+                            selectedNewsletterSubscriberId: res.id,
                             selectedNewsletterSubscriber: res,
-                            isNewsletterSubscriberLoading: false,
+                            loading: false,
+                            viewState: CrudStates.Read,
                         });
+                        this.notificationService.notify({
+                            type: NotificationTypes.Success,
+                            message: 'La souscription a été créée.',
+                        });
+                        return dispatch(
+                            new NewsletterSubscriberActions.FetchAll(
+                                getState().request,
+                            ),
+                        );
                     }),
                     catchError((error: Error) => {
                         patchState({
                             error: error.message,
-                            isNewsletterSubscriberLoading: false,
+                            loading: false,
+                        });
+                        this.notificationService.notify({
+                            type: NotificationTypes.Error,
+                            message: "La souscription n'a pu être créée.",
                         });
                         return of(error);
                     }),
@@ -139,11 +183,15 @@ export class NewsletterSubscriberStore {
 
     @Action(NewsletterSubscriberActions.Delete)
     delete(
-        { patchState }: StateContext<NewsletterSubscriberState>,
+        {
+            patchState,
+            dispatch,
+            getState,
+        }: StateContext<NewsletterSubscriberState>,
         { newsletterSubscriberId }: NewsletterSubscriberActions.Delete,
     ) {
         patchState({
-            isNewsletterSubscriberLoading: true,
+            loading: true,
         });
         return this.newsletterSubscriberApiService
             .remove(newsletterSubscriberId)
@@ -154,13 +202,27 @@ export class NewsletterSubscriberStore {
                         selectedNewsletterSubscriber: null,
                         newsletterSubscribers: null,
                         newsletterSubscribersCount: null,
-                        isNewsletterSubscriberLoading: false,
+                        loading: false,
+                        viewState: CrudStates.List,
                     });
+                    this.notificationService.notify({
+                        type: NotificationTypes.Success,
+                        message: 'La souscription a été supprimée.',
+                    });
+                    return dispatch(
+                        new NewsletterSubscriberActions.FetchAll(
+                            getState().request,
+                        ),
+                    );
                 }),
                 catchError((error: Error) => {
                     patchState({
                         error: error.message,
-                        isNewsletterSubscriberLoading: false,
+                        loading: false,
+                    });
+                    this.notificationService.notify({
+                        type: NotificationTypes.Error,
+                        message: "La souscription n'a pu être supprimée.",
                     });
                     return of(error);
                 }),
@@ -171,8 +233,16 @@ export class NewsletterSubscriberStore {
         { patchState }: StateContext<NewsletterSubscriberState>,
         { newState }: NewsletterSubscriberActions.SetViewState,
     ) {
-        patchState({
-            viewState: newState,
-        });
+        if (newState == CrudStates.Create) {
+            patchState({
+                viewState: newState,
+                selectedNewsletterSubscriberId: null,
+                selectedNewsletterSubscriber: null,
+            });
+        } else {
+            patchState({
+                viewState: newState,
+            });
+        }
     }
 }

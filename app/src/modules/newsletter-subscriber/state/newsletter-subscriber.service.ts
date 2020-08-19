@@ -5,21 +5,22 @@ import { IListRequest } from '@core/models/IListRequest';
 import { Store, Select } from '@ngxs/store';
 import { NewsletterSubscriberActions } from './newsletter-subscriber.actions';
 import { NewsletterSubscriberStore } from './newsletter-subscriber.store';
-import { INewsletterSubscriber } from '../models/INewsletterSubscriber';
+import { NewsletterSubscriber } from '../models/INewsletterSubscriber';
 
 @Injectable({ providedIn: 'root' })
 export class NewsletterSubscriberService {
     @Select(NewsletterSubscriberStore.newsletterSubscribers$)
-    newsletterSubscribers$: Observable<INewsletterSubscriber[]>;
+    newsletterSubscribers$: Observable<NewsletterSubscriber[]>;
     @Select(NewsletterSubscriberStore.newsletterSubscribersCount$)
     newsletterSubscribersCount$: Observable<number>;
     @Select(NewsletterSubscriberStore.selectedNewsletterSubscriber$)
-    selectedNewsletterSubscriber$: Observable<INewsletterSubscriber>;
+    selectedNewsletterSubscriber$: Observable<NewsletterSubscriber>;
     @Select(NewsletterSubscriberStore.error$)
     error$: Observable<string>;
     @Select(NewsletterSubscriberStore.state$)
     state$: Observable<CrudStates>;
-
+    @Select(NewsletterSubscriberStore.loading$)
+    loading$: Observable<boolean>;
     constructor(private store: Store) {}
 
     fetchAll(request: IListRequest): void {
@@ -32,7 +33,7 @@ export class NewsletterSubscriberService {
         );
     }
 
-    save(newsletterSubscriber: INewsletterSubscriber): void {
+    save(newsletterSubscriber: NewsletterSubscriber): void {
         this.store.dispatch(
             new NewsletterSubscriberActions.Save(newsletterSubscriber),
         );

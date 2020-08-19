@@ -43,13 +43,14 @@ namespace Koudou.Api
                 Configuration.GetConnectionString("KoudouConnection"),
                 x => x.MigrationsAssembly("Koudou.Data")
             ));
-            services.AddApiVersioning(x =>  
-            {  
-                x.DefaultApiVersion = new ApiVersion(1, 0);  
-                x.AssumeDefaultVersionWhenUnspecified = true;  
-                x.ReportApiVersions = true;  
-            });  
-            services.AddControllers().AddJsonOptions(options => {
+            services.AddApiVersioning(x =>
+            {
+                x.DefaultApiVersion = new ApiVersion(1, 0);
+                x.AssumeDefaultVersionWhenUnspecified = true;
+                x.ReportApiVersions = true;
+            });
+            services.AddControllers().AddJsonOptions(options =>
+            {
                 options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
                 options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
             });
@@ -59,11 +60,11 @@ namespace Koudou.Api
                 ConfigureSwagger(config);
             });
 
-            
+
             services.AddCors(options =>
             {
                 options.AddPolicy("All",
-                builder => builder.AllowAnyOrigin().AllowAnyHeader());
+                builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
             });
 
             // Business logic
@@ -84,7 +85,7 @@ namespace Koudou.Api
                 app.UseExceptionHandler(HandleError);
             }
 
-            app.UseCors("All"); 
+            app.UseCors("All");
 
             app.UseHttpsRedirection();
 
@@ -175,13 +176,17 @@ namespace Koudou.Api
                             context.Response.ContentType = "application/json";
                             context.Response.StatusCode = 412;
                             await context.Response.WriteAsync("Update failed because incorrect row version.");
-                        } else if(exceptionHandlerPathFeature?.Error is RequestException){
+                        }
+                        else if (exceptionHandlerPathFeature?.Error is RequestException)
+                        {
                             var exception = exceptionHandlerPathFeature?.Error as RequestException;
                             var json = exception.GetJson();
                             context.Response.ContentType = "application/json";
                             context.Response.StatusCode = exception.StatusCode;
                             await context.Response.WriteAsync(json);
-                        } else if(exceptionHandlerPathFeature?.Error is UnauthorizedAccessException){
+                        }
+                        else if (exceptionHandlerPathFeature?.Error is UnauthorizedAccessException)
+                        {
                             context.Response.ContentType = "application/json";
                             context.Response.StatusCode = 401;
                             await context.Response.WriteAsync("Unauthorized");

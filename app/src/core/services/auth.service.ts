@@ -10,6 +10,7 @@ import { map } from 'rxjs/operators';
 import * as jwt_decode from 'jwt-decode';
 import { IAccessTokenDTO } from '../models/IAccessTokenDTO';
 import { IUser } from '../models/IUser';
+import { IChangePassword } from 'src/modules/auth/models/IChangePassword';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -44,6 +45,13 @@ export class AuthService {
             );
     }
 
+    changePassword(changePassword: IChangePassword) {
+        return this.httpClient.post<boolean>(
+            environment.api + '/Auth/ChangePassword',
+            changePassword,
+        );
+    }
+
     logout(refreshToken: string): Observable<boolean> {
         return this.httpClient
             .post(environment.api + '/Auth/RevokeToken', { refreshToken })
@@ -71,7 +79,6 @@ export class AuthService {
             firstname: decodedToken.firstname,
             lastname: decodedToken.lastname,
         };
-        debugger;
         return infos;
     }
 }

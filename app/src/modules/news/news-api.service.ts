@@ -26,7 +26,7 @@ export class NewsApiService extends BaseService {
     }
 
     update(newsId: number, news: INews): Observable<INews> {
-        return this.post<INews>([ServiceList.news, newsId.toString()], news);
+        return this.put<INews>([ServiceList.news, newsId.toString()], news);
     }
 
     remove(newsId: number): Observable<boolean> {

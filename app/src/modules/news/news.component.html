@@ -1,6 +1,6 @@
 <ng-container [ngSwitch]="state" *ngIf="newsIdForDelete == null">
     <ng-container *ngSwitchCase="CrudStates.List">
-        <div class="table-container">
+        <div class="table-container" *loading="loading$ | async">
             <yzy-bar
                 [title]="'News'"
                 [formModel]="filtersModel"
@@ -24,7 +24,15 @@
             </yzy-table>
         </div>
     </ng-container>
-    <ng-container *ngSwitchDefault> </ng-container>
+    <ng-container *ngSwitchDefault>
+        <koudou-news-form
+            [selectedNews]="selectedNews"
+            [isLoading]="loading$ | async"
+            [isReadOnly]="state == CrudStates.Read"
+            (action)="handleFormActions($event)"
+            (save)="save($event)"
+        ></koudou-news-form>
+    </ng-container>
 </ng-container>
 <yzy-question
     [question]="question"

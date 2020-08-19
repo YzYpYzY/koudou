@@ -46,12 +46,12 @@ export class SectionComponent extends BaseComponent implements OnInit {
         ],
     };
     lineActions: YzYAction[] = [
-        { name: 'read', class: 'gg-search', type: YzYActionTypes.Info },
-        { name: 'edit', class: 'gg-pen', type: YzYActionTypes.Warning },
-        { name: 'delete', class: 'gg-trash', type: YzYActionTypes.Error },
+        // { name: 'read', class: 'gg-search', type: YzYActionTypes.Info },
+        // { name: 'edit', class: 'gg-pen', type: YzYActionTypes.Warning },
+        // { name: 'delete', class: 'gg-trash', type: YzYActionTypes.Error },
     ];
     headerActions: YzYAction[] = [
-        { name: 'add', class: 'gg-math-plus', type: YzYActionTypes.Success },
+        // { name: 'add', class: 'gg-math-plus', type: YzYActionTypes.Success },
     ];
     state = CrudStates.List;
     request: IListRequest;

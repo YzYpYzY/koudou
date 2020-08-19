@@ -6,9 +6,10 @@ import { NgxsModule } from '@ngxs/store';
 import { CoreModule } from '@core/core.module';
 import { YzYFormsModule, FieldModule, TableModule, LayoutModule } from 'yzy-ng';
 import { NewsletterSubscriberStore } from './state/newsletter-subscriber.store';
+import { SubscriberFormComponent } from './subscriber-form/subscriber-form.component';
 
 @NgModule({
-    declarations: [NewsletterSubscriberComponent],
+    declarations: [NewsletterSubscriberComponent, SubscriberFormComponent],
     imports: [
         CommonModule,
         NewsletterSubscriberRoutingModule,

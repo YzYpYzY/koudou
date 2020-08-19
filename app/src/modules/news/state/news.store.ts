@@ -7,6 +7,8 @@ import { NewsApiService } from '../news-api.service';
 import { NewsActions } from './news.actions';
 import { INews } from '../models/INews';
 import { IListResponse } from '@core/models/IListResponse';
+import { NotificationService } from '@core/notification/notification.module';
+import { NotificationTypes, CrudStates } from '@core/enums';
 
 @Injectable()
 @State<NewsState>({
@@ -39,10 +41,13 @@ export class NewsStore {
         return state.viewState;
     }
     @Selector()
-    static isNewsLoading$(state: NewsState) {
-        return state.isNewsLoading;
+    static loading$(state: NewsState) {
+        return state.loading;
     }
-    constructor(private newsApiService: NewsApiService) {}
+    constructor(
+        private newsApiService: NewsApiService,
+        private notificationService: NotificationService,
+    ) {}
 
     @Action(NewsActions.FetchAll)
     fetchAll(
@@ -50,20 +55,25 @@ export class NewsStore {
         { request }: NewsActions.FetchAll,
     ) {
         patchState({
-            isNewsLoading: true,
+            loading: true,
         });
         return this.newsApiService.fetchAll(request).pipe(
             tap((res: IListResponse<INews>) => {
                 patchState({
                     news: res.values,
                     newsCount: res.totalCount,
-                    isNewsLoading: false,
+                    loading: false,
+                    request: { ...request },
                 });
             }),
             catchError((error: Error) => {
                 patchState({
                     error: error.message,
-                    isNewsLoading: false,
+                    loading: false,
+                });
+                this.notificationService.notify({
+                    type: NotificationTypes.Error,
+                    message: 'Les news ne peuvent être chargées.',
                 });
                 return of(error);
             }),
@@ -71,17 +81,25 @@ export class NewsStore {
     }
 
     @Action(NewsActions.Select)
-    select({ patchState }: StateContext<NewsState>, { newsId }: NewsActions.Select) {
+    select(
+        { patchState, getState }: StateContext<NewsState>,
+        { newsId }: NewsActions.Select,
+    ) {
+        const selectedNews = getState().news.find((n) => n.id == newsId);
         patchState({
             selectedNewsId: newsId,
-            selectedNews: null,
+            selectedNews: selectedNews,
+            viewState: CrudStates.Read,
         });
     }
 
     @Action(NewsActions.Save)
-    save({ patchState }: StateContext<NewsState>, { news }: NewsActions.Save) {
+    save(
+        { dispatch, patchState, getState }: StateContext<NewsState>,
+        { news }: NewsActions.Save,
+    ) {
         patchState({
-            isNewsLoading: true,
+            loading: true,
         });
         if (news.id) {
             return this.newsApiService.update(news.id, news).pipe(
@@ -89,30 +107,56 @@ export class NewsStore {
                     patchState({
                         selectedNewsId: news.id,
                         selectedNews: res,
-                        isNewsLoading: false,
+                        loading: false,
+                        viewState: CrudStates.Read,
                     });
+                    this.notificationService.notify({
+                        type: NotificationTypes.Success,
+                        message: 'La news a été modifiée.',
+                    });
+                    return dispatch(
+                        new NewsActions.FetchAll(getState().request),
+                    );
                 }),
                 catchError((error: Error) => {
                     patchState({
                         error: error.message,
-                        isNewsLoading: false,
+                        loading: false,
+                    });
+                    this.notificationService.notify({
+                        type: NotificationTypes.Error,
+                        message: "La news n'a pu être modifiée.",
                     });
                     return of(error);
                 }),
             );
         } else {
+            news.id = -1;
+            news.rowVersion = 0;
             return this.newsApiService.create(news).pipe(
                 tap((res: INews) => {
                     patchState({
                         selectedNewsId: news.id,
                         selectedNews: res,
-                        isNewsLoading: false,
+                        loading: false,
+                        viewState: CrudStates.Read,
                     });
+                    this.notificationService.notify({
+                        type: NotificationTypes.Success,
+                        message: 'La news a été créée.',
+                    });
+                    return dispatch(
+                        new NewsActions.FetchAll(getState().request),
+                    );
                 }),
                 catchError((error: Error) => {
                     patchState({
                         error: error.message,
-                        isNewsLoading: false,
+                        loading: false,
+                    });
+                    this.notificationService.notify({
+                        type: NotificationTypes.Error,
+                        message: "La news n'a pu être créée.",
                     });
                     return of(error);
                 }),
@@ -122,11 +166,11 @@ export class NewsStore {
 
     @Action(NewsActions.Delete)
     delete(
-        { patchState }: StateContext<NewsState>,
+        { patchState, dispatch, getState }: StateContext<NewsState>,
         { newsId }: NewsActions.Delete,
     ) {
         patchState({
-            isNewsLoading: true,
+            loading: true,
         });
         return this.newsApiService.remove(newsId).pipe(
             tap(() => {
@@ -135,13 +179,23 @@ export class NewsStore {
                     selectedNews: null,
                     news: null,
                     newsCount: null,
-                    isNewsLoading: false,
+                    loading: false,
+                    viewState: CrudStates.List,
                 });
+                this.notificationService.notify({
+                    type: NotificationTypes.Success,
+                    message: 'La news a été supprimée.',
+                });
+                return dispatch(new NewsActions.FetchAll(getState().request));
             }),
             catchError((error: Error) => {
                 patchState({
                     error: error.message,
-                    isNewsLoading: false,
+                    loading: false,
+                });
+                this.notificationService.notify({
+                    type: NotificationTypes.Error,
+                    message: "La news n'a pu être supprimée.",
                 });
                 return of(error);
             }),
@@ -152,8 +206,16 @@ export class NewsStore {
         { patchState }: StateContext<NewsState>,
         { newState }: NewsActions.SetViewState,
     ) {
-        patchState({
-            viewState: newState,
-        });
+        if (newState == CrudStates.Create) {
+            patchState({
+                viewState: newState,
+                selectedNewsId: null,
+                selectedNews: null,
+            });
+        } else {
+            patchState({
+                viewState: newState,
+            });
+        }
     }
 }

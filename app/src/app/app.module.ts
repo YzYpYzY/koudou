@@ -30,7 +30,12 @@ import { RequestInterceptor } from './interceptors/request.interceptor';
 import { NotConnectedGuard } from '@core/guard/not-connected.guard';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
-import { DropdownOptionsComponent } from 'yzy-ng';
+import {
+    DropdownOptionsComponent,
+    DateSelectorCalendarComponent,
+} from 'yzy-ng';
+import { LoaderComponent } from '@core/loader/loader.component';
+import { LoaderWrapperComponent } from '@core/loader/loader-wrapper.component';
 @NgModule({
     declarations: [AppComponent],
     imports: [
@@ -75,7 +80,13 @@ import { DropdownOptionsComponent } from 'yzy-ng';
         },
     ],
     bootstrap: [AppComponent],
-    entryComponents: [DropdownOptionsComponent, NotificationComponent],
+    entryComponents: [
+        DropdownOptionsComponent,
+        NotificationComponent,
+        LoaderComponent,
+        LoaderWrapperComponent,
+        DateSelectorCalendarComponent,
+    ],
 })
 export class AppModule {}
 

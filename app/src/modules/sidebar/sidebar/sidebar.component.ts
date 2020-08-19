@@ -19,10 +19,10 @@ export class SidebarComponent extends BaseComponent implements OnInit {
             icon: 'gg-home',
         },
         {
-            label: 'Sections',
-            url: 'sections',
+            label: 'Gestion news',
+            url: 'news/management',
             isActive: false,
-            icon: 'gg-shape-hexagon',
+            icon: 'gg-media-podcast',
         },
         {
             label: 'Membres',
@@ -31,35 +31,23 @@ export class SidebarComponent extends BaseComponent implements OnInit {
             icon: 'gg-user-list',
         },
         {
-            label: 'Photos',
-            url: 'photos',
-            isActive: false,
-            icon: 'gg-image',
-        },
-        {
-            label: 'Gestion news',
-            url: 'news/management',
-            isActive: false,
-            icon: 'gg-media-podcast',
-        },
-        // {
-        //     label: 'Activités',
-        //     url: 'activities',
-        //     isActive: false,
-        //     icon: 'gg-dribbble',
-        // },
-        {
             label: 'Mailing',
             url: 'mailing',
             isActive: false,
             icon: 'gg-mail',
         },
-        // {
-        //     label: 'Localisation',
-        //     url: 'localisation',
-        //     isActive: false,
-        //     icon: 'gg-pentagon-down',
-        // },
+        {
+            label: 'Sections',
+            url: 'sections',
+            isActive: false,
+            icon: 'gg-shape-hexagon',
+        },
+        {
+            label: 'Photos',
+            url: 'photos',
+            isActive: false,
+            icon: 'gg-image',
+        },
         {
             label: 'Paiements',
             url: 'payments',

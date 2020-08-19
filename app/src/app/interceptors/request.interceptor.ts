@@ -5,6 +5,7 @@ import {
     HttpRequest,
     HttpHandler,
     HttpEvent,
+    HttpErrorResponse,
 } from '@angular/common/http';
 import { Observable, BehaviorSubject, throwError } from 'rxjs';
 import { KoudouService } from 'src/state/koudou.service';
@@ -29,14 +30,15 @@ export class RequestInterceptor implements HttpInterceptor {
     ): Observable<HttpEvent<any>> {
         return next.handle(req.clone({ setHeaders: this.setHeaders() })).pipe(
             catchError((err) => {
+                if (req.url.includes('RefreshToken')) {
+                    this.koudouSercice.logout();
+                    return throwError(err);
+                }
                 if (
                     req.url.includes('Authenticate') ||
-                    req.url.includes('RefreshToken')
+                    req.url.includes('ChangePassword')
                 ) {
-                    if (req.url.includes('RefreshToken')) {
-                        this.koudouSercice.logout();
-                    }
-                    throw err;
+                    return throwError(err);
                 }
                 switch (err.status) {
                     case 401:
@@ -64,7 +66,12 @@ export class RequestInterceptor implements HttpInterceptor {
             switchMap(() =>
                 this.token
                     ? next.handle(req.clone({ setHeaders: this.setHeaders() }))
-                    : throwError(new Error('Not Authorized')),
+                    : throwError(
+                          new HttpErrorResponse({
+                              status: 401,
+                              statusText: 'Not Authorized',
+                          }),
+                      ),
             ),
         );
     }
@@ -74,6 +81,10 @@ export class RequestInterceptor implements HttpInterceptor {
             'Access-Control-Allow-Origin': '*',
             'Content-Type': 'application/json',
             Accept: 'application/json, text/plain, */*',
+            'Access-Control-Allow-Methods':
+                'GET, POST, PUT, DELETE, OPTIONS, HEAD',
+            'Access-Control-Allow-Headers':
+                'Origin, X-Requested-With, Content-Type, Accept, Authorization',
         };
         if (this.token) {
             headers = {

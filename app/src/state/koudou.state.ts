@@ -2,6 +2,7 @@ import { KoudouError } from '../core/models/KoudouError';
 import { IUserToken } from '../core/models/IUserToken';
 import { IUser } from '@core/models/IUser';
 import { OptionModel } from 'yzy-ng';
+import { ProfilState } from '../modules/auth/enum/ProfilState';
 
 export interface KoudouState {
     isLogged: boolean;
@@ -11,6 +12,7 @@ export interface KoudouState {
     isDarkMode: boolean;
     sectionOptions: OptionModel[];
     loading: boolean;
+    profilState: ProfilState;
 }
 
 export const KoudouStateDefault: KoudouState = {
@@ -21,4 +23,5 @@ export const KoudouStateDefault: KoudouState = {
     isDarkMode: false,
     sectionOptions: null,
     loading: false,
+    profilState: ProfilState.Profil,
 };

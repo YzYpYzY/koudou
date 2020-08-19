@@ -10,15 +10,16 @@ import { KoudouActions } from './koudou.actions';
 import { Navigate } from '@ngxs/router-plugin';
 import { OptionModel } from 'yzy-ng';
 import { IRegister } from '../modules/auth/models/IRegister';
+import { IChangePassword } from '../modules/auth/models/IChangePassword';
+import { ProfilState } from '../modules/auth/enum/ProfilState';
 
 @Injectable({ providedIn: 'root' })
 export class KoudouService {
-    constructor(private store: Store) {}
-
     @Select(KoudouStore.isLogged$)
     isLogged$: Observable<boolean>;
     @Select(KoudouStore.user$)
     user$: Observable<IUser>;
+    user: IUser;
     @Select(KoudouStore.token$)
     token$: Observable<IUserToken>;
     @Select(KoudouStore.error$)
@@ -29,6 +30,12 @@ export class KoudouService {
     sectionOptions$: Observable<OptionModel[]>;
     @Select(KoudouStore.loading$)
     loading$: Observable<boolean>;
+    @Select(KoudouStore.profilState$)
+    profilState$: Observable<ProfilState>;
+
+    constructor(private store: Store) {
+        this.user$.subscribe((user) => (this.user = user));
+    }
 
     login(login: ILogin) {
         this.store.dispatch(new KoudouActions.Login(login));
@@ -36,18 +43,30 @@ export class KoudouService {
     register(register: IRegister) {
         this.store.dispatch(new KoudouActions.Register(register));
     }
+    changePassword(changePassword: IChangePassword) {
+        this.store.dispatch(new KoudouActions.ChangePassword(changePassword));
+    }
     logout() {
         this.store.dispatch(new KoudouActions.Logout());
     }
     toggleDarkMode() {
         this.store.dispatch(new KoudouActions.ToggleDarkMode());
     }
-
     navigate(url: string[]) {
         this.store.dispatch(new Navigate(url));
     }
-
     loadSectionOptions() {
         this.store.dispatch(new KoudouActions.LoadSectionOptions());
+    }
+    setProfilState(newState: ProfilState) {
+        this.store.dispatch(new KoudouActions.SetProfilState(newState));
+    }
+    checkAccess(claims: string[]): boolean {
+        for (const claim in claims) {
+            if (!this.user.claims.includes(claim)) {
+                return false;
+            }
+        }
+        return true;
     }
 }

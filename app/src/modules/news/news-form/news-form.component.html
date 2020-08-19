@@ -1,0 +1,13 @@
+<yzy-bar
+    [title]="'News'"
+    [actions]="headerActions"
+    (action)="handleHeaderAction($event)"
+></yzy-bar>
+<div class="form-container">
+    <yzy-form
+        [formModel]="formModel"
+        *loading="isLoading"
+        (formReady)="formReady($event)"
+    >
+    </yzy-form>
+</div>

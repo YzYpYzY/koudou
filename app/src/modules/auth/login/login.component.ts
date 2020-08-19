@@ -1,10 +1,8 @@
-import { NotificationService } from '@core/notification/notification.service';
-import { NotificationTypes } from './../../../core/enums/NotificationTypes';
 import { Component, OnInit } from '@angular/core';
 import { Validators } from '@angular/forms';
 import { BaseComponent } from '@core/base/base.component';
 import { Observable } from 'rxjs';
-import { takeUntil, tap } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import { IRegister } from 'src/modules/auth/models/IRegister';
 import { KoudouService } from 'src/state/koudou.service';
 import { FieldTypes, FormModel, YzYFormGroup } from 'yzy-ng';
@@ -72,26 +70,12 @@ export class LoginComponent extends BaseComponent implements OnInit {
     };
     isDarkMode: boolean;
 
-    constructor(
-        private koudouService: KoudouService,
-        private notificationService: NotificationService,
-    ) {
+    constructor(private koudouService: KoudouService) {
         super();
     }
 
     ngOnInit() {
         this.loading$ = this.koudouService.loading$;
-        this.koudouService.error$
-            .pipe(
-                takeUntil(this.destroy$),
-                tap((error) => {
-                    this.notificationService.notify({
-                        message: error.message,
-                        type: NotificationTypes.Error,
-                    });
-                }),
-            )
-            .subscribe();
         this.koudouService.isDarkMode$
             .pipe(takeUntil(this.destroy$))
             .subscribe((value) => {

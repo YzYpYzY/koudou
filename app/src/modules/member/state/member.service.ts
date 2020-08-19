@@ -20,6 +20,8 @@ export class MemberService {
     error$: Observable<string>;
     @Select(MemberStore.state$)
     state$: Observable<CrudStates>;
+    @Select(MemberStore.loading$)
+    loading$: Observable<boolean>;
 
     constructor(private store: Store) {}
 
@@ -27,8 +29,12 @@ export class MemberService {
         this.store.dispatch(new MemberActions.FetchAll(request));
     }
 
-    select(memberId: number): void {
-        this.store.dispatch(new MemberActions.Select(memberId));
+    fetchOne(memberId: number): void {
+        this.store.dispatch(new MemberActions.FetchOne(memberId));
+    }
+
+    select(memberId: number, isRead: boolean): void {
+        this.store.dispatch(new MemberActions.Select(memberId, isRead));
     }
 
     save(member: IMemberDetails): void {

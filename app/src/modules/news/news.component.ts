@@ -27,13 +27,12 @@ export class NewsComponent extends BaseComponent implements OnInit {
     CrudStates = CrudStates;
     selectedNews$: Observable<INews>;
     selectedNews: INews;
-
     news: INews[] = [];
     newsCount = 0;
     columns: Column[] = [
         { name: 'Titre', attribute: 'title' },
         { name: 'Date', attribute: 'date' },
-        { name: 'Créateur', attribute: 'creator' },
+        { name: 'Auteur', attribute: 'creator' },
     ];
     filtersModel: FormModel = {
         title: null,
@@ -45,23 +44,25 @@ export class NewsComponent extends BaseComponent implements OnInit {
             },
         ],
     };
-    lineActions: YzYAction[] = [
-        { name: 'read', class: 'gg-search', type: YzYActionTypes.Info },
-        { name: 'edit', class: 'gg-pen', type: YzYActionTypes.Warning },
-        { name: 'delete', class: 'gg-trash', type: YzYActionTypes.Error },
-    ];
     headerActions: YzYAction[] = [
         { name: 'add', class: 'gg-math-plus', type: YzYActionTypes.Success },
     ];
     state = CrudStates.List;
     request: IListRequest;
-    itemByPage = 20;
-    newsIdForDelete: number = null;
-    question = 'Ètes-vous certains de vouloir supprimer cet news ?';
+    itemByPage = 30;
+    loading$: Observable<boolean>;
+    lineActions: YzYAction[] = [
+        { name: 'read', class: 'gg-search', type: YzYActionTypes.Info },
+        { name: 'edit', class: 'gg-pen', type: YzYActionTypes.Warning },
+        { name: 'delete', class: 'gg-trash', type: YzYActionTypes.Error },
+    ];
+    newsIdForDelete: number;
+    question = 'Ètes-vous certains de vouloir supprimer cette news ?';
     answer = [
         { label: 'Annuler', value: false, type: AnswerType.Default },
         { label: 'Oui', value: true, type: AnswerType.Danger },
     ];
+
     constructor(private newsService: NewsService) {
         super();
         this.newsService.news$
@@ -69,15 +70,18 @@ export class NewsComponent extends BaseComponent implements OnInit {
             .subscribe((news) => {
                 this.news = news;
             });
-        this.newsService.selectedNews$
-            .pipe(takeUntil(this.destroy$))
-            .subscribe((news) => {
-                this.selectedNews = news;
-            });
         this.newsService.newsCount$
             .pipe(takeUntil(this.destroy$))
             .subscribe((newsCount) => (this.newsCount = newsCount));
-        this.selectedNews$ = this.newsService.selectedNews$;
+        this.newsService.state$
+            .pipe(takeUntil(this.destroy$))
+            .subscribe((newState: CrudStates) => (this.state = newState));
+        this.newsService.selectedNews$
+            .pipe(takeUntil(this.destroy$))
+            .subscribe((selectedSubscriber) => {
+                this.selectedNews = selectedSubscriber;
+            });
+        this.loading$ = this.newsService.loading$;
     }
 
     ngOnInit() {
@@ -85,29 +89,26 @@ export class NewsComponent extends BaseComponent implements OnInit {
             sort: null,
             sortDirection: null,
             startIndex: 0,
-            count: this.itemByPage,
+            count: 20,
             filter: null,
         };
         this.fetchNews();
     }
 
     add() {
-        this.select(null);
-        this.state = CrudStates.Create;
+        this.newsService.setState(CrudStates.Create);
     }
     cancel() {
-        this.state = CrudStates.List;
+        this.newsService.setState(CrudStates.List);
     }
-    select(newsId: number) {
-        this.newsService.select(newsId);
-        this.state = CrudStates.Read;
+    select(newsId: number, isReadOnly: boolean) {
+        this.newsService.select(newsId, isReadOnly);
     }
     save(news: INews) {
         this.newsService.save(news);
-        this.state = CrudStates.Read;
     }
     update() {
-        this.state = CrudStates.Update;
+        this.newsService.select(this.selectedNews.id, false);
     }
     delete(newsId: number): void {
         this.newsService.delete(newsId);
@@ -147,15 +148,29 @@ export class NewsComponent extends BaseComponent implements OnInit {
             this.add();
         }
     }
-
+    handleFormActions(action: YzYAction): void {
+        switch (action.name) {
+            case 'read':
+                this.select(this.selectedNews.id, true);
+                break;
+            case 'edit':
+                this.select(this.selectedNews.id, false);
+                break;
+            case 'delete':
+                this.showDelete(this.selectedNews.id);
+                break;
+            case 'cancel':
+                this.cancel();
+                break;
+        }
+    }
     handleLineActions({ action, key }: YzYActionEvent): void {
         switch (action.name) {
             case 'read':
-                this.select(key as number);
+                this.select(key as number, true);
                 break;
             case 'edit':
-                this.select(key as number);
-                this.update();
+                this.select(key as number, false);
                 break;
             case 'delete':
                 this.showDelete(key as number);

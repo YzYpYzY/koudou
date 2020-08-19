@@ -1,4 +1,4 @@
-import { INewsletterSubscriber } from './../models/INewsletterSubscriber';
+import { NewsletterSubscriber } from './../models/INewsletterSubscriber';
 import { CrudStates } from '@core/enums';
 import { IListRequest } from '@core/models/IListRequest';
 
@@ -14,7 +14,7 @@ export namespace NewsletterSubscriberActions {
     }
     export class Save {
         static readonly type = '[NewsletterSubscriberForm] Save subscriber';
-        constructor(public newsletterSubscriber: INewsletterSubscriber) {}
+        constructor(public newsletterSubscriber: NewsletterSubscriber) {}
     }
     export class Delete {
         static readonly type = '[NewsletterSubscriberForm] Delete subscriber';

@@ -7,11 +7,14 @@ import {
     FieldTypes,
     YzYAction,
     YzYActionTypes,
+    YzYActionEvent,
+    Answer,
+    AnswerType,
 } from 'yzy-ng';
 import { FormGroup } from '@angular/forms';
 import { takeUntil } from 'rxjs/operators';
 import { Observable } from 'rxjs';
-import { INewsletterSubscriber } from './models/INewsletterSubscriber';
+import { NewsletterSubscriber } from './models/INewsletterSubscriber';
 import { IListRequest } from '../../core/models/IListRequest';
 import { NewsletterSubscriberService } from './state/newsletter-subscriber.service';
 import { BaseComponent } from '@core/base/base.component';
@@ -23,8 +26,9 @@ import { BaseComponent } from '@core/base/base.component';
 export class NewsletterSubscriberComponent extends BaseComponent
     implements OnInit {
     CrudStates = CrudStates;
-    selectedNewsletterSubscriber$: Observable<INewsletterSubscriber>;
-    newsletterSubscribers: INewsletterSubscriber[] = [];
+    selectedNewsletterSubscriber$: Observable<NewsletterSubscriber>;
+    selectedNewsletterSubscriber: NewsletterSubscriber;
+    newsletterSubscribers: NewsletterSubscriber[] = [];
     newsletterSubscribersCount = 0;
     columns: Column[] = [
         { name: 'Email', attribute: 'email' },
@@ -46,6 +50,19 @@ export class NewsletterSubscriberComponent extends BaseComponent
     state = CrudStates.List;
     request: IListRequest;
     itemByPage = 30;
+    loading$: Observable<boolean>;
+    lineActions: YzYAction[] = [
+        { name: 'read', class: 'gg-search', type: YzYActionTypes.Info },
+        { name: 'edit', class: 'gg-pen', type: YzYActionTypes.Warning },
+        { name: 'delete', class: 'gg-trash', type: YzYActionTypes.Error },
+    ];
+    newsletterSubscriberIdForDelete: number;
+    question = 'Ètes-vous certains de vouloir supprimer cette souscription ?';
+    answer = [
+        { label: 'Annuler', value: false, type: AnswerType.Default },
+        { label: 'Oui', value: true, type: AnswerType.Danger },
+    ];
+
     constructor(
         private newsletterSubscriberService: NewsletterSubscriberService,
     ) {
@@ -61,7 +78,15 @@ export class NewsletterSubscriberComponent extends BaseComponent
                 (newsletterSubscribersCount) =>
                     (this.newsletterSubscribersCount = newsletterSubscribersCount),
             );
-        this.selectedNewsletterSubscriber$ = this.newsletterSubscriberService.selectedNewsletterSubscriber$;
+        this.newsletterSubscriberService.state$
+            .pipe(takeUntil(this.destroy$))
+            .subscribe((newState: CrudStates) => (this.state = newState));
+        this.newsletterSubscriberService.selectedNewsletterSubscriber$
+            .pipe(takeUntil(this.destroy$))
+            .subscribe((selectedSubscriber) => {
+                this.selectedNewsletterSubscriber = selectedSubscriber;
+            });
+        this.loading$ = this.newsletterSubscriberService.loading$;
     }
 
     ngOnInit() {
@@ -76,22 +101,19 @@ export class NewsletterSubscriberComponent extends BaseComponent
     }
 
     add() {
-        this.select(null);
-        this.state = CrudStates.Create;
+        this.newsletterSubscriberService.setState(CrudStates.Create);
     }
     cancel() {
-        this.state = CrudStates.List;
+        this.newsletterSubscriberService.setState(CrudStates.List);
     }
     select(newsletterSubscriberId: number) {
         this.newsletterSubscriberService.select(newsletterSubscriberId);
-        this.state = CrudStates.Read;
     }
-    save(newsletterSubscriber: INewsletterSubscriber) {
+    save(newsletterSubscriber: NewsletterSubscriber) {
         this.newsletterSubscriberService.save(newsletterSubscriber);
-        this.state = CrudStates.Read;
     }
     update() {
-        this.state = CrudStates.Update;
+        this.newsletterSubscriberService.setState(CrudStates.Update);
     }
     delete(newsletterSubscriberId: number): void {
         this.newsletterSubscriberService.delete(newsletterSubscriberId);
@@ -130,5 +152,49 @@ export class NewsletterSubscriberComponent extends BaseComponent
         if (action.name === 'add') {
             this.add();
         }
+    }
+    handleFormActions(action: YzYAction): void {
+        switch (action.name) {
+            case 'read':
+                this.select(this.selectedNewsletterSubscriber.id);
+                break;
+            case 'edit':
+                this.select(this.selectedNewsletterSubscriber.id);
+                this.update();
+                break;
+            case 'delete':
+                this.showDelete(this.selectedNewsletterSubscriber.id);
+                break;
+            case 'cancel':
+                this.cancel();
+                break;
+        }
+    }
+    handleLineActions({ action, key }: YzYActionEvent): void {
+        switch (action.name) {
+            case 'read':
+                this.select(key as number);
+                break;
+            case 'edit':
+                this.select(key as number);
+                this.update();
+                break;
+            case 'delete':
+                this.showDelete(key as number);
+                break;
+        }
+    }
+
+    confirmDelete(answer: Answer): void {
+        if (answer.value) {
+            this.delete(this.newsletterSubscriberIdForDelete);
+        }
+        this.newsletterSubscriberIdForDelete = null;
+    }
+
+    showDelete(newsletterSubscriberId?: number): void {
+        this.newsletterSubscriberIdForDelete = newsletterSubscriberId
+            ? newsletterSubscriberId
+            : this.selectedNewsletterSubscriber.id;
     }
 }

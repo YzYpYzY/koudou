@@ -7,9 +7,10 @@ import { CoreModule } from '@core/core.module';
 import { YzYFormsModule, FieldModule, TableModule, LayoutModule } from 'yzy-ng';
 import { NewsStore } from './state/news.store';
 import { NewsConsultComponent } from './news-consult/news-consult.component';
+import { NewsFormComponent } from './news-form/news-form.component';
 
 @NgModule({
-    declarations: [NewsComponent, NewsConsultComponent],
+    declarations: [NewsComponent, NewsConsultComponent, NewsFormComponent],
     imports: [
         CommonModule,
         NewsRoutingModule,

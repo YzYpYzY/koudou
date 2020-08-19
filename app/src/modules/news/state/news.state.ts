@@ -10,7 +10,7 @@ export interface NewsState {
     request: IListRequest;
     error: any;
     viewState: CrudStates;
-    isNewsLoading: boolean;
+    loading: boolean;
 }
 
 export const NewsStateDefault: NewsState = {
@@ -21,5 +21,5 @@ export const NewsStateDefault: NewsState = {
     request: null,
     error: null,
     viewState: CrudStates.List,
-    isNewsLoading: false,
+    loading: false,
 };

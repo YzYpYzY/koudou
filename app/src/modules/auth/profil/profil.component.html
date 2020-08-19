@@ -1,0 +1,24 @@
+<div *loading="loading$ | async">
+    <yzy-bar
+        [title]="'Profil'"
+        [actions]="headerActions"
+        (action)="handleHeaderActions($event)"
+    ></yzy-bar>
+    <ng-container [ngSwitch]="state">
+        <div class="form-container" *ngSwitchCase="ProfilState.ChangePassword">
+            <yzy-form
+                [formModel]="changePasswordFormDescriptor"
+                (formReady)="setChangePasswordForm($event)"
+            ></yzy-form>
+        </div>
+        <div class="form-container" *ngSwitchDefault>
+            <yzy-form
+                [formModel]="profilFormDescriptor"
+                (formReady)="setProfilForm($event)"
+            ></yzy-form>
+            <button (click)="goToChangePassword()">
+                Changer de mot de passe
+            </button>
+        </div>
+    </ng-container>
+</div>

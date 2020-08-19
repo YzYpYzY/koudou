@@ -34,7 +34,7 @@ export class MemberApiService extends BaseService {
         memberId: number,
         member: IMemberDetails,
     ): Observable<IMemberDetails> {
-        return this.post<IMemberDetails>(
+        return this.put<IMemberDetails>(
             [ServiceList.member, memberId.toString()],
             member,
         );

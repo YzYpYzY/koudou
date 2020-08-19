@@ -1,5 +1,6 @@
-export interface IMemberDetails {
-    id?: number;
+import { BaseModel } from '@core/base/base.model';
+
+export class IMemberDetails extends BaseModel {
     companyName: string;
     prefix: string;
     suffix: string;

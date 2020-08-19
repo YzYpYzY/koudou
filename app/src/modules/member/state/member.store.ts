@@ -8,6 +8,8 @@ import { MemberActions } from './member.actions';
 import { IMember } from '../models/IMember';
 import { IListResponse } from '@core/models/IListResponse';
 import { IMemberDetails } from '../models/IMemberDetails';
+import { NotificationTypes, CrudStates } from '@core/enums';
+import { NotificationService } from '@core/notification/notification.service';
 
 @Injectable()
 @State<MemberState>({
@@ -40,10 +42,13 @@ export class MemberStore {
         return state.viewState;
     }
     @Selector()
-    static isMemberLoading$(state: MemberState) {
-        return state.isMemberLoading;
+    static loading$(state: MemberState) {
+        return state.loading;
     }
-    constructor(private memberApiService: MemberApiService) {}
+    constructor(
+        private memberApiService: MemberApiService,
+        private notificationService: NotificationService,
+    ) {}
 
     @Action(MemberActions.FetchAll)
     fetchAll(
@@ -51,45 +56,25 @@ export class MemberStore {
         { request }: MemberActions.FetchAll,
     ) {
         patchState({
-            isMemberLoading: true,
+            loading: true,
         });
         return this.memberApiService.fetchAll(request).pipe(
             tap((res: IListResponse<IMember>) => {
                 patchState({
                     members: res.values,
                     membersCount: res.totalCount,
-                    isMemberLoading: false,
+                    loading: false,
+                    request: { ...request },
                 });
             }),
             catchError((error: Error) => {
                 patchState({
                     error: error.message,
-                    isMemberLoading: false,
+                    loading: false,
                 });
-                return of(error);
-            }),
-        );
-    }
-
-    @Action(MemberActions.FetchOne)
-    fetchOne(
-        { patchState }: StateContext<MemberState>,
-        { memberId }: MemberActions.FetchOne,
-    ) {
-        patchState({
-            isMemberLoading: true,
-        });
-        return this.memberApiService.fetchOne(memberId.toString()).pipe(
-            tap((res: IMemberDetails) => {
-                patchState({
-                    selectedMember: res,
-                    isMemberLoading: false,
-                });
-            }),
-            catchError((error: Error) => {
-                patchState({
-                    error: error.message,
-                    isMemberLoading: false,
+                this.notificationService.notify({
+                    type: NotificationTypes.Error,
+                    message: 'Les membres ne peuvent être chargés.',
                 });
                 return of(error);
             }),
@@ -97,21 +82,40 @@ export class MemberStore {
     }
 
     @Action(MemberActions.Select)
-    select({ patchState, dispatch }: StateContext<MemberState>, { memberId }: MemberActions.Select) {
-        patchState({ selectedMemberId: memberId, selectedMember: null });
-        if (memberId != null) {
-            return dispatch(new MemberActions.FetchOne(memberId));
-        }
-        return null;
+    select(
+        { patchState }: StateContext<MemberState>,
+        { memberId, isRead }: MemberActions.Select,
+    ) {
+        return this.memberApiService.fetchOne(memberId.toString()).pipe(
+            tap((res: IMemberDetails) => {
+                patchState({
+                    selectedMemberId: memberId,
+                    selectedMember: res,
+                    loading: false,
+                    viewState: isRead ? CrudStates.Read : CrudStates.Update,
+                });
+            }),
+            catchError((error: Error) => {
+                patchState({
+                    error: error.message,
+                    loading: false,
+                });
+                this.notificationService.notify({
+                    type: NotificationTypes.Error,
+                    message: "Ce membre n'a pu être chargé.",
+                });
+                return of(error);
+            }),
+        );
     }
 
     @Action(MemberActions.Save)
     save(
-        { patchState }: StateContext<MemberState>,
+        { patchState, dispatch, getState }: StateContext<MemberState>,
         { member }: MemberActions.Save,
     ) {
         patchState({
-            isMemberLoading: true,
+            loading: true,
         });
         if (member.id) {
             return this.memberApiService.update(member.id, member).pipe(
@@ -119,30 +123,56 @@ export class MemberStore {
                     patchState({
                         selectedMemberId: member.id,
                         selectedMember: res,
-                        isMemberLoading: false,
+                        loading: false,
+                        viewState: CrudStates.Read,
                     });
+                    this.notificationService.notify({
+                        type: NotificationTypes.Success,
+                        message: 'Le membre a été modifié.',
+                    });
+                    return dispatch(
+                        new MemberActions.FetchAll(getState().request),
+                    );
                 }),
                 catchError((error: Error) => {
                     patchState({
                         error: error.message,
-                        isMemberLoading: false,
+                        loading: false,
+                    });
+                    this.notificationService.notify({
+                        type: NotificationTypes.Error,
+                        message: "Le membre n'a pu être modifié.",
                     });
                     return of(error);
                 }),
             );
         } else {
+            member.id = -1;
+            member.rowVersion = 0;
             return this.memberApiService.create(member).pipe(
                 tap((res: IMemberDetails) => {
                     patchState({
                         selectedMemberId: member.id,
                         selectedMember: res,
-                        isMemberLoading: false,
+                        loading: false,
+                        viewState: CrudStates.Read,
                     });
+                    this.notificationService.notify({
+                        type: NotificationTypes.Success,
+                        message: 'Le membre a été créé.',
+                    });
+                    return dispatch(
+                        new MemberActions.FetchAll(getState().request),
+                    );
                 }),
                 catchError((error: Error) => {
                     patchState({
                         error: error.message,
-                        isMemberLoading: false,
+                        loading: false,
+                    });
+                    this.notificationService.notify({
+                        type: NotificationTypes.Error,
+                        message: "Le membre n'a pu être créé.",
                     });
                     return of(error);
                 }),
@@ -152,11 +182,11 @@ export class MemberStore {
 
     @Action(MemberActions.Delete)
     delete(
-        { patchState }: StateContext<MemberState>,
+        { patchState, dispatch, getState }: StateContext<MemberState>,
         { memberId }: MemberActions.Delete,
     ) {
         patchState({
-            isMemberLoading: true,
+            loading: true,
         });
         return this.memberApiService.remove(memberId).pipe(
             tap(() => {
@@ -165,13 +195,23 @@ export class MemberStore {
                     selectedMember: null,
                     members: null,
                     membersCount: null,
-                    isMemberLoading: false,
+                    loading: false,
+                    viewState: CrudStates.List,
                 });
+                this.notificationService.notify({
+                    type: NotificationTypes.Success,
+                    message: 'Le membre a été supprimé.',
+                });
+                return dispatch(new MemberActions.FetchAll(getState().request));
             }),
             catchError((error: Error) => {
                 patchState({
                     error: error.message,
-                    isMemberLoading: false,
+                    loading: false,
+                });
+                this.notificationService.notify({
+                    type: NotificationTypes.Error,
+                    message: "Le membre n'a pu être supprimé.",
                 });
                 return of(error);
             }),
@@ -182,8 +222,16 @@ export class MemberStore {
         { patchState }: StateContext<MemberState>,
         { newState }: MemberActions.SetViewState,
     ) {
-        patchState({
-            viewState: newState,
-        });
+        if (newState == CrudStates.Create) {
+            patchState({
+                viewState: newState,
+                selectedMemberId: null,
+                selectedMember: null,
+            });
+        } else {
+            patchState({
+                viewState: newState,
+            });
+        }
     }
 }

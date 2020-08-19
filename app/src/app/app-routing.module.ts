@@ -3,19 +3,10 @@ import { Routes, RouterModule } from '@angular/router';
 import { ErrorComponent } from '../modules/other/error/error.component';
 import { HomeComponent } from '../modules/other/home/home.component';
 import { RootGuard } from '@core/guard/root.guard';
-import { NotConnectedGuard } from '@core/guard/not-connected.guard';
 
 const routes: Routes = [
     { path: '', redirectTo: 'home', pathMatch: 'full' },
     { path: 'home', component: HomeComponent, canActivate: [RootGuard] },
-    {
-        path: 'profil',
-        loadChildren: () =>
-            import('../modules/profil/profil.module').then(
-                (m) => m.ProfilModule,
-            ),
-        canActivate: [RootGuard],
-    },
     {
         path: 'members',
         loadChildren: () =>
@@ -72,7 +63,6 @@ const routes: Routes = [
         path: 'auth',
         loadChildren: () =>
             import('../modules/auth/auth.module').then((m) => m.AuthModule),
-        canActivate: [NotConnectedGuard],
     },
     {
         path: '**',

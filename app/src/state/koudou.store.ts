@@ -11,6 +11,9 @@ import { OptionModel } from 'yzy-ng';
 import { MiscService } from '../core/services/misc.service';
 import { KoudouError } from '../core/models/KoudouError';
 import { HttpErrorResponse } from '@angular/common/http';
+import { NotificationService } from '@core/notification/notification.module';
+import { NotificationTypes } from '@core/enums';
+import { ProfilState } from '../modules/auth/enum/ProfilState';
 
 @Injectable()
 @State<KoudouState>({
@@ -47,9 +50,14 @@ export class KoudouStore {
     static loading$(state: KoudouState) {
         return state.loading;
     }
+    @Selector()
+    static profilState$(state: KoudouState) {
+        return state.profilState;
+    }
     constructor(
         private authService: AuthService,
         private miscService: MiscService,
+        private notificationService: NotificationService,
     ) {}
 
     @Action(KoudouActions.Login)
@@ -66,6 +74,10 @@ export class KoudouStore {
                     token: res.token,
                     loading: false,
                 });
+                this.notificationService.notify({
+                    type: NotificationTypes.Success,
+                    message: 'Bonjour ' + res.user.pseudo + '.',
+                });
                 return dispatch(new Navigate(['/']));
             }),
             catchError((error: HttpErrorResponse) => {
@@ -76,8 +88,11 @@ export class KoudouStore {
                         break;
                 }
                 patchState({
-                    error: new KoudouError(message),
                     loading: false,
+                });
+                this.notificationService.notify({
+                    type: NotificationTypes.Error,
+                    message,
                 });
                 return of(error);
             }),
@@ -97,18 +112,59 @@ export class KoudouStore {
                     token: res.token,
                     loading: false,
                 });
+                this.notificationService.notify({
+                    type: NotificationTypes.Success,
+                    message: 'Bonjour ' + res.user.pseudo + '.',
+                });
                 return dispatch(new Navigate(['/']));
             }),
             catchError((error: Error) => {
                 patchState({
-                    error: new KoudouError("L'inscription a échoué."),
                     loading: false,
+                });
+                this.notificationService.notify({
+                    type: NotificationTypes.Error,
+                    message: "L'inscription a échoué.",
                 });
                 return of(error);
             }),
         );
     }
-
+    @Action(KoudouActions.ChangePassword)
+    changePassword(
+        { patchState }: StateContext<KoudouState>,
+        { changePassword }: KoudouActions.ChangePassword,
+    ) {
+        patchState({ loading: true });
+        return this.authService.changePassword(changePassword).pipe(
+            map(() => {
+                this.notificationService.notify({
+                    type: NotificationTypes.Success,
+                    message: 'Mot de passe modifié.',
+                });
+                patchState({
+                    loading: false,
+                    profilState: ProfilState.Profil,
+                });
+            }),
+            catchError((error: HttpErrorResponse) => {
+                let message = 'Le changement de mot de passe a échoué.';
+                patchState({
+                    loading: false,
+                });
+                switch (error.status) {
+                    case 401:
+                        message = "Ce mot de passe n'est pas le bon.";
+                        break;
+                }
+                this.notificationService.notify({
+                    type: NotificationTypes.Error,
+                    message,
+                });
+                return of(error);
+            }),
+        );
+    }
     @Action(KoudouActions.Logout)
     logout({ patchState, dispatch, getState }: StateContext<KoudouState>) {
         patchState({ loading: true });
@@ -120,21 +176,32 @@ export class KoudouStore {
                     token: null,
                     loading: false,
                 });
+                this.notificationService.notify({
+                    type: NotificationTypes.Success,
+                    message: 'Au revoir.',
+                });
                 return dispatch(new Navigate(['auth/login']));
             }),
-            catchError((error: Error) => {
+            catchError(() => {
                 patchState({
-                    error: new KoudouError('La déconnexion a échoué.'),
                     loading: false,
                 });
-                return of(error);
+                return dispatch(new Navigate(['auth/login']));
             }),
         );
     }
 
     @Action(KoudouActions.ToggleDarkMode)
-    toggleDarkMode(ctx: StateContext<KoudouState>) {
-        ctx.patchState({ isDarkMode: !ctx.getState().isDarkMode });
+    toggleDarkMode({ patchState, getState }: StateContext<KoudouState>) {
+        patchState({ isDarkMode: !getState().isDarkMode });
+    }
+
+    @Action(KoudouActions.SetProfilState)
+    setProfilState(
+        { patchState }: StateContext<KoudouState>,
+        { newState }: KoudouActions.SetProfilState,
+    ) {
+        patchState({ profilState: newState });
     }
 
     @Action(KoudouActions.LoadSectionOptions)

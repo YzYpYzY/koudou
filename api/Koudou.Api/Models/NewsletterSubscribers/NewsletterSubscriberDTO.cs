@@ -9,7 +9,7 @@ namespace Koudou.Models.NewsletterSubscribers
         public int Id { get; set; }
         public string Email { get; set; }
         public string Name { get; set; }
-        
+
         public override NewsletterSubscriberDTO FromEntity(NewsletterSubscriber entity)
         {
             Id = entity.Id;
@@ -20,7 +20,8 @@ namespace Koudou.Models.NewsletterSubscribers
             return this;
         }
 
-        public override void Validate(){
+        public override void Validate()
+        {
             ValidateStringIsEmail(nameof(Email), this.Email);
             ValidateStringNotEmpty(nameof(Name), this.Name);
         }

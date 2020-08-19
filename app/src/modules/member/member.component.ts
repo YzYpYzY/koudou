@@ -1,22 +1,24 @@
-import { FormGroup } from '@angular/forms';
-import { BaseComponent } from '@core/base/base.component';
-import { takeUntil } from 'rxjs/operators';
-import { Component, OnInit } from '@angular/core';
 import { MemberService } from './state/member.service';
-import { IMember } from './models/IMember';
-import { CrudStates } from '@core/enums';
-import { IMemberDetails } from './models/IMemberDetails';
+import { Component, OnInit } from '@angular/core';
+import { CrudStates } from '@core/enums/CrudStates';
 import {
+    YzYSort,
     Column,
     FormModel,
     FieldTypes,
     YzYAction,
     YzYActionTypes,
-    YzYSort,
+    AnswerType,
+    Answer,
+    YzYActionEvent,
 } from 'yzy-ng';
-import { IListRequest } from '@core/models/IListRequest';
+import { FormGroup } from '@angular/forms';
+import { takeUntil } from 'rxjs/operators';
 import { Observable } from 'rxjs';
-
+import { IListRequest } from '@core/models/IListRequest';
+import { BaseComponent } from '@core/base/base.component';
+import { IMemberDetails } from './models/IMemberDetails';
+import { IMember } from './models/IMember';
 @Component({
     selector: 'koudou-member',
     templateUrl: './member.component.html',
@@ -50,6 +52,18 @@ export class MemberComponent extends BaseComponent implements OnInit {
     state = CrudStates.List;
     request: IListRequest;
     itemByPage = 30;
+    loading$: Observable<boolean>;
+    lineActions: YzYAction[] = [
+        { name: 'read', class: 'gg-search', type: YzYActionTypes.Info },
+        { name: 'edit', class: 'gg-pen', type: YzYActionTypes.Warning },
+        { name: 'delete', class: 'gg-trash', type: YzYActionTypes.Error },
+    ];
+    memberIdForDelete: number;
+    question = 'Ètes-vous certains de vouloir supprimer ce membre ?';
+    answer = [
+        { label: 'Annuler', value: false, type: AnswerType.Default },
+        { label: 'Oui', value: true, type: AnswerType.Danger },
+    ];
 
     constructor(private memberService: MemberService) {
         super();
@@ -61,7 +75,18 @@ export class MemberComponent extends BaseComponent implements OnInit {
         this.memberService.membersCount$
             .pipe(takeUntil(this.destroy$))
             .subscribe((membersCount) => (this.membersCount = membersCount));
-        this.selectedMember$ = this.memberService.selectedMember$;
+        this.memberService.state$
+            .pipe(takeUntil(this.destroy$))
+            .subscribe((newState: CrudStates) => {
+                this.state = newState;
+                console.log(newState);
+            });
+        this.memberService.selectedMember$
+            .pipe(takeUntil(this.destroy$))
+            .subscribe((selectedMember) => {
+                this.selectedMember = selectedMember;
+            });
+        this.loading$ = this.memberService.loading$;
     }
 
     ngOnInit() {
@@ -76,36 +101,33 @@ export class MemberComponent extends BaseComponent implements OnInit {
     }
 
     add() {
-        this.select(null);
-        this.state = CrudStates.Create;
+        this.memberService.setState(CrudStates.Create);
     }
     cancel() {
-        this.state = CrudStates.List;
+        this.memberService.setState(CrudStates.List);
     }
-    select(memberId: number) {
-        this.memberService.select(memberId);
-        this.state = CrudStates.Read;
+    select(memberId: number, isReadOnly: boolean) {
+        this.memberService.select(memberId, isReadOnly);
     }
     save(member: IMemberDetails) {
         this.memberService.save(member);
-        this.state = CrudStates.Read;
     }
     update() {
-        this.state = CrudStates.Update;
+        this.memberService.setState(CrudStates.Update);
     }
-    delete(memberId: number): void {
-        this.memberService.delete(memberId);
+    delete(newsId: number): void {
+        this.memberService.delete(newsId);
     }
 
-    sort(newSort: YzYSort): void {
-        if (newSort == null) {
+    sort(memberSort: YzYSort): void {
+        if (memberSort == null) {
             this.request.sort = null;
             this.request.sortDirection = null;
         } else {
             this.request.sort =
-                newSort.attribute.charAt(0).toUpperCase() +
-                newSort.attribute.slice(1);
-            this.request.sortDirection = !newSort.isDesc ? 1 : 0;
+                memberSort.attribute.charAt(0).toUpperCase() +
+                memberSort.attribute.slice(1);
+            this.request.sortDirection = !memberSort.isDesc ? 1 : 0;
         }
         this.fetchMembers();
     }
@@ -130,5 +152,47 @@ export class MemberComponent extends BaseComponent implements OnInit {
         if (action.name === 'add') {
             this.add();
         }
+    }
+    handleFormActions(action: YzYAction): void {
+        switch (action.name) {
+            case 'read':
+                this.select(this.selectedMember.id, true);
+                break;
+            case 'edit':
+                this.select(this.selectedMember.id, false);
+                this.update();
+                break;
+            case 'delete':
+                this.showDelete(this.selectedMember.id);
+                break;
+            case 'cancel':
+                this.cancel();
+                break;
+        }
+    }
+    handleLineActions({ action, key }: YzYActionEvent): void {
+        switch (action.name) {
+            case 'read':
+                this.select(key as number, true);
+                break;
+            case 'edit':
+                this.select(key as number, false);
+                this.update();
+                break;
+            case 'delete':
+                this.showDelete(key as number);
+                break;
+        }
+    }
+
+    confirmDelete(answer: Answer): void {
+        if (answer.value) {
+            this.delete(this.memberIdForDelete);
+        }
+        this.memberIdForDelete = null;
+    }
+
+    showDelete(memberId?: number): void {
+        this.memberIdForDelete = memberId ? memberId : this.selectedMember.id;
     }
 }

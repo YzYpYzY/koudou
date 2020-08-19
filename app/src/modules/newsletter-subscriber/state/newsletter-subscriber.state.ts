@@ -1,16 +1,16 @@
 import { CrudStates } from '@core/enums';
-import { INewsletterSubscriber } from './../models/INewsletterSubscriber';
+import { NewsletterSubscriber } from './../models/INewsletterSubscriber';
 import { IListRequest } from '@core/models/IListRequest';
 
 export interface NewsletterSubscriberState {
-    newsletterSubscribers: INewsletterSubscriber[];
+    newsletterSubscribers: NewsletterSubscriber[];
     newsletterSubscribersCount: number;
     selectedNewsletterSubscriberId: number;
-    selectedNewsletterSubscriber: INewsletterSubscriber;
+    selectedNewsletterSubscriber: NewsletterSubscriber;
     request: IListRequest;
     error: any;
     viewState: CrudStates;
-    isNewsletterSubscriberLoading: boolean;
+    loading: boolean;
 }
 
 export const NewsletterSubscriberStateDefault: NewsletterSubscriberState = {
@@ -21,5 +21,5 @@ export const NewsletterSubscriberStateDefault: NewsletterSubscriberState = {
     request: null,
     error: null,
     viewState: CrudStates.List,
-    isNewsletterSubscriberLoading: false,
+    loading: false,
 };

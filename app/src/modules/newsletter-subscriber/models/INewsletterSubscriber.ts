@@ -1,6 +1,6 @@
-export interface INewsletterSubscriber {
+import { BaseModel } from '@core/base/base.model';
+export class NewsletterSubscriber extends BaseModel {
     id: number;
-    companyName: string;
     email: string;
     name: string;
 }

@@ -11,7 +11,7 @@ export interface MemberState {
     request: IListRequest;
     error: any;
     viewState: CrudStates;
-    isMemberLoading: boolean;
+    loading: boolean;
 }
 
 export const MemberStateDefault: MemberState = {
@@ -22,5 +22,5 @@ export const MemberStateDefault: MemberState = {
     request: null,
     error: null,
     viewState: CrudStates.List,
-    isMemberLoading: false,
+    loading: false,
 };

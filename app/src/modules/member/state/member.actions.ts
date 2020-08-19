@@ -13,7 +13,7 @@ export namespace MemberActions {
     }
     export class Select {
         static readonly type = '[MemberList] Select member';
-        constructor(public memberId: number) {}
+        constructor(public memberId: number, public isRead: boolean) {}
     }
     export class Save {
         static readonly type = '[MemberForm] Save member';

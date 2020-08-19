@@ -1,6 +1,6 @@
-<ng-container [ngSwitch]="state">
+<ng-container [ngSwitch]="state" *ngIf="memberIdForDelete == null">
     <ng-container *ngSwitchCase="CrudStates.List">
-        <div class="table-container">
+        <div class="table-container" *loading="loading$ | async">
             <yzy-bar
                 [title]="'Membres'"
                 [formModel]="filtersModel"
@@ -13,25 +13,30 @@
                 [items]="members"
                 [itemsCount]="membersCount"
                 [itemByPage]="itemByPage"
+                [lineActions]="lineActions"
                 [pageLinkNumber]="5"
                 [isPaginator]="true"
                 [isFrontDataTreatment]="false"
-                (onSelect)="select($event)"
                 (onSort)="sort($event)"
                 (onPageChange)="pageChange($event)"
+                (onAction)="handleLineActions($event)"
             >
             </yzy-table>
         </div>
     </ng-container>
     <ng-container *ngSwitchDefault>
         <koudou-member-form
-            *ngIf="selectedMember"
-            [member]="selectedMember"
-            [state]="state"
+            [selectedMember]="selectedMember"
+            [isLoading]="loading$ | async"
+            [isReadOnly]="state == CrudStates.Read"
+            (action)="handleFormActions($event)"
             (save)="save($event)"
-            (cancel)="cancel()"
-            (update)="update()"
-        >
-        </koudou-member-form>
+        ></koudou-member-form>
     </ng-container>
 </ng-container>
+<yzy-question
+    [question]="question"
+    [answers]="answer"
+    *ngIf="memberIdForDelete != null"
+    (select)="confirmDelete($event)"
+></yzy-question>

@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { IListRequest } from '@core/models/IListRequest';
 import { IListResponse } from '@core/models/IListResponse';
-import { INewsletterSubscriber } from './models/INewsletterSubscriber';
+import { NewsletterSubscriber } from './models/INewsletterSubscriber';
 import { BaseService } from '@core/base/base.service';
 import { NotificationService } from '@core/notification/notification.service';
 import { ServiceList } from '@core/services/ServiceList';
@@ -19,17 +19,17 @@ export class NewsletterSubscriberApiService extends BaseService {
 
     fetchAll(
         request: IListRequest,
-    ): Observable<IListResponse<INewsletterSubscriber>> {
-        return this.get<IListResponse<INewsletterSubscriber>>(
+    ): Observable<IListResponse<NewsletterSubscriber>> {
+        return this.get<IListResponse<NewsletterSubscriber>>(
             [ServiceList.newsletterSubscriber],
             request,
         );
     }
 
     create(
-        newsletterSubscriber: INewsletterSubscriber,
-    ): Observable<INewsletterSubscriber> {
-        return this.post<INewsletterSubscriber>(
+        newsletterSubscriber: NewsletterSubscriber,
+    ): Observable<NewsletterSubscriber> {
+        return this.post<NewsletterSubscriber>(
             [ServiceList.newsletterSubscriber],
             newsletterSubscriber,
         );
@@ -37,9 +37,9 @@ export class NewsletterSubscriberApiService extends BaseService {
 
     update(
         newsletterSubscriberId: number,
-        newsletterSubscriber: INewsletterSubscriber,
-    ): Observable<INewsletterSubscriber> {
-        return this.post<INewsletterSubscriber>(
+        newsletterSubscriber: NewsletterSubscriber,
+    ): Observable<NewsletterSubscriber> {
+        return this.put<NewsletterSubscriber>(
             [
                 ServiceList.newsletterSubscriber,
                 newsletterSubscriberId.toString(),
