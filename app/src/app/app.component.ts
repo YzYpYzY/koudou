@@ -15,7 +15,6 @@ import { IUser } from '../core/models/IUser';
 })
 export class AppComponent extends BaseComponent {
     @HostBinding('class.dark') darkMode = false;
-    @HostBinding('class') screenSizeClass = '';
     title = 'koudou';
     isLogged$: Observable<boolean>;
     isNavDisplayed = true;
@@ -23,7 +22,6 @@ export class AppComponent extends BaseComponent {
     constructor(
         translate: TranslateService,
         private koudouService: KoudouService,
-        private responsiveService: ResponsiveService,
         private notificationDomService: NotificationDomService,
     ) {
         super();
@@ -40,11 +38,6 @@ export class AppComponent extends BaseComponent {
                 }),
             )
             .subscribe();
-        this.responsiveService.screenSizeClass$
-            .pipe(takeUntil(this.destroy$))
-            .subscribe((screenClass) => {
-                this.screenSizeClass = screenClass;
-            });
         this.user$ = this.koudouService.user$;
     }
 

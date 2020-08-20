@@ -83,13 +83,13 @@ export class NewsStore {
     @Action(NewsActions.Select)
     select(
         { patchState, getState }: StateContext<NewsState>,
-        { newsId }: NewsActions.Select,
+        { newsId, isReadOnly }: NewsActions.Select,
     ) {
         const selectedNews = getState().news.find((n) => n.id == newsId);
         patchState({
             selectedNewsId: newsId,
             selectedNews: selectedNews,
-            viewState: CrudStates.Read,
+            viewState: isReadOnly ? CrudStates.Read : CrudStates.Update,
         });
     }
 

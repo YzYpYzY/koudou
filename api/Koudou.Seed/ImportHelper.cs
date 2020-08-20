@@ -15,19 +15,23 @@ using NLog;
 
 namespace Koudou.Seed
 {
-    public class ImportHelper {
+    public class ImportHelper
+    {
 
         private KoudouContext Context { get; set; }
 
         private Serilog.ILogger logger;
 
-        public ImportHelper(KoudouContext context, Serilog.ILogger logger){
+        public ImportHelper(KoudouContext context, Serilog.ILogger logger)
+        {
             this.Context = context;
             this.logger = logger;
         }
 
-        public void Seed(){
-            try{
+        public void Seed()
+        {
+            try
+            {
                 this.ClearDB();
                 logger.Information("Db cleared.");
                 this.ImportAddresses();
@@ -62,20 +66,23 @@ namespace Koudou.Seed
                 this.SeedRoleClaims();
                 logger.Information("RoleClaims seeded.");
             }
-            catch (Exception e){
-                logger.Error(e,"An error throw during seeding.");
+            catch (Exception e)
+            {
+                logger.Error(e, "An error throw during seeding.");
             }
 
         }
 
-        public int ImportAddresses(){
-            JObject [] adresses = JsonConvert.DeserializeObject<JObject[]>(File.ReadAllText(@"api/Koudou.Seed/Data/swp_mb_adresses.json"));
-            foreach(var adress in adresses){
+        public int ImportAddresses()
+        {
+            JObject[] adresses = JsonConvert.DeserializeObject<JObject[]>(File.ReadAllText(@"api/Koudou.Seed/Data/swp_mb_adresses.json"));
+            foreach (var adress in adresses)
+            {
                 var newAdress = new Adress(
-                    HttpUtility.HtmlDecode((string)adress["rue"]), 
-                    HttpUtility.HtmlDecode((string)adress["numero"]), 
-                    HttpUtility.HtmlDecode((string)adress["bte"]), 
-                    HttpUtility.HtmlDecode((string)adress["cp"]), 
+                    HttpUtility.HtmlDecode((string)adress["rue"]),
+                    HttpUtility.HtmlDecode((string)adress["numero"]),
+                    HttpUtility.HtmlDecode((string)adress["bte"]),
+                    HttpUtility.HtmlDecode((string)adress["cp"]),
                     HttpUtility.HtmlDecode((string)adress["ville"])
                     );
                 newAdress.OldId = (int)adress["numfamille"];
@@ -83,10 +90,12 @@ namespace Koudou.Seed
             }
             return Context.SaveChanges();
         }
-        public void ImportAlbums(){
-            JObject [] galeries = JsonConvert.DeserializeObject<JObject[]>(File.ReadAllText(@"api/Koudou.Seed/Data/swp_galerie.json"));
+        public void ImportAlbums()
+        {
+            JObject[] galeries = JsonConvert.DeserializeObject<JObject[]>(File.ReadAllText(@"api/Koudou.Seed/Data/swp_galerie.json"));
 
-            foreach(var galerie in galeries){
+            foreach (var galerie in galeries)
+            {
                 DateTime dateParsed;
                 DateTime.TryParseExact((string)galerie["dateactivite"], "yyyy-MM-dd", null, DateTimeStyles.None, out dateParsed);
                 var newAlbum = new Album(
@@ -105,9 +114,11 @@ namespace Koudou.Seed
             }
             Context.SaveChanges();
         }
-        public int ImportNews(){
-            JObject [] news = JsonConvert.DeserializeObject<JObject[]>(File.ReadAllText(@"api/Koudou.Seed/Data/swp_news.json"));
-            foreach(var newsItem in news){
+        public int ImportNews()
+        {
+            JObject[] news = JsonConvert.DeserializeObject<JObject[]>(File.ReadAllText(@"api/Koudou.Seed/Data/swp_news.json"));
+            foreach (var newsItem in news)
+            {
                 var user = Context.Users.FirstOrDefault(u => u.OldId == (int)newsItem["auteur_news"]);
                 var newNews = new News(
                     HttpUtility.HtmlDecode((string)newsItem["titre_news"]),
@@ -125,9 +136,11 @@ namespace Koudou.Seed
             }
             return Context.SaveChanges(true);
         }
-        public int ImportNewsletterSubscribers(){
-            JObject [] subscribers = JsonConvert.DeserializeObject<JObject[]>(File.ReadAllText(@"api/Koudou.Seed/Data/swp_site_mailing_liste.json"));
-            foreach(var subscriber in subscribers){
+        public int ImportNewsletterSubscribers()
+        {
+            JObject[] subscribers = JsonConvert.DeserializeObject<JObject[]>(File.ReadAllText(@"api/Koudou.Seed/Data/swp_site_mailing_liste.json"));
+            foreach (var subscriber in subscribers)
+            {
                 var newSubscriber = new NewsletterSubscriber(
                     HttpUtility.HtmlDecode((string)subscriber["nom"]),
                     HttpUtility.HtmlDecode((string)subscriber["email"])
@@ -142,11 +155,13 @@ namespace Koudou.Seed
             }
             return Context.SaveChanges(true);
         }
-        public int ImportPhotos(){
-            JObject [] photos = JsonConvert.DeserializeObject<JObject[]>(File.ReadAllText(@"api/Koudou.Seed/Data/swp_albums.json"));
-            foreach(var photo in photos){
+        public int ImportPhotos()
+        {
+            JObject[] photos = JsonConvert.DeserializeObject<JObject[]>(File.ReadAllText(@"api/Koudou.Seed/Data/swp_albums.json"));
+            foreach (var photo in photos)
+            {
                 var newPhoto = new Photo(
-                    HttpUtility.HtmlDecode((string)photo["nomfichier"]), 
+                    HttpUtility.HtmlDecode((string)photo["nomfichier"]),
                     null
                 );
                 newPhoto.OldId = (int)photo["numphoto"];
@@ -155,8 +170,9 @@ namespace Koudou.Seed
                 albumPhoto.Photo = newPhoto;
                 albumPhoto.Album = album;
                 albumPhoto.Order = (int)photo["posphoto"];
-                if(album != null){
-                    if(newPhoto.AlbumPhotos == null)
+                if (album != null)
+                {
+                    if (newPhoto.AlbumPhotos == null)
                     {
                         newPhoto.AlbumPhotos = new List<AlbumPhoto>();
                     }
@@ -166,9 +182,11 @@ namespace Koudou.Seed
             }
             return Context.SaveChanges();
         }
-        public int ImportComments(){
-            JObject [] comments = JsonConvert.DeserializeObject<JObject[]>(File.ReadAllText(@"api/Koudou.Seed/Data/swp_commentaires.json"));
-            foreach(var comment in comments){
+        public int ImportComments()
+        {
+            JObject[] comments = JsonConvert.DeserializeObject<JObject[]>(File.ReadAllText(@"api/Koudou.Seed/Data/swp_commentaires.json"));
+            foreach (var comment in comments)
+            {
                 var user = Context.Users.FirstOrDefault(u => u.OldId == (int)comment["auteur"]);
                 var albumPhoto = Context.AlbumPhotos.FirstOrDefault(a => a.Album.OldId == (int)comment["album"] && a.Order == (int)comment["photo"]);
                 var newComment = new Comment(
@@ -176,7 +194,8 @@ namespace Koudou.Seed
                     null,
                     user
                 );
-                if(albumPhoto != null){
+                if (albumPhoto != null)
+                {
                     newComment.PhotoId = albumPhoto.PhotoId;
                 }
                 DateTime dateParsed;
@@ -184,13 +203,15 @@ namespace Koudou.Seed
                 newComment.CreationDate = dateParsed != null ? dateParsed : DateTime.Now;
                 newComment.ModificationDate = newComment.CreationDate;
                 Context.Comments.Add(newComment);
-                Context.Entry(newComment).Property(KoudouContext.IsSoftDeletedPropertyName).CurrentValue = (string)comment["commentairebanni"] == "0"? false : true;
+                Context.Entry(newComment).Property(KoudouContext.IsSoftDeletedPropertyName).CurrentValue = (string)comment["commentairebanni"] == "0" ? false : true;
             }
             return Context.SaveChanges(true);
         }
-        public int ImportFamilies(){
-            JObject [] addresses = JsonConvert.DeserializeObject<JObject[]>(File.ReadAllText(@"api/Koudou.Seed/Data/swp_mb_adresses.json"));
-            foreach(var adress in addresses){
+        public int ImportFamilies()
+        {
+            JObject[] addresses = JsonConvert.DeserializeObject<JObject[]>(File.ReadAllText(@"api/Koudou.Seed/Data/swp_mb_adresses.json"));
+            foreach (var adress in addresses)
+            {
                 var adressEntity = Context.Adresses.FirstOrDefault(a => a.OldId == (int)adress["numfamille"]);
                 var newFamily = new Family(
                     HttpUtility.HtmlDecode((string)adress["nom"])
@@ -203,7 +224,8 @@ namespace Koudou.Seed
                 Context.Families.Add(newFamily);
                 var i = 1;
                 string phoneNum = (string)adress["tel" + i];
-                do{
+                do
+                {
                     var phone = new Phone(
                         phoneNum,
                         PhoneType.Unknow
@@ -214,12 +236,13 @@ namespace Koudou.Seed
                     i++;
                     phoneNum = (string)adress["tel" + i];
                 }
-                while(!string.IsNullOrEmpty(phoneNum));
+                while (!string.IsNullOrEmpty(phoneNum));
             }
             return Context.SaveChanges(true);
         }
-        public int ImportPayments(){
-            JObject [] members = JsonConvert.DeserializeObject<JObject[]>(File.ReadAllText(@"api/Koudou.Seed/Data/swp_mb_membres.json"));
+        public int ImportPayments()
+        {
+            JObject[] members = JsonConvert.DeserializeObject<JObject[]>(File.ReadAllText(@"api/Koudou.Seed/Data/swp_mb_membres.json"));
 
             var newPayment = new Payment(
                         "Cotisation 2020",
@@ -242,11 +265,13 @@ namespace Koudou.Seed
             }
             return Context.SaveChanges();
         }
-        public int ImportMembers(){
-            JObject [] members = JsonConvert.DeserializeObject<JObject[]>(File.ReadAllText(@"api/Koudou.Seed/Data/swp_mb_membres.json"));
-            foreach(var member in members){
+        public int ImportMembers()
+        {
+            JObject[] members = JsonConvert.DeserializeObject<JObject[]>(File.ReadAllText(@"api/Koudou.Seed/Data/swp_mb_membres.json"));
+            foreach (var member in members)
+            {
                 var newPhoto = new Photo(
-                    HttpUtility.HtmlDecode((string)member["photo"]), 
+                    HttpUtility.HtmlDecode((string)member["photo"]),
                     null
                     );
                 Context.Photos.Add(newPhoto);
@@ -262,8 +287,9 @@ namespace Koudou.Seed
                     HttpUtility.HtmlDecode((string)member["rmq_mb"])
                 );
                 var phoneNum = HttpUtility.HtmlDecode((string)member["telperso"]);
-                if(phoneNum != null){
-                    var phone = new Phone(phoneNum,PhoneType.Unknow);
+                if (phoneNum != null)
+                {
+                    var phone = new Phone(phoneNum, PhoneType.Unknow);
                     phone.Person = personEntity;
                     Context.Phones.Add(phone);
                 }
@@ -276,7 +302,7 @@ namespace Koudou.Seed
                 DateTime.TryParseExact((string)member["dateinscr"], "yyyy-MM-dd", null, DateTimeStyles.None, out dateParsed);
                 personEntity.CreationDate = dateParsed != null ? dateParsed : DateTime.Now;
                 DateTime.TryParseExact((string)member["mb_lastmodif"], "yyyy-MM-dd HH:mm:ss", null, DateTimeStyles.None, out dateParsed);
-                personEntity.ModificationDate = dateParsed != null ? dateParsed : DateTime.Now;;
+                personEntity.ModificationDate = dateParsed != null ? dateParsed : DateTime.Now; ;
 
                 personEntity.Photo = newPhoto;
 
@@ -286,26 +312,30 @@ namespace Koudou.Seed
                     HttpUtility.HtmlDecode((string)member["quali"])
                 );
                 memberEntity.Person = personEntity;
-                memberEntity.OldId = (int) member["nummb"];
+                memberEntity.OldId = (int)member["nummb"];
                 Context.Members.Add(memberEntity);
+                Context.Entry(memberEntity).Property(KoudouContext.IsSoftDeletedPropertyName).CurrentValue = ((int)member["actif"] == 1) ? true : false;
 
                 var role = Context.Roles.FirstOrDefault(r => r.OldId == (int)member["fonction"]);
                 var newPersonRole = new PersonRole();
                 newPersonRole.Person = personEntity;
                 newPersonRole.Role = role;
                 Context.PersonRoles.Add(newPersonRole);
-                Context.Entry(personEntity).Property(KoudouContext.IsSoftDeletedPropertyName).CurrentValue = ((int)member["actif"] == 1)? true : false;
+                Context.Entry(personEntity).Property(KoudouContext.IsSoftDeletedPropertyName).CurrentValue = ((int)member["actif"] == 1) ? true : false;
 
             }
             return Context.SaveChanges();
         }
-        public int ImportUsers(){
-            JObject [] authors = JsonConvert.DeserializeObject<JObject[]>(File.ReadAllText(@"api/Koudou.Seed/Data/swp_auteurs.json"));
-            foreach(var author in authors){
+        public int ImportUsers()
+        {
+            JObject[] authors = JsonConvert.DeserializeObject<JObject[]>(File.ReadAllText(@"api/Koudou.Seed/Data/swp_auteurs.json"));
+            foreach (var author in authors)
+            {
                 var pseudo = HttpUtility.HtmlDecode((string)author["pseudo"]);
-                if(!String.IsNullOrEmpty(pseudo)){
+                if (!String.IsNullOrEmpty(pseudo))
+                {
                     var newUser = new User(
-                        pseudo, 
+                        pseudo,
                         HttpUtility.HtmlDecode((string)author["pw"]),
                         ((string)author["conditions_acceptees"] == "0")
                     );
@@ -320,9 +350,11 @@ namespace Koudou.Seed
             }
             return Context.SaveChangesWithoutAudits();
         }
-        public int ImportRoles(){
-            JObject [] roles = JsonConvert.DeserializeObject<JObject[]>(File.ReadAllText(@"api/Koudou.Seed/Data/swp_unite_fonctions.json"));
-            foreach(var role in roles){
+        public int ImportRoles()
+        {
+            JObject[] roles = JsonConvert.DeserializeObject<JObject[]>(File.ReadAllText(@"api/Koudou.Seed/Data/swp_unite_fonctions.json"));
+            foreach (var role in roles)
+            {
                 var newRole = new Role(
                     HttpUtility.HtmlDecode((string)role["nomfonction"])
                 );
@@ -333,23 +365,27 @@ namespace Koudou.Seed
             Context.Roles.Add(cpRole);
             return Context.SaveChanges();
         }
-        public int ImportSectionsMembers(){
-            JObject [] members = JsonConvert.DeserializeObject<JObject[]>(File.ReadAllText(@"api/Koudou.Seed/Data/swp_mb_membres.json"));
-            foreach(var member in members){
-                var section = Context.Sections.FirstOrDefault(s => s.OldId == (int)member["section"]);
-                var memberEntity = Context.Members.FirstOrDefault(m => m.OldId == (int)member["nummb"]);
+        public int ImportSectionsMembers()
+        {
+            JObject[] members = JsonConvert.DeserializeObject<JObject[]>(File.ReadAllText(@"api/Koudou.Seed/Data/swp_mb_membres.json"));
+            foreach (var member in members)
+            {
+                var section = Context.Sections.IgnoreQueryFilters().FirstOrDefault(s => s.OldId == (int)member["section"]);
+                var memberEntity = Context.Members.IgnoreQueryFilters().FirstOrDefault(m => m.OldId == (int)member["nummb"]);
                 var newSectionMember = new SectionMember();
                 newSectionMember.Section = section;
                 newSectionMember.Member = memberEntity;
                 Context.SectionMembers.Add(newSectionMember);
 
                 var sizaineOldId = (int)member["siz_pat"];
-                if(sizaineOldId != 0){
+                if (sizaineOldId != 0)
+                {
                     var newSectionMemberForSizaine = new SectionMember();
                     newSectionMemberForSizaine.Member = memberEntity;
-                    newSectionMemberForSizaine.Section = Context.Sections.FirstOrDefault(s => s.OldId == sizaineOldId);
-                    if((string)member["cp_sizenier"] == "1"){
-                        newSectionMemberForSizaine.Role = Context.Roles.FirstOrDefault(r => r.Name == "CP");
+                    newSectionMemberForSizaine.Section = Context.Sections.IgnoreQueryFilters().FirstOrDefault(s => s.OldId == sizaineOldId);
+                    if ((string)member["cp_sizenier"] == "1")
+                    {
+                        newSectionMemberForSizaine.Role = Context.Roles.IgnoreQueryFilters().FirstOrDefault(r => r.Name == "CP");
                     }
                     Context.SectionMembers.Add(newSectionMemberForSizaine);
                 }
@@ -357,9 +393,11 @@ namespace Koudou.Seed
             }
             return Context.SaveChanges();
         }
-        public int ImportSections(){
-            JObject [] sections = JsonConvert.DeserializeObject<JObject[]>(File.ReadAllText(@"api/Koudou.Seed/Data/swp_unite_sections.json"));
-            foreach(var section in sections){
+        public int ImportSections()
+        {
+            JObject[] sections = JsonConvert.DeserializeObject<JObject[]>(File.ReadAllText(@"api/Koudou.Seed/Data/swp_unite_sections.json"));
+            foreach (var section in sections)
+            {
                 var sex = (string)section["sexe"];
                 var newSection = new Section(
                     HttpUtility.HtmlDecode((string)section["nomsection"]),
@@ -374,8 +412,9 @@ namespace Koudou.Seed
 
             Context.SaveChanges();
 
-            JObject [] sizaines = JsonConvert.DeserializeObject<JObject[]>(File.ReadAllText(@"api/Koudou.Seed/Data/swp_unite_sizaines.json"));
-            foreach(var section in sizaines){
+            JObject[] sizaines = JsonConvert.DeserializeObject<JObject[]>(File.ReadAllText(@"api/Koudou.Seed/Data/swp_unite_sizaines.json"));
+            foreach (var section in sizaines)
+            {
                 var newSection = new Section(
                     HttpUtility.HtmlDecode((string)section["nomsizaine"]),
                     HttpUtility.HtmlDecode((string)section["cri"]),
@@ -392,7 +431,8 @@ namespace Koudou.Seed
 
             return Context.SaveChanges();
         }
-        public int ClearDB(){
+        public int ClearDB()
+        {
             Context.Database.ExecuteSqlRaw(
             @"
                 TRUNCATE TABLE 
@@ -423,18 +463,22 @@ namespace Koudou.Seed
             return Context.SaveChanges(true);
         }
 
-        private void SeedClaims(){
-            foreach(var claim in Enum.GetValues(typeof(ClaimTypes))){
+        private void SeedClaims()
+        {
+            foreach (var claim in Enum.GetValues(typeof(ClaimTypes)))
+            {
                 var newClaim = new Claim(claim.ToString(), claim.ToString());
-                newClaim.Id = (int) claim;
+                newClaim.Id = (int)claim;
                 Context.Add(newClaim);
             }
             Context.SaveChanges();
         }
 
-        private void SeedRoleClaims(){
+        private void SeedRoleClaims()
+        {
             var anime = Context.Roles.FirstOrDefault(r => r.Name == "Animé");
-            foreach(var claim in ClaimsByRole.MemberClaims){
+            foreach (var claim in ClaimsByRole.MemberClaims)
+            {
                 var claimEntity = Context.Claims.FirstOrDefault(c => c.Key == claim.ToString());
                 var claimRole = new ClaimRole();
                 claimRole.Role = anime;
@@ -442,7 +486,8 @@ namespace Koudou.Seed
                 Context.ClaimRoles.Add(claimRole);
             }
             var animateur = Context.Roles.FirstOrDefault(r => r.Name == "Animateur");
-            foreach(var claim in ClaimsByRole.AdminClaims){
+            foreach (var claim in ClaimsByRole.AdminClaims)
+            {
                 var claimEntity = Context.Claims.FirstOrDefault(c => c.Key == claim.ToString());
                 var claimRole = new ClaimRole();
                 claimRole.Role = animateur;

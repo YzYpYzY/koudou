@@ -14,26 +14,26 @@ namespace Koudou.Api.Business
 {
     public class MembersLogic : LogicBase
     {
-        public MembersLogic(KoudouContext context) : base(context){ }
+        public MembersLogic(KoudouContext context) : base(context) { }
 
         public PagedResponse<MemberDTO> GetAllPaged(PagedRequestOptions options, Expression<Func<Member, bool>> filter = null)
         {
             var response = new PagedResponse<MemberDTO>() { Options = options };
 
             response.Values = Context.Members
-                                     .Include(m => m.Person)
-                                     .ThenInclude(mPerson => mPerson.PersonRoles)
-                                     .ThenInclude(mPersonRoles => mPersonRoles.Role)
-                                     .Include(m => m.SectionMembers)
-                                     .ThenInclude(ms => ms.Section)
-                                     .AsQueryable()
-                                     .ApplyFilter(filter)
-                                     .ComputeTotalCount(response)
-                                     .ValidatePropertyExists(Context, options.Sort)
-                                     .ApplySort(options.Sort, options.SortDirection)
-                                     .ApplyPaging(options.StartIndex, options.Count)
-                                     .ToDTO<Member, MemberDTO>()
-                                     .ToList();
+                                    .Include(m => m.Person)
+                                    .ThenInclude(mPerson => mPerson.PersonRoles)
+                                    .ThenInclude(mPersonRoles => mPersonRoles.Role)
+                                    .Include(m => m.SectionMembers)
+                                    .ThenInclude(ms => ms.Section)
+                                    .AsQueryable()
+                                    .ApplyFilter(filter)
+                                    .ComputeTotalCount(response)
+                                    .ValidatePropertyExists(Context, options.Sort)
+                                    .ApplySort(options.Sort, options.SortDirection)
+                                    .ApplyPaging(options.StartIndex, options.Count)
+                                    .ToDTO<Member, MemberDTO>()
+                                    .ToList();
 
             return response;
         }
@@ -61,7 +61,7 @@ namespace Koudou.Api.Business
             newPerson.FirstName = dto.FirstName;
             newPerson.LastName = dto.LastName;
             newPerson.Birthdate = DateHelper.StringToDateTime(dto.Birthdate);
-            newPerson.Sex = dto.Sex != null ? (char) dto.Sex : 'U';
+            newPerson.Sex = dto.Sex != null ? (char)dto.Sex : 'U';
             newPerson.Comment = dto.Comment;
 
             Context.Add(newPerson);
@@ -85,12 +85,12 @@ namespace Koudou.Api.Business
             {
                 throw new IdNotFoundRequestException(nameof(Member), id);
             }
-        
+
             Context.Entry(member).OriginalValues["xmin"] = dto.RowVersion;
             member.Person.LastName = dto.LastName;
             member.Person.FirstName = dto.FirstName;
             member.Person.Birthdate = DateHelper.StringToDateTime(dto.Birthdate);
-            member.Person.Sex = dto.Sex != null ? (char) dto.Sex : 'U';
+            member.Person.Sex = dto.Sex != null ? (char)dto.Sex : 'U';
             member.Person.Comment = dto.Comment;
 
             Context.SaveChanges();

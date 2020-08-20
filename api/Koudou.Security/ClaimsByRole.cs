@@ -23,6 +23,9 @@ namespace Koudou.Security
             ClaimTypes.UpdateMember,
             ClaimTypes.DeleteMember,
             ClaimTypes.ReadRole,
+            ClaimTypes.ReadMailing,
+            ClaimTypes.ReadPhoto,
+            ClaimTypes.ReadPayment,
         };
 
         public static readonly List<ClaimTypes> MemberClaims = new List<ClaimTypes>(){

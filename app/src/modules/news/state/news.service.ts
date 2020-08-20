@@ -28,8 +28,8 @@ export class NewsService {
         this.store.dispatch(new NewsActions.FetchAll(request));
     }
 
-    select(newsId: number): void {
-        this.store.dispatch(new NewsActions.Select(newsId));
+    select(newsId: number, isReadOnly: boolean): void {
+        this.store.dispatch(new NewsActions.Select(newsId, isReadOnly));
     }
 
     save(news: INews): void {

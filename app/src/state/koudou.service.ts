@@ -12,6 +12,7 @@ import { OptionModel } from 'yzy-ng';
 import { IRegister } from '../modules/auth/models/IRegister';
 import { IChangePassword } from '../modules/auth/models/IChangePassword';
 import { ProfilState } from '../modules/auth/enum/ProfilState';
+import { ClaimTypes } from '@core/enums/ClaimTypes';
 
 @Injectable({ providedIn: 'root' })
 export class KoudouService {
@@ -68,5 +69,17 @@ export class KoudouService {
             }
         }
         return true;
+    }
+
+    checkAccessByTypes(claims: ClaimTypes[]): boolean {
+        for (const claim of claims) {
+            if (!this.user.claims.includes(ClaimTypes[claim])) {
+                return false;
+            }
+        }
+        return true;
+    }
+    setNewToken(token: IUserToken) {
+        this.store.dispatch(new KoudouActions.SetNewToken(token));
     }
 }

@@ -11,6 +11,34 @@
     border-radius: 2px;
 }
 
+.login-container {
+    display: flex;
+    flex-flow: row;
+    align-items: stretch;
+    position: relative;
+}
+.loader-container {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+    height: 100%;
+    width: 100%;
+    background: var(--form-bg);
+    koudou-loader {
+        position: relative;
+        left: -2.5rem;
+        top: -2.5rem;
+    }
+
+    &.hide {
+        z-index: -1;
+        opacity: 0;
+        transition: all ease 0.1s;
+    }
+}
+
 .error {
     align-self: flex-start;
     color: var(--invalid-color);
@@ -29,10 +57,10 @@ koudou-logo {
     justify-content: center;
     max-width: 40rem;
     font-size: 1rem;
-    height: 100%;
     border-right: 1px solid var(--accent-color);
     position: relative;
     background: var(--sidebar-bg);
+    height: 100%;
 }
 .description-text {
     padding: 1rem 3rem 4rem 3rem;
