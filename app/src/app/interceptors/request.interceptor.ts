@@ -30,13 +30,10 @@ export class RequestInterceptor implements HttpInterceptor {
     ): Observable<HttpEvent<any>> {
         return next.handle(req.clone({ setHeaders: this.setHeaders() })).pipe(
             catchError((err) => {
-                console.log(
-                    'Request in error : ' + err.url,
-                    'Token : ' + this.token.access_token,
-                );
-
                 if (req.url.includes('RefreshToken')) {
                     this.koudouSercice.logout();
+                    this.token = null;
+                    this.refreshing$.next(false);
                     return throwError(err);
                 }
                 if (
@@ -59,18 +56,12 @@ export class RequestInterceptor implements HttpInterceptor {
         req: HttpRequest<any>,
         next: HttpHandler,
     ): Observable<HttpEvent<any>> {
-        console.log(
-            'Handle 401',
-            'Refreshing value : ' + this.refreshing$.getValue(),
-        );
-
         if (!this.refreshing$.getValue()) {
             this.refreshing$.next(true);
             this.authService
                 .refresh(this.token?.refresh_token)
                 .subscribe((res) => {
                     this.token = res.token;
-                    console.log('New Token : ' + this.token.access_token);
                     this.koudouSercice.setNewToken(res.token);
                     this.refreshing$.next(false);
                 });
@@ -78,9 +69,6 @@ export class RequestInterceptor implements HttpInterceptor {
         return this.refreshing$.pipe(
             filter((refreshing) => refreshing === false),
             take(1),
-            tap(() => {
-                console.log('Replay request : ' + req.url);
-            }),
             switchMap(() =>
                 this.token
                     ? next.handle(req.clone({ setHeaders: this.setHeaders() }))

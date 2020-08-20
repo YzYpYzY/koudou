@@ -8,11 +8,14 @@ using Koudou.Data.Entities.Bases;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 
-namespace Koudou.Data {
-    public class KoudouContext : DbContext {
+namespace Koudou.Data
+{
+    public class KoudouContext : DbContext
+    {
 
         public const string IsSoftDeletedPropertyName = "IsSoftDeleted";
-        public KoudouContext (DbContextOptions<KoudouContext> options) : base (options) { 
+        public KoudouContext(DbContextOptions<KoudouContext> options) : base(options)
+        {
         }
         public DbSet<Activity> Activities { get; set; }
 
@@ -42,9 +45,10 @@ namespace Koudou.Data {
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.ApplyConfigurationsFromAssembly(GetType().Assembly);
-            
+
         }
-        public int SaveChangesWithoutAudits(){
+        public int SaveChangesWithoutAudits()
+        {
             return base.SaveChanges();
         }
 
@@ -59,7 +63,7 @@ namespace Koudou.Data {
             AddAuditTimes();
             return await base.SaveChangesAsync();
         }
- 
+
         private void AddAuditTimes()
         {
             var entities = ChangeTracker.Entries().Where(x => x.Entity is EntityBase && (x.State == EntityState.Added || x.State == EntityState.Modified));
@@ -71,7 +75,7 @@ namespace Koudou.Data {
                     ((EntityBase)entity.Entity).CreationDate = now;
                     ((EntityBase)entity.Entity).ModificationDate = now;
                 }
- 
+
                 ((EntityBase)entity.Entity).ModificationDate = now;
             }
         }

@@ -15,6 +15,7 @@ import { IUser } from '../core/models/IUser';
 })
 export class AppComponent extends BaseComponent {
     @HostBinding('class.dark') darkMode = false;
+    @HostBinding('class.s-desktop') screenSize = true;
     title = 'koudou';
     isLogged$: Observable<boolean>;
     isNavDisplayed = true;
