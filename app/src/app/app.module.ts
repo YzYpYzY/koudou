@@ -61,9 +61,9 @@ import { LoaderWrapperComponent } from '@core/loader/loader-wrapper.component';
         NgxsStoragePluginModule.forRoot({
             key: 'koudou',
         }),
-        ServiceWorkerModule.register('ngsw-worker.js', {
-            enabled: environment.production,
-        }),
+        // ServiceWorkerModule.register('ngsw-worker.js', {
+        //     enabled: environment.production,
+        // }),
     ],
     providers: [
         RootGuard,
