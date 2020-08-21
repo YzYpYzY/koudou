@@ -28,7 +28,6 @@ import { KoudouStore } from '../state/koudou.store';
 import { KoudouService } from 'src/state/koudou.service';
 import { RequestInterceptor } from './interceptors/request.interceptor';
 import { NotConnectedGuard } from '@core/guard/not-connected.guard';
-import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import {
     DropdownOptionsComponent,
