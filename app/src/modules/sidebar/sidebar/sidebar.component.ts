@@ -15,49 +15,49 @@ export class SidebarComponent extends BaseComponent implements OnInit {
     navigations: Nav[] = [
         {
             label: 'Actualités',
-            url: 'news',
+            url: '/news',
             isActive: false,
             icon: 'gg-home',
             claims: [ClaimTypes.ReadNews],
         },
         {
             label: 'Gestion news',
-            url: 'news/management',
+            url: '/news/management',
             isActive: false,
             icon: 'gg-media-podcast',
             claims: [ClaimTypes.CreateNews],
         },
         {
             label: 'Membres',
-            url: 'members',
+            url: '/members',
             isActive: false,
             icon: 'gg-user-list',
             claims: [ClaimTypes.ReadMember],
         },
         {
             label: 'Mailing',
-            url: 'mailing',
+            url: '/mailing',
             isActive: false,
             icon: 'gg-mail',
             claims: [ClaimTypes.ReadMailing],
         },
         {
             label: 'Sections',
-            url: 'sections',
+            url: '/sections',
             isActive: false,
             icon: 'gg-shape-hexagon',
             claims: [ClaimTypes.ReadSection],
         },
         {
             label: 'Photos',
-            url: 'photos',
+            url: '/photos',
             isActive: false,
             icon: 'gg-image',
             claims: [ClaimTypes.ReadPhoto],
         },
         {
             label: 'Paiements',
-            url: 'payments',
+            url: '/payments',
             isActive: false,
             icon: 'gg-credit-card',
             claims: [ClaimTypes.ReadPayment],
@@ -74,7 +74,8 @@ export class SidebarComponent extends BaseComponent implements OnInit {
 
     ngOnInit() {
         const parts = window.location.href.split('/');
-        this.selectNav(parts[parts.length - 1]);
+
+        this.activeNavUrl = parts[parts.length - 1];
         this.koudouService.isDarkMode$
             .pipe(takeUntil(this.destroy$))
             .subscribe((value) => {
@@ -85,19 +86,20 @@ export class SidebarComponent extends BaseComponent implements OnInit {
             .subscribe((user) => {
                 if (user && user.claims) {
                     const navs = [];
-                    for (let nav of this.navigations) {
-                        if (nav.url == this.activeNavUrl) {
+                    for (const nav of this.navigations) {
+                        if (nav.url === this.activeNavUrl) {
                             nav.isActive = true;
                         }
                         let missingClaim = false;
-                        for (let claim of nav.claims) {
+                        for (const claim of nav.claims) {
                             if (
-                                user.claims.includes(ClaimTypes[claim]) == false
+                                user.claims.includes(ClaimTypes[claim]) ===
+                                false
                             ) {
                                 missingClaim = true;
                             }
                         }
-                        if (missingClaim == false) {
+                        if (missingClaim === false) {
                             navs.push({ ...nav });
                         }
                     }
@@ -107,17 +109,14 @@ export class SidebarComponent extends BaseComponent implements OnInit {
     }
 
     navigate(nav: Nav): void {
-        this.selectNav(nav.url);
-        this.router.navigate([nav.url]);
-        this.hide.emit();
-    }
-
-    selectNav(url: string): void {
-        this.filteredNavigations = this.filteredNavigations.map((n) => ({
+        this.activeNavUrl = nav.url;
+        const navs = this.filteredNavigations.map((n) => ({
             ...n,
-            isActive: n.url === url,
+            isActive: this.activeNavUrl === n.url,
         }));
-        this.activeNavUrl = url;
+        this.filteredNavigations = navs;
+        this.hide.emit();
+        this.router.navigate([nav.url]);
     }
 
     toggleDarkMode() {

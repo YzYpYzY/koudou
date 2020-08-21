@@ -4,7 +4,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 import { KoudouService } from 'src/state/koudou.service';
 import { tap, takeUntil } from 'rxjs/operators';
-import { ResponsiveService } from 'yzy-ng';
 import { NotificationDomService } from '@core/notification/notification.module';
 import { IUser } from '../core/models/IUser';
 

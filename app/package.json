@@ -2,7 +2,8 @@
     "name": "koudou",
     "version": "0.0.0",
     "scripts": {
-        "start": "ng serve --port 8080"
+        "start": "ng serve -c test-production --port 8080",
+        "dev": "ng serve --port 8080"
     },
     "husky": {
         "hooks": {
