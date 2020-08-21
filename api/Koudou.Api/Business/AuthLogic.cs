@@ -23,12 +23,13 @@ using Microsoft.AspNetCore.Mvc;
 namespace Koudou.Api.Business
 {
     public class AuthLogic : LogicBase
-    {        
+    {
         public const string PasswordsPepper = "m6qOay8EfXpDGERyHSWBWLZ7uKhGdYgX";
         private readonly SigningCredentials _signingCredentials;
         private readonly TokensSettings _tokenSettings;
-        
-        public AuthLogic(KoudouContext context, IOptions<TokensSettings> tokenSettings) : base(context){ 
+
+        public AuthLogic(KoudouContext context, IOptions<TokensSettings> tokenSettings) : base(context)
+        {
             this._tokenSettings = tokenSettings.Value;
             var key = Encoding.UTF8.GetBytes(_tokenSettings.Secret);
             _signingCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature);
@@ -43,10 +44,12 @@ namespace Koudou.Api.Business
                 .ThenInclude(c => c.Claim)
                 .FirstOrDefault(u => u.Pseudo == pseudo);
 
-            if(user == null){
+            if (user == null)
+            {
                 throw new UnauthorizedAccessException();
             }
-            if(!Password.Compare(user.Password, password, PasswordsPepper)){
+            if (!Password.Compare(user.Password, password, PasswordsPepper))
+            {
                 throw new UnauthorizedAccessException();
             }
 
@@ -68,29 +71,33 @@ namespace Koudou.Api.Business
                 .ThenInclude(c => c.Claim)
                 .FirstOrDefault(u => u.Id == userId);
 
-            if(user == null){
+            if (user == null)
+            {
                 throw new UnauthorizedAccessException();
             }
-            if(!Password.Compare(user.Password, dto.Password, PasswordsPepper)){
+            if (!Password.Compare(user.Password, dto.Password, PasswordsPepper))
+            {
                 throw new UnauthorizedAccessException();
             }
 
-            user.Password = Password.Encode(dto.NewPassword,PasswordsPepper);
+            user.Password = Password.Encode(dto.NewPassword, PasswordsPepper);
             return Context.SaveChanges();
         }
 
         private TokenDTO generateToken(User user)
         {
             var claims = new List<System.Security.Claims.Claim>();
-            var expiration = DateTimeOffset.UtcNow.AddMinutes(_tokenSettings.AccessTokenExpiration);
+            var expiration = DateTime.UtcNow.AddMinutes(_tokenSettings.AccessTokenExpiration);
             claims.Add(new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.PrimarySid, user.Id.ToString()));
             claims.Add(new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.NameIdentifier, user.Pseudo.ToString()));
             claims.Add(new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.Email, user.Person.Email));
             //Limited to one role
             var personRole = user.Person.PersonRoles.FirstOrDefault();
-            if(personRole != null){
+            if (personRole != null)
+            {
                 var claimEntities = personRole.Role.ClaimRoles.ToList();
-                foreach(var entity in claimEntities){
+                foreach (var entity in claimEntities)
+                {
                     claims.Add(new System.Security.Claims.Claim("RessourceAccess", entity.Claim.Key));
                 }
             }
@@ -99,7 +106,7 @@ namespace Koudou.Api.Business
             var tokenDescriptor = new SecurityTokenDescriptor()
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = expiration.DateTime,
+                Expires = expiration,
                 SigningCredentials = _signingCredentials
             };
             var securityToken = tokenHandler.CreateToken(tokenDescriptor);
@@ -108,7 +115,7 @@ namespace Koudou.Api.Business
             {
                 access_token = token,
                 expires_in = _tokenSettings.AccessTokenExpiration * 60,
-                expiration = new DateTimeOffset(securityToken.ValidTo),
+                expiration = securityToken.ValidTo,
                 token_type = "Bearer",
                 scope = "koudou-api",
                 refresh_token = null
@@ -124,46 +131,47 @@ namespace Koudou.Api.Business
                 .ThenInclude(r => r.ClaimRoles)
                 .ThenInclude(c => c.Claim)
                 .SingleOrDefault(u => u.RefreshTokens.Any(t => t.Token == token));
-            
+
             // return null if no user found with token
-            if (user == null) {
-                throw new RequestException(StatusCodes.Status401Unauthorized);
+            if (user == null)
+            {
+                throw new RequestException(StatusCodes.Status401Unauthorized, "refresh token not found");
             }
 
             var refreshToken = user.RefreshTokens.SingleOrDefault(x => x.Token == token);
 
-            if(refreshToken != null){
-                // return null if token is no longer active
-                if (!refreshToken.IsActive) return null;
-
-                // replace old refresh token with a new one and save
-                var newRefreshToken = generateRefreshToken(ipAddress);
-                refreshToken.Revoked = DateTime.UtcNow;
-                refreshToken.RevokedByIp = ipAddress;
-                refreshToken.ReplacedByToken = newRefreshToken.Token;
-                user.RefreshTokens.Add(newRefreshToken);
-                Context.Update(user);
-                Context.SaveChanges();
-
-                // generate new jwt
-                var newToken = generateToken(user);
-                newToken.refresh_token = refreshToken.Token;
-                return newToken;
+            if (refreshToken == null)
+            {
+                throw new RequestException(StatusCodes.Status401Unauthorized, "refresh token not found");
             }
-            throw new RequestException(StatusCodes.Status401Unauthorized);
+
+            if (!refreshToken.IsActive) throw new RequestException(StatusCodes.Status401Unauthorized, "refresh token disabled");
+
+            var newRefreshToken = generateRefreshToken(ipAddress);
+            refreshToken.Revoked = DateTime.UtcNow;
+            refreshToken.RevokedByIp = ipAddress;
+            refreshToken.ReplacedByToken = newRefreshToken.Token;
+            user.RefreshTokens.Add(newRefreshToken);
+            Context.Update(user);
+            Context.SaveChanges();
+
+            var newToken = generateToken(user);
+            newToken.refresh_token = newRefreshToken.Token;
+            return newToken;
         }
 
         public bool RevokeToken(string token, string ipAddress)
         {
             var user = Context.Users.Include(u => u.RefreshTokens).SingleOrDefault(u => u.RefreshTokens.Any(t => t.Token == token));
-            
+
             // return false if no user found with token
             if (user == null) return false;
 
             var refreshToken = user.RefreshTokens.SingleOrDefault(u => u.Token == token);
 
             // return false if token is not active
-            if(refreshToken != null){
+            if (refreshToken != null)
+            {
                 if (!refreshToken.IsActive) return false;
                 // revoke token and save
                 refreshToken.Revoked = DateTime.UtcNow;
@@ -178,17 +186,25 @@ namespace Koudou.Api.Business
         private RefreshToken generateRefreshToken(string ipAddress)
         {
             return new RefreshToken
-                {
-                    Token = RandomGenerator.GetUniqueKey(),
-                    Expires = DateTime.UtcNow.AddDays(2),
-                    CreationDate = DateTime.UtcNow,
-                    CreatedByIp = ipAddress
-                };
+            {
+                Token = RandomGenerator.GetUniqueKey(),
+                Expires = DateTime.UtcNow.AddMinutes(_tokenSettings.RefreshTokenExpiration),
+                CreationDate = DateTime.UtcNow,
+                CreatedByIp = ipAddress
+            };
         }
 
         public int Register(RegisterDTO register)
         {
-            var newUser = new User(register.Pseudo, Password.Encode(register.Password,PasswordsPepper),false);
+            if (Context.Users.FirstOrDefault(u => u.Pseudo == register.Pseudo) != null)
+            {
+                throw new RequestException(StatusCodes.Status400BadRequest, "[PseudoUsed] This pseudo already exist.");
+            }
+            if (Context.Users.FirstOrDefault(u => u.Person.Email == register.Email) != null)
+            {
+                throw new RequestException(StatusCodes.Status400BadRequest, "[EmailUsed] This email is already in use.");
+            }
+            var newUser = new User(register.Pseudo, Password.Encode(register.Password, PasswordsPepper), false);
             var newPerson = new Person();
             newPerson.Email = register.Email;
             Context.Persons.Add(newPerson);

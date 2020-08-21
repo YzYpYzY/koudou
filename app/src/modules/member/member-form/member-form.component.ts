@@ -16,13 +16,19 @@ import {
     YzYFormGroup,
 } from 'yzy-ng';
 import { IMemberDetails } from '../models/IMemberDetails';
+import { takeUntil } from 'rxjs/operators';
+import { KoudouService } from 'src/state/koudou.service';
+import { BaseComponent } from '@core/base/base.component';
+import { KoudouAction } from '../models/KoudouAction';
+import { ClaimTypes } from '@core/enums/ClaimTypes';
 
 @Component({
     selector: 'koudou-member-form',
     templateUrl: './member-form.component.html',
     styleUrls: ['./member-form.component.scss'],
 })
-export class MemberFormComponent implements OnInit, OnChanges {
+export class MemberFormComponent extends BaseComponent
+    implements OnInit, OnChanges {
     @Input() selectedMember: IMemberDetails;
     @Input() isLoading: boolean;
     @Input() isReadOnly: boolean;
@@ -31,7 +37,10 @@ export class MemberFormComponent implements OnInit, OnChanges {
     >();
     @Output() action: EventEmitter<YzYAction> = new EventEmitter<YzYAction>();
     form: YzYFormGroup;
-    constructor() {}
+    filteredHeaderActions: YzYAction[];
+    constructor(private koudouService: KoudouService) {
+        super();
+    }
 
     formModel: FormModel = {
         title: null,
@@ -91,26 +100,41 @@ export class MemberFormComponent implements OnInit, OnChanges {
             },
         ],
     };
-    headerActions: YzYAction[] = [
+    headerActions: KoudouAction[] = [
         {
             name: 'cancel',
             class: 'gg-chevron-left',
             type: YzYActionTypes.Default,
+            claims: [],
         },
-        { name: 'save', class: 'gg-check', type: YzYActionTypes.Success },
+        {
+            name: 'save',
+            class: 'gg-check',
+            type: YzYActionTypes.Success,
+            claims: [ClaimTypes.CreateMember],
+        },
         {
             name: 'edit',
             class: 'gg-pen',
             type: YzYActionTypes.Warning,
+            claims: [ClaimTypes.UpdateMember],
         },
         {
             name: 'delete',
             class: 'gg-trash',
             type: YzYActionTypes.Error,
+            claims: [ClaimTypes.DeleteMember],
         },
     ];
     ngOnInit(): void {
         this.initForm();
+        this.koudouService.user$
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(() => {
+                this.filteredHeaderActions = this.headerActions.filter((a) =>
+                    this.koudouService.checkAccessByTypes(a.claims),
+                );
+            });
     }
     ngOnChanges(_changes: SimpleChanges): void {
         this.initForm();

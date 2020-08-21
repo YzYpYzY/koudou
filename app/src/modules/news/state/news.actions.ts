@@ -9,7 +9,7 @@ export namespace NewsActions {
     }
     export class Select {
         static readonly type = '[NewsList] Select news';
-        constructor(public newsId: number) {}
+        constructor(public newsId: number, public isReadOnly: boolean) {}
     }
     export class Save {
         static readonly type = '[NewsForm] Save news';

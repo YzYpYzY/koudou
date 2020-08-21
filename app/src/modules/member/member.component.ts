@@ -19,6 +19,10 @@ import { IListRequest } from '@core/models/IListRequest';
 import { BaseComponent } from '@core/base/base.component';
 import { IMemberDetails } from './models/IMemberDetails';
 import { IMember } from './models/IMember';
+import { KoudouAction } from './models/KoudouAction';
+import { ClaimTypes } from '@core/enums/ClaimTypes';
+import { KoudouService } from 'src/state/koudou.service';
+
 @Component({
     selector: 'koudou-member',
     templateUrl: './member.component.html',
@@ -46,18 +50,40 @@ export class MemberComponent extends BaseComponent implements OnInit {
             },
         ],
     };
-    headerActions: YzYAction[] = [
-        { name: 'add', class: 'gg-math-plus', type: YzYActionTypes.Success },
+    headerActions: KoudouAction[] = [
+        {
+            name: 'add',
+            class: 'gg-math-plus',
+            type: YzYActionTypes.Success,
+            claims: [ClaimTypes.CreateMember],
+        },
     ];
+    filteredHeaderActions: KoudouAction[] = [];
     state = CrudStates.List;
     request: IListRequest;
-    itemByPage = 30;
+    itemByPage = 20;
     loading$: Observable<boolean>;
-    lineActions: YzYAction[] = [
-        { name: 'read', class: 'gg-search', type: YzYActionTypes.Info },
-        { name: 'edit', class: 'gg-pen', type: YzYActionTypes.Warning },
-        { name: 'delete', class: 'gg-trash', type: YzYActionTypes.Error },
+    lineActions: KoudouAction[] = [
+        {
+            name: 'read',
+            class: 'gg-search',
+            type: YzYActionTypes.Info,
+            claims: [ClaimTypes.ReadMember],
+        },
+        {
+            name: 'edit',
+            class: 'gg-pen',
+            type: YzYActionTypes.Warning,
+            claims: [ClaimTypes.UpdateMember],
+        },
+        {
+            name: 'delete',
+            class: 'gg-trash',
+            type: YzYActionTypes.Error,
+            claims: [ClaimTypes.DeleteMember],
+        },
     ];
+    filteredLineActions: KoudouAction[] = [];
     memberIdForDelete: number;
     question = 'Ètes-vous certains de vouloir supprimer ce membre ?';
     answer = [
@@ -65,7 +91,10 @@ export class MemberComponent extends BaseComponent implements OnInit {
         { label: 'Oui', value: true, type: AnswerType.Danger },
     ];
 
-    constructor(private memberService: MemberService) {
+    constructor(
+        private memberService: MemberService,
+        private koudouService: KoudouService,
+    ) {
         super();
         this.memberService.members$
             .pipe(takeUntil(this.destroy$))
@@ -79,7 +108,6 @@ export class MemberComponent extends BaseComponent implements OnInit {
             .pipe(takeUntil(this.destroy$))
             .subscribe((newState: CrudStates) => {
                 this.state = newState;
-                console.log(newState);
             });
         this.memberService.selectedMember$
             .pipe(takeUntil(this.destroy$))
@@ -87,6 +115,20 @@ export class MemberComponent extends BaseComponent implements OnInit {
                 this.selectedMember = selectedMember;
             });
         this.loading$ = this.memberService.loading$;
+        this.koudouService.user$
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(() => {
+                this.filteredHeaderActions = this.headerActions.filter((a) =>
+                    this.koudouService.checkAccessByTypes(a.claims),
+                );
+            });
+        this.koudouService.user$
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(() => {
+                this.filteredLineActions = this.lineActions.filter((a) =>
+                    this.koudouService.checkAccessByTypes(a.claims),
+                );
+            });
     }
 
     ngOnInit() {
@@ -94,7 +136,7 @@ export class MemberComponent extends BaseComponent implements OnInit {
             sort: null,
             sortDirection: null,
             startIndex: 0,
-            count: 20,
+            count: this.itemByPage,
             filter: null,
         };
         this.fetchMembers();

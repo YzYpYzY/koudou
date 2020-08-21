@@ -4,7 +4,7 @@
             <yzy-bar
                 [title]="'Membres'"
                 [formModel]="filtersModel"
-                [actions]="headerActions"
+                [actions]="filteredHeaderActions"
                 (action)="handleHeaderAction($event)"
                 (formReady)="filterFormReady($event)"
             ></yzy-bar>
@@ -13,7 +13,7 @@
                 [items]="members"
                 [itemsCount]="membersCount"
                 [itemByPage]="itemByPage"
-                [lineActions]="lineActions"
+                [lineActions]="filteredLineActions"
                 [pageLinkNumber]="5"
                 [isPaginator]="true"
                 [isFrontDataTreatment]="false"

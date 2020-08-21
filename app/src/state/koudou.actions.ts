@@ -2,6 +2,7 @@ import { IRegister } from 'src/modules/auth/models/IRegister';
 import { ILogin } from '../modules/auth/models/ILogin';
 import { IChangePassword } from '../modules/auth/models/IChangePassword';
 import { ProfilState } from 'src/modules/auth/enum/ProfilState';
+import { IUserToken } from '@core/models/IUserToken';
 
 export namespace KoudouActions {
     export class Loading {
@@ -34,5 +35,9 @@ export namespace KoudouActions {
     }
     export class LoadSectionOptions {
         static readonly type = '[App] Load section options';
+    }
+    export class SetNewToken {
+        static readonly type = '[RefreshTokenSystem] Set new token';
+        constructor(public token: IUserToken) {}
     }
 }

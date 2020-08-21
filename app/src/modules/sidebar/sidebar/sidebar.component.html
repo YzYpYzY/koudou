@@ -1,7 +1,7 @@
 <koudou-logo></koudou-logo>
 <nav>
     <a
-        *ngFor="let nav of navigations"
+        *ngFor="let nav of filteredNavigations"
         (click)="navigate(nav)"
         class="nav"
         [ngClass]="{ active: nav.isActive }"

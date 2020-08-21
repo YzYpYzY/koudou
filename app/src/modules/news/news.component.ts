@@ -49,7 +49,7 @@ export class NewsComponent extends BaseComponent implements OnInit {
     ];
     state = CrudStates.List;
     request: IListRequest;
-    itemByPage = 30;
+    itemByPage = 20;
     loading$: Observable<boolean>;
     lineActions: YzYAction[] = [
         { name: 'read', class: 'gg-search', type: YzYActionTypes.Info },
@@ -89,7 +89,7 @@ export class NewsComponent extends BaseComponent implements OnInit {
             sort: null,
             sortDirection: null,
             startIndex: 0,
-            count: 20,
+            count: this.itemByPage,
             filter: null,
         };
         this.fetchNews();

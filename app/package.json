@@ -30,7 +30,7 @@
         "husky": "^4.2.5",
         "jwt-decode": "^2.2.0",
         "rxjs": "~6.6.2",
-        "yzy-ng": "file://../../yzy-ng/dist/yzy-ng",
+        "yzy-ng": "^1.15.4",
         "zone.js": "~0.10.2"
     },
     "devDependencies": {

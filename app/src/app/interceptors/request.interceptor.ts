@@ -9,7 +9,7 @@ import {
 } from '@angular/common/http';
 import { Observable, BehaviorSubject, throwError } from 'rxjs';
 import { KoudouService } from 'src/state/koudou.service';
-import { catchError, filter, take, switchMap } from 'rxjs/operators';
+import { catchError, filter, take, switchMap, tap } from 'rxjs/operators';
 import { AuthService } from '@core/services/auth.service';
 
 @Injectable()
@@ -32,6 +32,8 @@ export class RequestInterceptor implements HttpInterceptor {
             catchError((err) => {
                 if (req.url.includes('RefreshToken')) {
                     this.koudouSercice.logout();
+                    this.token = null;
+                    this.refreshing$.next(false);
                     return throwError(err);
                 }
                 if (
@@ -58,7 +60,11 @@ export class RequestInterceptor implements HttpInterceptor {
             this.refreshing$.next(true);
             this.authService
                 .refresh(this.token?.refresh_token)
-                .subscribe(() => this.refreshing$.next(false));
+                .subscribe((res) => {
+                    this.token = res.token;
+                    this.koudouSercice.setNewToken(res.token);
+                    this.refreshing$.next(false);
+                });
         }
         return this.refreshing$.pipe(
             filter((refreshing) => refreshing === false),

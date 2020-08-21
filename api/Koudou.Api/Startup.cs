@@ -24,6 +24,7 @@ using Koudou.Api.Models.Auth;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.Extensions.Logging.Console;
 
 namespace Koudou.Api
 {
@@ -36,13 +37,17 @@ namespace Koudou.Api
 
         public IConfiguration Configuration { get; }
 
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<KoudouContext>(options => options.UseNpgsql(
-                Configuration.GetConnectionString("KoudouConnection"),
-                x => x.MigrationsAssembly("Koudou.Data")
-            ));
+            services.AddDbContext<KoudouContext>(options =>
+            {
+                options.UseNpgsql(
+                    Configuration.GetConnectionString("KoudouConnection"),
+                    x => x.MigrationsAssembly("Koudou.Data")
+                );
+            });
             services.AddApiVersioning(x =>
             {
                 x.DefaultApiVersion = new ApiVersion(1, 0);
@@ -153,15 +158,21 @@ namespace Koudou.Api
                 .AddJwtBearer(x =>
                 {
                     x.RequireHttpsMetadata = false;
-                    x.SaveToken = true;
+                    x.SaveToken = false;
                     x.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuerSigningKey = true,
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenSettings.Secret)),
                         ValidateIssuer = false,
                         ValidateAudience = false,
-                        RequireExpirationTime = false,
-                        ValidateLifetime = true
+                        RequireExpirationTime = true,
+                        ValidateLifetime = true,
+                        LifetimeValidator = (DateTime? notBefore, DateTime? expires, SecurityToken securityToken,
+                                     TokenValidationParameters validationParameters) =>
+                            {
+                                return notBefore <= DateTime.UtcNow &&
+                                    expires >= DateTime.UtcNow;
+                            }
                     };
                 });
         }

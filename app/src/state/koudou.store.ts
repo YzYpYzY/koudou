@@ -118,13 +118,19 @@ export class KoudouStore {
                 });
                 return dispatch(new Navigate(['/']));
             }),
-            catchError((error: Error) => {
+            catchError((error: HttpErrorResponse) => {
                 patchState({
                     loading: false,
                 });
+                let message = "L'inscription a échoué.";
+                if (error.error.Message.includes('PseudoUsed')) {
+                    message = 'Ce pseudo est déjà utilisé.';
+                } else if (error.error.Message.includes('EmailUsed')) {
+                    message = 'Cet email déjà utilisé.';
+                }
                 this.notificationService.notify({
                     type: NotificationTypes.Error,
-                    message: "L'inscription a échoué.",
+                    message,
                 });
                 return of(error);
             }),
@@ -202,6 +208,14 @@ export class KoudouStore {
         { newState }: KoudouActions.SetProfilState,
     ) {
         patchState({ profilState: newState });
+    }
+
+    @Action(KoudouActions.SetNewToken)
+    setNewToken(
+        { patchState }: StateContext<KoudouState>,
+        { token }: KoudouActions.SetNewToken,
+    ) {
+        patchState({ token });
     }
 
     @Action(KoudouActions.LoadSectionOptions)

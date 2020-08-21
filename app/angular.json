@@ -31,7 +31,7 @@
                         ],
                         "styles": [
                             "node_modules/css.gg/icons-compressed/icons.css",
-                            "../../yzy-ng/dist/yzy-ng-themes/base-theme.css",
+                            "node_modules/yzy-ng/base-theme.css",
                             "src/styles/styles.scss"
                         ],
                         "scripts": [],
